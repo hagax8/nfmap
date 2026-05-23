@@ -18,6 +18,7 @@ Output:
 import warnings
 warnings.filterwarnings('ignore')
 
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import datasets, manifold
@@ -69,6 +70,12 @@ CONFIGS = [
         "hypothesis": "Max epochs 1000, sigma_perp 10.0, graph_weight 5.0",
         "kind":       "nfmap",
         "overrides":  {"max_epochs": 1000, "patience": 100, "sigma_perp": 10.0, "graph_weight": 5.0},
+    },
+    {
+        "label":      "NEW: NFMap (Negative Sampling x5)",
+        "hypothesis": "Sample 5 negative edges per positive to push clusters apart",
+        "kind":       "nfmap",
+        "overrides":  {"max_epochs": 1000, "patience": 100, "sigma_perp": 10.0, "graph_weight": 5.0, "negative_sample_rate": 5},
     },
     {
         "label":      "NEW: NFMap (Low Graph Weight)",
@@ -140,7 +147,11 @@ for i, cfg in enumerate(CONFIGS):
                          "Z": None, "sil": None, "ok": False})
 
 # ── Plot ──────────────────────────────────────────────────────────────────────
-fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+# Calculate grid size dynamically
+n_plots = len(results)
+n_cols = 3
+n_rows = math.ceil(n_plots / n_cols)
+fig, axes = plt.subplots(n_rows, n_cols, figsize=(6 * n_cols, 6 * n_rows))
 axes = axes.flatten()
 cmap = plt.cm.get_cmap('tab10', 10)
 last_sc = None  # for colorbar
@@ -166,6 +177,10 @@ for ax, res in zip(axes, results):
     ax.set_xticks([])
     ax.set_yticks([])
     ax.axis('tight')
+
+# Hide any unused axes
+for i in range(len(results), len(axes)):
+    axes[i].set_visible(False)
 
 # Shared colorbar for digit classes
 if last_sc is not None:

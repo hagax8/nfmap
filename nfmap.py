@@ -243,7 +243,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     scikit-learn compatible wrapper class for NFMap.
     Handles data preprocessing, PyTorch training loop, and adaptive hyperparameters.
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -258,6 +258,7 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.max_epochs = max_epochs
         self.patience = patience
         self.verbose = verbose
+        self.negative_sample_rate = negative_sample_rate
         
     def _check_is_binary(self, X):
         """Check if X contains only 0 and 1 (sparse or dense)."""
@@ -415,11 +416,15 @@ class NFMap(BaseEstimator, TransformerMixin):
                     # Without this, different digit classes have no force separating them —
                     # attraction alone collapses everything into one blob.
                     if self.repulsion_weight > 0:
-                        neg_idx = torch.randint(N, (len(idx_batch),))
+                        neg_idx = torch.randint(N, (len(idx_batch) * self.negative_sample_rate,))
                         x_neg = X_scaled_tensor[neg_idx].to(self.device_)
                         z_neg, _ = self.module_.inverse_flow(x_neg)
                         z_neg_par = z_neg[:, :self.module_.n_components]
-                        dist_sq_neg = torch.sum((z_batch_par - z_neg_par) ** 2, dim=-1)
+                        
+                        z_neg_par = z_neg_par.view(len(idx_batch), self.negative_sample_rate, self.n_components)
+                        z_batch_par_exp = z_batch_par.unsqueeze(1)
+                        dist_sq_neg = torch.sum((z_batch_par_exp - z_neg_par) ** 2, dim=-1)
+                        
                         loss_repel = torch.mean(torch.log1p(1.0 / (dist_sq_neg + 1e-4)))
                         loss_graph = loss_graph + self.repulsion_weight * loss_repel
 
