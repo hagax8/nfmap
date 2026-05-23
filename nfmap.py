@@ -243,7 +243,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     scikit-learn compatible wrapper class for NFMap.
     Handles data preprocessing, PyTorch training loop, and adaptive hyperparameters.
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1, early_exaggeration=False):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -259,6 +259,7 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.patience = patience
         self.verbose = verbose
         self.negative_sample_rate = negative_sample_rate
+        self.early_exaggeration = early_exaggeration
         
     def _check_is_binary(self, X):
         """Check if X contains only 0 and 1 (sparse or dense)."""
@@ -410,18 +411,21 @@ class NFMap(BaseEstimator, TransformerMixin):
                     # Attractive: Student-t log-loss pulls kNN neighbors together
                     dist_sq = torch.sum((z_batch_par - z_neigh_par) ** 2, dim=-1)
                     loss_attract = torch.mean(neigh_weights * torch.log1p(dist_sq))
+                    
+                    if self.early_exaggeration and epoch < (max_epochs // 3):
+                        loss_attract = loss_attract * 4.0
 
                     loss_graph = loss_attract
                     # Repulsive: push randomly sampled non-neighbors apart (UMAP negative sampling).
-                    # Without this, different digit classes have no force separating them —
-                    # attraction alone collapses everything into one blob.
+                    # We use zero-cost In-Batch Negative Sampling to avoid expensive inverse_flow calls
                     if self.repulsion_weight > 0:
-                        neg_idx = torch.randint(N, (len(idx_batch) * self.negative_sample_rate,))
-                        x_neg = X_scaled_tensor[neg_idx].to(self.device_)
-                        z_neg, _ = self.module_.inverse_flow(x_neg)
-                        z_neg_par = z_neg[:, :self.module_.n_components]
-                        
-                        z_neg_par = z_neg_par.view(len(idx_batch), self.negative_sample_rate, self.n_components)
+                        batch_size = z_batch_par.shape[0]
+                        z_neg_par_list = []
+                        for _ in range(self.negative_sample_rate):
+                            shuffle_idx = torch.randperm(batch_size, device=self.device_)
+                            z_neg_par_list.append(z_batch_par[shuffle_idx])
+                            
+                        z_neg_par = torch.stack(z_neg_par_list, dim=1)
                         z_batch_par_exp = z_batch_par.unsqueeze(1)
                         dist_sq_neg = torch.sum((z_batch_par_exp - z_neg_par) ** 2, dim=-1)
                         
