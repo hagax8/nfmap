@@ -63,42 +63,24 @@ DEFAULTS = dict(
 # ── Experiment configurations ─────────────────────────────────────────────────
 # Each entry overrides only the variable under test; everything else is DEFAULTS.
 CONFIGS = [
-    # ── GTM-style injective flow (correct vol term = ½ log det G) ────────────
+
     {
-        "label":      "1. Injective flow\n(no graph, pure GTM)",
-        "hypothesis": "det G vol term only — does the correct manifold likelihood cluster?",
+        "label":      "NEW: NFMap (Best)",
+        "hypothesis": "Max epochs 1000, sigma_perp 10.0, graph_weight 5.0",
         "kind":       "nfmap",
-        "overrides":  {"graph_weight": 0.0},
+        "overrides":  {"max_epochs": 1000, "patience": 100, "sigma_perp": 10.0, "graph_weight": 5.0},
     },
     {
-        "label":      "2. Injective flow\n+ attract",
-        "hypothesis": "det G + kNN attraction (no repulsion)",
+        "label":      "NEW: NFMap (Low Graph Weight)",
+        "hypothesis": "Max epochs 1000, sigma_perp 10.0, graph_weight 1.0",
         "kind":       "nfmap",
-        "overrides":  {"repulsion_weight": 0.0},
+        "overrides":  {"max_epochs": 1000, "patience": 100, "sigma_perp": 10.0, "graph_weight": 1.0},
     },
     {
-        "label":      "3. Injective flow\n+ attract + repel",
-        "hypothesis": "det G + full UMAP push-pull",
+        "label":      "NEW: NFMap (No Graph Weight)",
+        "hypothesis": "Max epochs 1000, sigma_perp 10.0, graph_weight 0.0 (Pure Injective Flow)",
         "kind":       "nfmap",
-        "overrides":  {},
-    },
-    {
-        "label":      "4. Injective flow\nstrong graph (w=5)",
-        "hypothesis": "det G + heavy topology signal",
-        "kind":       "nfmap",
-        "overrides":  {"graph_weight": 5.0},
-    },
-    {
-        "label":      "5. K=10 GMM\n+ attract + repel",
-        "hypothesis": "One GMM center per digit class + correct vol term",
-        "kind":       "nfmap",
-        "overrides":  {"n_prior_components": 10},
-    },
-    {
-        "label":      "6. No GMM prior\n+ attract + repel",
-        "hypothesis": "Pure manifold alignment + topology (no prior pull)",
-        "kind":       "nfmap",
-        "overrides":  {"prior_weight": 0.0},
+        "overrides":  {"max_epochs": 1000, "patience": 100, "sigma_perp": 0.05, "graph_weight": 0.0},
     },
     {
         "label":      "GTM\n(reference)" if HAS_GTM else "GTM\n(not installed)",
@@ -158,7 +140,7 @@ for i, cfg in enumerate(CONFIGS):
                          "Z": None, "sil": None, "ok": False})
 
 # ── Plot ──────────────────────────────────────────────────────────────────────
-fig, axes = plt.subplots(3, 3, figsize=(18, 18))
+fig, axes = plt.subplots(2, 3, figsize=(18, 12))
 axes = axes.flatten()
 cmap = plt.cm.get_cmap('tab10', 10)
 last_sc = None  # for colorbar

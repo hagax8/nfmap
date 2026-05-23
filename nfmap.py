@@ -86,19 +86,25 @@ class _NFMapModule(nn.Module):
         grid = torch.stack([xx.flatten(), yy.flatten()], dim=-1)
         return grid[:n_comps, :]
 
-    def __init__(self, d_scaled, n_components=2, n_blocks=5, hidden_dim=512, use_canonical=False, sigma_perp=0.05, prior_weight=0.005, n_prior_components=15):
+    def __init__(self, d_scaled, n_components=2, n_blocks=5, hidden_dim=512, use_canonical=False, sigma_perp=0.05, prior_weight=0.005, n_prior_components=15, learnable_priors=True, vol_weight=1.0):
         super().__init__()
         self.d_scaled = d_scaled
         self.n_components = n_components
         self.use_canonical = use_canonical
         self.sigma_perp = sigma_perp
         self.prior_weight = prior_weight
+        self.vol_weight = vol_weight
         self.n_prior_components = n_prior_components
         
         # GMM Prior Parameters
         grid_means = self._get_grid_means(n_prior_components, n_components)
-        self.register_buffer('prior_means', grid_means)
-        self.register_buffer('prior_log_scales', torch.full((n_prior_components,), -1.0))
+        if learnable_priors:
+            self.prior_means = nn.Parameter(grid_means)
+            self.prior_log_scales = nn.Parameter(torch.full((n_prior_components,), -1.0))
+        else:
+            self.register_buffer('prior_means', grid_means)
+            self.register_buffer('prior_log_scales', torch.full((n_prior_components,), -1.0))
+        
         self.prior_logits = nn.Parameter(torch.zeros(n_prior_components))
         
         self.blocks = nn.ModuleList()
@@ -154,7 +160,7 @@ class _NFMapModule(nn.Module):
         loss_manifold = 0.5 / (sigma_perp ** 2) * torch.mean(z_perp ** 2, dim=-1)
 
         # ── Volume term: full-flow log-det scaled to manifold dims ───────────
-        loss_vol = -log_det_inv * (self.n_components / self.d_scaled)
+        loss_vol = -log_det_inv * (self.n_components / self.d_scaled) * self.vol_weight
 
         loss = (loss_prior + loss_manifold + loss_vol).mean()
 
@@ -237,7 +243,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     scikit-learn compatible wrapper class for NFMap.
     Handles data preprocessing, PyTorch training loop, and adaptive hyperparameters.
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -246,6 +252,12 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.repulsion_weight = repulsion_weight
         self.n_prior_components = n_prior_components
         self.random_state = random_state
+        self.learnable_priors = learnable_priors
+        self.vol_weight = vol_weight
+        self.sigma_perp = sigma_perp
+        self.max_epochs = max_epochs
+        self.patience = patience
+        self.verbose = verbose
         
     def _check_is_binary(self, X):
         """Check if X contains only 0 and 1 (sparse or dense)."""
@@ -322,11 +334,13 @@ class NFMap(BaseEstimator, TransformerMixin):
             hidden_dim = max(64, min(3 * D_scaled, 256))
             max_epochs = 80
             
+        if self.max_epochs is not None:
+            max_epochs = self.max_epochs
+            
         base_lr = 1e-3
         weight_decay = 1e-4
         batch_size = min(256, N)
-        patience = 15
-        sigma_perp = 0.05
+        patience = 15 if self.patience is None else self.patience
 
         if self.random_state is not None:
             torch.manual_seed(self.random_state)
@@ -337,9 +351,11 @@ class NFMap(BaseEstimator, TransformerMixin):
             n_blocks=n_blocks,
             hidden_dim=hidden_dim,
             use_canonical=self.use_canonical,
-            sigma_perp=sigma_perp,
+            sigma_perp=self.sigma_perp,
             prior_weight=self.prior_weight,
-            n_prior_components=self.n_prior_components
+            n_prior_components=self.n_prior_components,
+            learnable_priors=self.learnable_priors,
+            vol_weight=self.vol_weight
         )
 
         self.device_ = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -416,6 +432,9 @@ class NFMap(BaseEstimator, TransformerMixin):
                 
             scheduler.step()
             epoch_loss /= N
+            
+            if self.verbose and (epoch + 1) % max(1, max_epochs // 10) == 0:
+                print(f"Epoch {epoch+1:4d}/{max_epochs} | Loss: {epoch_loss:.4f} | LR: {scheduler.get_last_lr()[0]:.2e}")
             
             # Early Stopping (monitoring the total training loss)
             if epoch_loss < best_loss:
