@@ -5,3 +5,9 @@ __pycache__/
 dist/
 build/
 .venv/
+archive/
+experiments/
+*.html
+*.png
+*.npy
+*.csv

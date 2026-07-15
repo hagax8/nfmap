@@ -86,7 +86,7 @@ class _NFMapModule(nn.Module):
         grid = torch.stack([xx.flatten(), yy.flatten()], dim=-1)
         return grid[:n_comps, :]
 
-    def __init__(self, d_scaled, n_components=2, n_blocks=5, hidden_dim=512, use_canonical=False, sigma_perp=0.05, prior_weight=0.005, n_prior_components=15, learnable_priors=True, vol_weight=1.0):
+    def __init__(self, d_scaled, n_components=2, n_blocks=5, hidden_dim=512, use_canonical=False, sigma_perp=0.05, prior_weight=0.005, n_prior_components=15, learnable_priors=True, vol_weight=1.0, prop_weight=1.0, **kwargs):
         super().__init__()
         self.d_scaled = d_scaled
         self.n_components = n_components
@@ -95,6 +95,15 @@ class _NFMapModule(nn.Module):
         self.prior_weight = prior_weight
         self.vol_weight = vol_weight
         self.n_prior_components = n_prior_components
+        self.prop_weight = prop_weight
+        self.use_native_predictor = kwargs.get('use_native_predictor', False)
+        
+        # Native Predictor Parameters
+        if self.use_native_predictor:
+            self.macro_weights = nn.Parameter(torch.zeros(n_prior_components))
+            self.micro_head = nn.Linear(d_scaled - n_components, 1)
+            nn.init.normal_(self.micro_head.weight, std=0.01)
+            nn.init.zeros_(self.micro_head.bias)
         
         # GMM Prior Parameters
         grid_means = self._get_grid_means(n_prior_components, n_components)
@@ -135,7 +144,7 @@ class _NFMapModule(nn.Module):
             log_det_total += log_det
         return z, log_det_total
 
-    def compute_loss(self, x, sigma_perp=None):
+    def compute_loss(self, x, sigma_perp=None, y_props=None):
         z, log_det_inv = self.inverse_flow(x)
 
         z_parallel = z[:, :self.n_components]
@@ -155,14 +164,46 @@ class _NFMapModule(nn.Module):
         log_p_gmm   = torch.logsumexp(log_pi + log_N, dim=1)
         loss_prior  = -self.prior_weight * log_p_gmm
 
-        # ── Manifold alignment ───────────────────────────────────────────────
+                # ── Manifold alignment ───────────────────────────────────────────────
         sigma_perp = sigma_perp if sigma_perp is not None else self.sigma_perp
-        loss_manifold = 0.5 / (sigma_perp ** 2) * torch.mean(z_perp ** 2, dim=-1)
+        z_perp_flow = z[:, self.n_components:self.d_scaled]
+        
+        loss_prop = 0.0
+        if y_props is not None:
+            if getattr(self, 'use_native_predictor', False):
+                # ── Native Macro/Micro Property Predictor ────────────────────────
+                p_k = torch.softmax(log_pi + log_N, dim=1)
+                y_macro = torch.sum(p_k * self.macro_weights.unsqueeze(0), dim=1, keepdim=True)
+                y_micro = self.micro_head(z_perp_flow)
+                y_pred = y_macro + y_micro
+                
+                loss_prop = torch.nn.functional.mse_loss(y_pred, y_props) * self.prop_weight
+                # L2 penalty on micro_head weights
+                loss_prop += 0.1 * torch.sum(self.micro_head.weight ** 2)
+                z_perp_remaining = z_perp_flow
+            else:
+                # ── Legacy 3rd-Axis Orthogonal Property Mapping ──────────────────
+                if z_perp_flow.shape[1] > 0:
+                    K = y_props.shape[1]
+                    if K > z_perp_flow.shape[1]:
+                        raise ValueError("Too many properties for available perpendicular dimensions.")
+                    z_props = z_perp_flow[:, :K]
+                    loss_prop = torch.nn.functional.mse_loss(z_props, y_props) * self.prop_weight
+                    z_perp_remaining = z_perp_flow[:, K:]
+                else:
+                    z_perp_remaining = z_perp_flow
+        else:
+            z_perp_remaining = z_perp_flow
+            
+        if z_perp_remaining.shape[1] > 0:
+            loss_manifold = 0.5 / (sigma_perp ** 2) * torch.mean(z_perp_remaining ** 2, dim=-1)
+        else:
+            loss_manifold = 0.0
 
-        # ── Volume term: full-flow log-det scaled to manifold dims ───────────
+        # ── Volume term# ── Volume term: full-flow log-det scaled to manifold dims ───────────
         loss_vol = -log_det_inv * (self.n_components / self.d_scaled) * self.vol_weight
 
-        loss = (loss_prior + loss_manifold + loss_vol).mean()
+        loss = (loss_prior + loss_manifold + loss_vol + loss_prop).mean()
 
         # ── Optional conformal regularization ────────────────────────────────
         if self.use_canonical:
@@ -243,7 +284,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     scikit-learn compatible wrapper class for NFMap.
     Handles data preprocessing, PyTorch training loop, and adaptive hyperparameters.
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1, early_exaggeration=False):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1, early_exaggeration=True, prop_weight=1.0, graph_kernel='perplexity', perplexity=30, use_native_predictor=False):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -260,6 +301,43 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.verbose = verbose
         self.negative_sample_rate = negative_sample_rate
         self.early_exaggeration = early_exaggeration
+        self.prop_weight = prop_weight
+        self.graph_kernel = graph_kernel
+        self.perplexity = perplexity
+        self.use_native_predictor = use_native_predictor
+        
+    def _compute_perplexity_weights(self, distances, perplexity=30.0, tol=1e-5, max_iter=50):
+        N, K = distances.shape
+        weights = np.zeros((N, K))
+        target_entropy = np.log(perplexity)
+        
+        for i in range(N):
+            dist_sq = distances[i] ** 2
+            beta_min, beta_max, beta = -np.inf, np.inf, 1.0
+            best_P = np.zeros(K)
+            
+            for _ in range(max_iter):
+                shifted_dist_sq = dist_sq - np.min(dist_sq)
+                exp_d = np.exp(-beta * shifted_dist_sq)
+                sum_exp_d = np.sum(exp_d)
+                P = exp_d / sum_exp_d
+                best_P = P
+                
+                entropy = beta * np.sum(P * dist_sq) + np.log(sum_exp_d)
+                diff = entropy - target_entropy
+                if np.abs(diff) < tol:
+                    break
+                    
+                if diff > 0:
+                    beta_min = beta
+                    beta = beta * 2.0 if beta_max == np.inf else (beta + beta_max) / 2.0
+                else:
+                    beta_max = beta
+                    beta = beta / 2.0 if beta_min == -np.inf else (beta + beta_min) / 2.0
+                        
+            weights[i] = best_P
+            
+        return weights
         
     def _check_is_binary(self, X):
         """Check if X contains only 0 and 1 (sparse or dense)."""
@@ -267,16 +345,25 @@ class NFMap(BaseEstimator, TransformerMixin):
             return np.all((X.data == 0) | (X.data == 1))
         return np.all((X == 0) | (X == 1))
 
-    def fit_transform(self, X, y=None):
+
+    def fit_transform(self, X, y=None, y_props=None, X_struct=None, noise_std=0.0):
         """
-        Ingests data, routes/scales it, builds the network, trains via early stopping, 
-        and returns the manifold coordinates.
+        Fit the model with X and apply dimensionality reduction.
         """
-        # Step 1: PCA-alignment (GTM-inspired improvement for NFMap)
-        # We align the input features with their principal components so that
-        # the identity-initialized flow starts directly from the PCA projection.
-        self.is_binary_ = self._check_is_binary(X)
+        self.fit(X, y, y_props=y_props, X_struct=X_struct, noise_std=noise_std)
+        return self.transform(X)
+
+    def fit(self, X, y=None, y_props=None, X_struct=None, noise_std=0.0):
+        """
+        Fit the model with X.
+        """
+        if y is not None:
+            self.classes_ = np.unique(y)
+        
+        # PCA + Scaling
+        self.is_binary_ = (X.dtype == bool or (X.max() <= 1 and X.min() >= 0))
         if self.is_binary_:
+            # Binary data: Simple TruncatedSVD for binary features
             n_components_pca = min(128, X.shape[1] - 1)
             self.pca_ = TruncatedSVD(n_components=n_components_pca, random_state=self.random_state)
             X_pca = self.pca_.fit_transform(X)
@@ -285,12 +372,13 @@ class NFMap(BaseEstimator, TransformerMixin):
                 X_dense = X.toarray()
             else:
                 X_dense = np.asarray(X, dtype=np.float32)
-            
-            # Step 1: Pre-PCA Standardization (only for continuous data)
             self.scaler_pre_ = StandardScaler()
             X_dense_scaled = self.scaler_pre_.fit_transform(X_dense)
             
-            n_components_pca = min(128, X_dense_scaled.shape[1])
+            n_components_pca = min(256, X_dense_scaled.shape[1])
+            if y_props is not None:
+                n_components_pca = max(n_components_pca, min(y_props.shape[1] + self.n_components + 10, X_dense_scaled.shape[1]))
+                
             # Use randomized solver for high efficiency on large datasets if size/dimensions are high
             solver = 'randomized' if (X_dense_scaled.shape[0] > 10000 and n_components_pca > 10) else 'auto'
             self.pca_ = PCA(n_components=n_components_pca, svd_solver=solver, random_state=self.random_state)
@@ -305,18 +393,32 @@ class NFMap(BaseEstimator, TransformerMixin):
 
         # Build kNN graph on scaled data for neighborhood-preservation loss
         if self.graph_weight > 0:
-            k_neighbors = min(15, N - 1)
-            nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1)  # +1 because kneighbors includes self
-            nn_model.fit(X_scaled)
-            knn_dists, knn_indices = nn_model.kneighbors(X_scaled)
+            if getattr(self, 'graph_kernel', 'perplexity') == 'perplexity':
+                k_neighbors = min(int(3 * getattr(self, 'perplexity', 30)), N - 1)
+            else:
+                k_neighbors = min(15, N - 1)
+                
+            if X_struct is not None:
+                # Use structural fingerprints to define the exact topological neighborhood!
+                nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='brute', metric='jaccard', n_jobs=1)
+                nn_model.fit(X_struct)
+                knn_dists, knn_indices = nn_model.kneighbors(X_struct)
+            else:
+                nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='brute', n_jobs=1)  # +1 because kneighbors includes self
+                nn_model.fit(X_scaled)
+                knn_dists, knn_indices = nn_model.kneighbors(X_scaled)
             
             # Drop self-column
             knn_dists = knn_dists[:, 1:]
             knn_indices = knn_indices[:, 1:]
             
-            # Compute exponential weights for distance: exp(-dist)
-            # This gives higher weights to closer neighbors
-            knn_weights = np.exp(-knn_dists)
+            if getattr(self, 'graph_kernel', 'perplexity') == 'perplexity':
+                knn_weights = self._compute_perplexity_weights(knn_dists, perplexity=getattr(self, 'perplexity', 30))
+                knn_weights = knn_weights * 3.0
+            else:
+                rho = knn_dists[:, 0:1]
+                sigmas = np.mean(knn_dists - rho, axis=1, keepdims=True) + 1e-8
+                knn_weights = np.exp(-(knn_dists - rho) / sigmas)
             
             knn_indices_tensor = torch.tensor(knn_indices, dtype=torch.long)
             knn_weights_tensor = torch.tensor(knn_weights, dtype=torch.float32)
@@ -357,7 +459,9 @@ class NFMap(BaseEstimator, TransformerMixin):
             prior_weight=self.prior_weight,
             n_prior_components=self.n_prior_components,
             learnable_priors=self.learnable_priors,
-            vol_weight=self.vol_weight
+            vol_weight=self.vol_weight,
+            prop_weight=self.prop_weight,
+            use_native_predictor=self.use_native_predictor
         )
 
         self.device_ = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -377,10 +481,13 @@ class NFMap(BaseEstimator, TransformerMixin):
         scheduler = LambdaLR(optimizer, lr_lambda)
 
         # Dataset includes point indices so we can look up kNN neighbors per batch
-        dataset = TensorDataset(
-            torch.tensor(X_scaled, dtype=torch.float32),
-            torch.arange(N)
-        )
+        tensors_to_batch = [torch.tensor(X_scaled, dtype=torch.float32), torch.arange(N)]
+        if y_props is not None:
+            tensors_to_batch.append(torch.tensor(y_props, dtype=torch.float32))
+        if X_struct is not None:
+            tensors_to_batch.append(torch.tensor(np.asarray(X_struct, dtype=np.float32), dtype=torch.float32))
+            
+        dataset = TensorDataset(*tensors_to_batch)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, drop_last=False)
 
         best_loss = float('inf')
@@ -391,44 +498,37 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.module_.train()
         for epoch in range(max_epochs):
             epoch_loss = 0.0
-            for x_batch, idx_batch in dataloader:
-                x_batch = x_batch.to(self.device_)
+            for batch in dataloader:
+                x_batch = batch[0].to(self.device_)
+                if noise_std > 0.0:
+                    x_batch = x_batch + torch.randn_like(x_batch) * noise_std
+                idx_batch = batch[1]
+                y_batch = batch[2].to(self.device_) if y_props is not None else None
                 optimizer.zero_grad()
-                loss, z_batch_par = self.module_.compute_loss(x_batch)
+                loss, z_batch_par = self.module_.compute_loss(x_batch, y_props=y_batch)
 
                 if self.graph_weight > 0:
-                    # Graph loss: for each point, pick one random kNN neighbor and attract
                     rand_k = torch.randint(k_neighbors, (len(idx_batch),))
                     neigh_idx = knn_indices_tensor[idx_batch, rand_k]
                     neigh_weights = knn_weights_tensor[idx_batch, rand_k].to(self.device_)
                     
                     x_neigh = X_scaled_tensor[neigh_idx].to(self.device_)
-                    
-                    # Only run the flow on the neighbors (z_batch_par is already computed)
                     z_neigh, _ = self.module_.inverse_flow(x_neigh)
                     z_neigh_par = z_neigh[:, :self.module_.n_components]
                     
-                    # Attractive: Student-t log-loss pulls kNN neighbors together
                     dist_sq = torch.sum((z_batch_par - z_neigh_par) ** 2, dim=-1)
                     loss_attract = torch.mean(neigh_weights * torch.log1p(dist_sq))
-                    
                     if self.early_exaggeration and epoch < (max_epochs // 3):
                         loss_attract = loss_attract * 4.0
-
                     loss_graph = loss_attract
-                    # Repulsive: push randomly sampled non-neighbors apart (UMAP negative sampling).
-                    # We use zero-cost In-Batch Negative Sampling to avoid expensive inverse_flow calls
+                    
                     if self.repulsion_weight > 0:
-                        batch_size = z_batch_par.shape[0]
                         z_neg_par_list = []
                         for _ in range(self.negative_sample_rate):
-                            shuffle_idx = torch.randperm(batch_size, device=self.device_)
+                            shuffle_idx = torch.randperm(z_batch_par.shape[0], device=self.device_)
                             z_neg_par_list.append(z_batch_par[shuffle_idx])
-                            
                         z_neg_par = torch.stack(z_neg_par_list, dim=1)
-                        z_batch_par_exp = z_batch_par.unsqueeze(1)
-                        dist_sq_neg = torch.sum((z_batch_par_exp - z_neg_par) ** 2, dim=-1)
-                        
+                        dist_sq_neg = torch.sum((z_batch_par.unsqueeze(1) - z_neg_par) ** 2, dim=-1)
                         loss_repel = torch.mean(torch.log1p(1.0 / (dist_sq_neg + 1e-4)))
                         loss_graph = loss_graph + self.repulsion_weight * loss_repel
 
@@ -445,7 +545,6 @@ class NFMap(BaseEstimator, TransformerMixin):
             if self.verbose and (epoch + 1) % max(1, max_epochs // 10) == 0:
                 print(f"Epoch {epoch+1:4d}/{max_epochs} | Loss: {epoch_loss:.4f} | LR: {scheduler.get_last_lr()[0]:.2e}")
             
-            # Early Stopping (monitoring the total training loss)
             if epoch_loss < best_loss:
                 best_loss = epoch_loss
                 epochs_without_improvement = 0
@@ -459,15 +558,9 @@ class NFMap(BaseEstimator, TransformerMixin):
         if best_state is not None:
             self.module_.load_state_dict(best_state)
             
-        # Get parallel components
-        return self.transform(X)
-
-    def fit(self, X, y=None):
-        """Fit the model to X without returning representations."""
-        self.fit_transform(X, y)
         return self
 
-    def transform(self, X):
+    def transform(self, X, return_full=False):
         """Apply dimensionality reduction to X."""
         if self.is_binary_:
             X_pca = self.pca_.transform(X)
@@ -490,13 +583,16 @@ class NFMap(BaseEstimator, TransformerMixin):
             for batch in dataloader:
                 x_batch = batch[0].to(self.device_)
                 z, _ = self.module_.inverse_flow(x_batch)
-                z_parallel_list.append(z[:, :self.n_components].cpu().numpy())
+                if return_full:
+                    z_parallel_list.append(z.cpu().numpy())
+                else:
+                    z_parallel_list.append(z[:, :self.n_components].cpu().numpy())
                 
         return np.concatenate(z_parallel_list, axis=0)
 
     def inverse_transform(self, z):
         """
-        Takes z in R^{N x 2}, pads with zeros, runs inverse flow + inverse scaling,
+        Takes z in R^{N x 2} or R^{N x D}, pads with zeros if needed, runs inverse flow + inverse scaling,
         and returns generated X_gen in R^{N x D}.
         """
         self.module_.eval()
@@ -509,8 +605,12 @@ class NFMap(BaseEstimator, TransformerMixin):
             for batch in dataloader:
                 z_batch = batch[0].to(self.device_)
                 N_batch = z_batch.shape[0]
-                z_perp_zero = torch.zeros((N_batch, self.D_scaled_ - self.n_components), device=self.device_)
-                z_padded = torch.cat([z_batch, z_perp_zero], dim=-1)
+                if z_batch.shape[1] == self.n_components:
+                    z_perp_zero = torch.zeros((N_batch, self.D_scaled_ - self.n_components), device=self.device_)
+                    z_padded = torch.cat([z_batch, z_perp_zero], dim=-1)
+                else:
+                    z_padded = z_batch
+                
                 
                 x_gen_batch, _ = self.module_.forward_flow(z_padded)
                 x_gen_scaled_list.append(x_gen_batch.cpu().numpy())
@@ -553,3 +653,51 @@ class NFMap(BaseEstimator, TransformerMixin):
             log_p_list.append(log_p_batch.cpu().detach().numpy())
             
         return np.concatenate(log_p_list, axis=0)
+
+    def predict_activity(self, X):
+        """Predict activity natively using the built-in Macro/Micro property head."""
+        if not getattr(self, 'use_native_predictor', False):
+            raise ValueError("predict_activity requires use_native_predictor=True")
+            
+        self.module_.eval()
+        if self.is_binary_:
+            X_pca = self.pca_.transform(X)
+        else:
+            if sp.issparse(X):
+                X_dense = X.toarray()
+            else:
+                X_dense = np.asarray(X, dtype=np.float32)
+            X_dense_scaled = self.scaler_pre_.transform(X_dense)
+            X_pca = self.pca_.transform(X_dense_scaled)
+                
+        X_scaled = X_pca / self.global_scale_
+        
+        X_tensor = torch.tensor(X_scaled, dtype=torch.float32, device=self.device_)
+        
+        dataset = TensorDataset(X_tensor)
+        dataloader = DataLoader(dataset, batch_size=256, shuffle=False)
+        
+        preds_list = []
+        with torch.no_grad():
+            for batch in dataloader:
+                x_batch = batch[0]
+                z, _ = self.module_.inverse_flow(x_batch)
+                z_parallel = z[:, :self.n_components]
+                z_perp = z[:, self.n_components:]
+                
+                # Compute macro
+                z_expanded = z_parallel.unsqueeze(1)
+                means = self.module_.prior_means.unsqueeze(0)
+                log_scales = self.module_.prior_log_scales.unsqueeze(0)
+                diff_sq = torch.sum(((z_expanded - means) / torch.exp(log_scales).unsqueeze(-1)) ** 2, dim=-1)
+                log_N = (-0.5 * diff_sq - self.n_components * log_scales - 0.5 * self.n_components * np.log(2 * np.pi))
+                log_pi = torch.log_softmax(self.module_.prior_logits, dim=0).unsqueeze(0)
+                
+                p_k = torch.softmax(log_pi + log_N, dim=1)
+                y_macro = torch.sum(p_k * self.module_.macro_weights.unsqueeze(0), dim=1, keepdim=True)
+                
+                y_micro = self.module_.micro_head(z_perp)
+                y_pred = y_macro + y_micro
+                preds_list.append(y_pred.cpu().numpy())
+                
+        return np.concatenate(preds_list, axis=0)
