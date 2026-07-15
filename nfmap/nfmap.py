@@ -150,6 +150,15 @@ class _NFMapModule(nn.Module):
         return z, log_det_total
 
     def compute_loss(self, x, sigma_perp=None, y_props=None):
+        """
+        Computes the total loss for training the NFMap network by combining up to 5 penalty terms:
+        
+        1. loss_prior: Forces the 2D map coordinates (z_parallel) to cluster tightly around the GMM bells.
+        2. loss_manifold: Penalizes the off-manifold distance (z_perp). Forces molecules to lie flat on the 2D map.
+        3. loss_vol: A scaled log-determinant penalty that prevents the 2D map from stretching infinitely.
+        4. loss_prop: (Optional) Trains the network to predict chemical properties natively from the map.
+        5. loss_ortho/diag: (Optional) Conformal regularization to preserve distances/angles (isometric mapping).
+        """
         z, log_det_inv = self.inverse_flow(x)
 
         z_parallel = z[:, :self.n_components]
