@@ -158,17 +158,25 @@ class _NFMapModule(nn.Module):
         # ── GMM Prior ────────────────────────────────────────────────────────
         # We model the base distribution of the 2D map as a Gaussian Mixture Model (GMM).
         # This allows the map to have natural clusters rather than a single dense blob.
-        z_expanded  = z_parallel.unsqueeze(1)
-        means       = self.prior_means.unsqueeze(0)
+        z_expanded  = z_parallel.unsqueeze(1) # Shape: [Batch, 1, 2]
+        means       = self.prior_means.unsqueeze(0) # Shape: [1, K_components, 2]
         log_scales  = self.prior_log_scales.unsqueeze(0)
+        
+        # 1. Calculate squared distance from each molecule to each of the K cluster centers
         diff_sq     = torch.sum(
             ((z_expanded - means) / torch.exp(log_scales).unsqueeze(-1)) ** 2,
             dim=-1)
+            
+        # 2. Calculate the Gaussian probability for each cluster
         log_N       = (-0.5 * diff_sq
                        - self.n_components * log_scales
                        - 0.5 * self.n_components * np.log(2 * np.pi))
+                       
+        # 3. Multiply by the "weight" (pi) of each cluster, and sum them up (logsumexp for stability)
         log_pi      = torch.log_softmax(self.prior_logits, dim=0).unsqueeze(0)
         log_p_gmm   = torch.logsumexp(log_pi + log_N, dim=1)
+        
+        # We want to MAXIMIZE probability, which means MINIMIZING negative probability
         loss_prior  = -self.prior_weight * log_p_gmm
 
                 # ── Manifold alignment ───────────────────────────────────────────────
@@ -179,17 +187,24 @@ class _NFMapModule(nn.Module):
         if y_props is not None:
             if getattr(self, 'use_native_predictor', False):
                 # ── Native Macro/Micro Property Predictor ────────────────────────
+                # This predicts chemical properties (like binding affinity) directly from the map.
+                # 'y_macro' predicts the property based purely on which cluster the molecule is in (global property)
                 p_k = torch.softmax(log_pi + log_N, dim=1)
                 y_macro = torch.sum(p_k * self.macro_weights.unsqueeze(0), dim=1, keepdim=True)
+                
+                # 'y_micro' predicts fine-grained details using the perpendicular dimensions (local property)
                 y_micro = self.micro_head(z_perp_flow)
                 y_pred = y_macro + y_micro
                 
+                # Standard Mean Squared Error (MSE) to train the property predictor
                 loss_prop = torch.nn.functional.mse_loss(y_pred, y_props) * self.prop_weight
                 # L2 penalty on micro_head weights
                 loss_prop += 0.1 * torch.sum(self.micro_head.weight ** 2)
                 z_perp_remaining = z_perp_flow
             else:
                 # ── Legacy 3rd-Axis Orthogonal Property Mapping ──────────────────
+                # Instead of a neural network, this forces the very first dimension of z_perp
+                # to literally BE the property value (e.g. z_perp[0] = LogP).
                 if z_perp_flow.shape[1] > 0:
                     K = y_props.shape[1]
                     if K > z_perp_flow.shape[1]:
@@ -216,6 +231,7 @@ class _NFMapModule(nn.Module):
         # We scale the log-det down to prevent the 2D map from "exploding" and stretching infinitely.
         loss_vol = -log_det_inv * (self.n_components / self.d_scaled) * self.vol_weight
 
+        # Combine all standard losses into a single scalar that the optimizer will minimize
         loss = (loss_prior + loss_manifold + loss_vol + loss_prop).mean()
 
         # ── Optional conformal regularization ────────────────────────────────
