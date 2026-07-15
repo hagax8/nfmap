@@ -15,6 +15,11 @@ from sklearn.preprocessing import StandardScaler
 class RealNVPBlock(nn.Module):
     """
     A single Affine Coupling Layer for the RealNVP normalizing flow.
+    
+    Reference:
+    Dinh, L., Sohl-Dickstein, J., & Bengio, S. (2017). 
+    Density estimation using Real NVP. ICLR 2017. 
+    (https://arxiv.org/abs/1605.08803)
     """
     def __init__(self, dim, hidden_dim, mask):
         super().__init__()
