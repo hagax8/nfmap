@@ -126,9 +126,9 @@ class _NFMapModule(nn.Module):
             # Alternate masking for coupling layers
             mask = torch.zeros(d_scaled)
             if i % 2 == 0:
-                mask[:d_scaled // 2] = 1.0
+                mask[:d_scaled // 2] = 1.0  # Block 1, 3, 5: mask first half
             else:
-                mask[d_scaled // 2:] = 1.0
+                mask[d_scaled // 2:] = 1.0  # Block 2, 4, 6: mask second  half
             self.blocks.append(RealNVPBlock(d_scaled, hidden_dim, mask))
 
     def forward_flow(self, z):
@@ -254,19 +254,33 @@ class _NFMapModule(nn.Module):
 
     def exact_density(self, x):
         """
-        Calculate exact map density:
-        ln p_X(x) = ln N(z_parallel | 0, I) - 1/2 ln det(G(z_parallel))
+        Calculate the exact probability density of data points on the map.
+        
+        This relies on the change of variables formula from differential geometry.
+        When you map a flat 2D plane into a complex 128D space, the 2D plane gets
+        stretched and distorted. If a 1x1 box on the map gets stretched into a 10x10
+        box in 128D space, the "density" of molecules in that box drops (magnification).
+        
+        Formula:
+        ln p_X(x) = ln p_Z(z) - ln(magnification_factor)
+        ln p_X(x) = ln p_Z(z) - 1/2 * ln(det(G))
+        
+        Where:
+        - p_Z(z) is the baseline density on the 2D map (modeled by our GMM).
+        - G is the Pullback Metric Tensor (measuring the stretching/distortion).
+        - sqrt(det(G)) is the exact volume magnification factor.
         """
         z, _ = self.inverse_flow(x)
         z_parallel = z[:, :self.n_components]
         
-        # ── Compute the Pullback Metric Tensor G(z_parallel) ────────────────
+        # ── 1. Calculate the Magnification Factor (Volume Change) ────────────
+        # To measure distortion, we enforce the mathematical manifold where z_perp = 0.
         z_para_req = z_parallel.detach().requires_grad_(True)
         z_perp_zero = torch.zeros((x.shape[0], self.d_scaled - self.n_components), device=x.device)
         z_padded = torch.cat([z_para_req, z_perp_zero], dim=-1)
         x_gen, _ = self.forward_flow(z_padded)
         
-        # Efficiently compute the Jacobian using the double-autograd JVP trick
+        # Efficiently compute the Jacobian (J) using the double-autograd JVP trick
         u = torch.ones_like(x_gen, requires_grad=True)
         dot1 = torch.sum(x_gen * u)
         g = torch.autograd.grad(dot1, z_para_req, create_graph=True)[0]
@@ -282,16 +296,16 @@ class _NFMapModule(nn.Module):
             )[0]
             J_cols.append(J_col)
             
-        # J is the (D x 2) Jacobian matrix mapping 2D map space to high-dim space
+        # J is the Jacobian matrix (maps small changes in 2D to changes in 128D)
         J = torch.stack(J_cols, dim=2) # [B, D, n_components]
         
-        # G is the (2 x 2) Riemannian metric tensor (measuring local distortion/stretching)
+        # G is the Riemannian Pullback Metric Tensor: G = J^T J
         G = torch.bmm(J.transpose(1, 2), J) # [B, n_components, n_components]
         
-        # Change of volume requires taking the square root of the determinant of G
+        # The true magnification factor (change in volume) is sqrt(det(G))
         det_G = torch.linalg.det(G)
         
-        # ── log p(z) from GMM ────────────────────────────────────────────────
+        # ── 2. Calculate the Baseline 2D Density (GMM Prior) ─────────────────
         z_expanded = z_parallel.unsqueeze(1)
         means = self.prior_means.unsqueeze(0)
         log_scales = self.prior_log_scales.unsqueeze(0)
@@ -299,8 +313,13 @@ class _NFMapModule(nn.Module):
         diff_sq = torch.sum(((z_expanded - means) / torch.exp(log_scales).unsqueeze(-1))**2, dim=-1)
         log_N_components = -0.5 * diff_sq - self.n_components * log_scales - 0.5 * self.n_components * np.log(2 * np.pi)
         log_pi = torch.log_softmax(self.prior_logits, dim=0).unsqueeze(0)
+        
+        # log p_Z(z)
         log_p_z = torch.logsumexp(log_pi + log_N_components, dim=1)
         
+        # ── 3. Final Exact Density Calculation ────────────────────────────────
+        # log p = log p_Z - log(magnification_factor)
+        # Note: log(sqrt(det(G))) is identical to 0.5 * log(det(G))
         log_p = log_p_z - 0.5 * torch.log(torch.clamp(det_G, min=1e-12))
         return log_p
 
