@@ -151,6 +151,8 @@ class _NFMapModule(nn.Module):
         z_perp     = z[:, self.n_components:]
 
         # ── GMM Prior ────────────────────────────────────────────────────────
+        # We model the base distribution of the 2D map as a Gaussian Mixture Model (GMM).
+        # This allows the map to have natural clusters rather than a single dense blob.
         z_expanded  = z_parallel.unsqueeze(1)
         means       = self.prior_means.unsqueeze(0)
         log_scales  = self.prior_log_scales.unsqueeze(0)
@@ -196,36 +198,51 @@ class _NFMapModule(nn.Module):
             z_perp_remaining = z_perp_flow
             
         if z_perp_remaining.shape[1] > 0:
+            # L2 penalty pushing the perpendicular dimensions to zero.
+            # This mathematically forces the intrinsic manifold to lie perfectly flat 
+            # at z_perp = 0, with a variance of sigma_perp.
             loss_manifold = 0.5 / (sigma_perp ** 2) * torch.mean(z_perp_remaining ** 2, dim=-1)
         else:
             loss_manifold = 0.0
 
-        # ── Volume term# ── Volume term: full-flow log-det scaled to manifold dims ───────────
+        # ── Volume term: full-flow log-det scaled to manifold dims ───────────
+        # In a standard Normalizing Flow, we maximize the log determinant of the Jacobian.
+        # But here, our intrinsic space (n_components=2) is much smaller than the ambient space (d_scaled).
+        # We scale the log-det down to prevent the 2D map from "exploding" and stretching infinitely.
         loss_vol = -log_det_inv * (self.n_components / self.d_scaled) * self.vol_weight
 
         loss = (loss_prior + loss_manifold + loss_vol + loss_prop).mean()
 
         # ── Optional conformal regularization ────────────────────────────────
+        # This enforces that the map is "isometric" (preserves distances and angles perfectly).
+        # It calculates the pullback metric tensor G = J^T J and forces it to be the Identity matrix.
         if self.use_canonical:
             z_para_req  = z_parallel.detach().requires_grad_(True)
             z_perp_zero = torch.zeros_like(z_perp)
             z_padded    = torch.cat([z_para_req, z_perp_zero], dim=-1)
             x_gen, _    = self.forward_flow(z_padded)
+            
+            # 1. Jacobian-Vector Product (JVP) trick to efficiently get the Jacobian J
             u    = torch.ones_like(x_gen, requires_grad=True)
             g    = torch.autograd.grad(torch.sum(x_gen * u), z_para_req,
                                        create_graph=True)[0]
             J_cols = []
             for i in range(self.n_components):
+                # Compute each column of the Jacobian matrix
                 J_cols.append(torch.autograd.grad(
                     torch.sum(g[:, i]), u,
                     create_graph=True, retain_graph=True)[0])
             J = torch.stack(J_cols, dim=2)
+            
+            # 2. Compute the Pullback Metric Tensor: G = J^T J
             G = torch.bmm(J.transpose(1, 2), J)
+            
+            # 3. Force G to equal the Identity Matrix (Orthogonal and Unit scale)
             eye      = torch.eye(self.n_components, device=G.device).unsqueeze(0)
             off_diag = 1.0 - eye
-            loss_ortho = (torch.abs(G) * off_diag).sum(dim=(1, 2)).mean()
+            loss_ortho = (torch.abs(G) * off_diag).sum(dim=(1, 2)).mean() # Force off-diagonals to 0
             diag_G     = torch.diagonal(G, dim1=-2, dim2=-1)
-            loss_diag  = torch.abs(diag_G - 1.0).mean()
+            loss_diag  = torch.abs(diag_G - 1.0).mean()                   # Force diagonals to 1
             loss      += 0.05 * loss_ortho + 0.05 * loss_diag
 
         return loss, z_parallel
@@ -238,7 +255,7 @@ class _NFMapModule(nn.Module):
         z, _ = self.inverse_flow(x)
         z_parallel = z[:, :self.n_components]
         
-        # Compute G(z_parallel)
+        # ── Compute the Pullback Metric Tensor G(z_parallel) ────────────────
         z_para_req = z_parallel.detach().requires_grad_(True)
         z_perp_zero = torch.zeros((x.shape[0], self.d_scaled - self.n_components), device=x.device)
         z_padded = torch.cat([z_para_req, z_perp_zero], dim=-1)
@@ -260,12 +277,16 @@ class _NFMapModule(nn.Module):
             )[0]
             J_cols.append(J_col)
             
+        # J is the (D x 2) Jacobian matrix mapping 2D map space to high-dim space
         J = torch.stack(J_cols, dim=2) # [B, D, n_components]
+        
+        # G is the (2 x 2) Riemannian metric tensor (measuring local distortion/stretching)
         G = torch.bmm(J.transpose(1, 2), J) # [B, n_components, n_components]
         
+        # Change of volume requires taking the square root of the determinant of G
         det_G = torch.linalg.det(G)
         
-        # log p(z) from GMM
+        # ── log p(z) from GMM ────────────────────────────────────────────────
         z_expanded = z_parallel.unsqueeze(1)
         means = self.prior_means.unsqueeze(0)
         log_scales = self.prior_log_scales.unsqueeze(0)
