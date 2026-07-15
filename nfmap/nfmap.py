@@ -323,6 +323,28 @@ class _NFMapModule(nn.Module):
         log_p = log_p_z - 0.5 * torch.log(torch.clamp(det_G, min=1e-12))
         return log_p
 
+    def compute_responsibilities(self, x):
+        """
+        Calculate the exact GMM responsibilities (cluster probabilities) for each point.
+        Returns a tensor of shape [Batch, n_prior_components] where each row sums to 1.
+        """
+        z, _ = self.inverse_flow(x)
+        z_parallel = z[:, :self.n_components]
+        
+        z_expanded = z_parallel.unsqueeze(1)
+        means = self.prior_means.unsqueeze(0)
+        log_scales = self.prior_log_scales.unsqueeze(0)
+        
+        diff_sq = torch.sum(((z_expanded - means) / torch.exp(log_scales).unsqueeze(-1))**2, dim=-1)
+        log_N_components = -0.5 * diff_sq - self.n_components * log_scales - 0.5 * self.n_components * np.log(2 * np.pi)
+        log_pi = torch.log_softmax(self.prior_logits, dim=0).unsqueeze(0)
+        
+        log_unnormalized_probs = log_pi + log_N_components
+        log_p_z = torch.logsumexp(log_unnormalized_probs, dim=1, keepdim=True)
+        
+        log_responsibilities = log_unnormalized_probs - log_p_z
+        return torch.exp(log_responsibilities)
+
 
 class NFMap(BaseEstimator, TransformerMixin):
     """
@@ -698,6 +720,37 @@ class NFMap(BaseEstimator, TransformerMixin):
             log_p_list.append(log_p_batch.cpu().detach().numpy())
             
         return np.concatenate(log_p_list, axis=0)
+
+    def predict_proba(self, X):
+        """
+        Predict the GMM cluster responsibilities (probabilities) for each data point.
+        Returns a matrix of shape [N_samples, n_prior_components] where each row sums to 1.
+        Useful for coloring maps by cluster or extracting soft clustering labels.
+        """
+        if self.is_binary_:
+            X_pca = self.pca_.transform(X)
+        else:
+            if sp.issparse(X):
+                X_dense = X.toarray()
+            else:
+                X_dense = np.asarray(X, dtype=np.float32)
+            X_dense_scaled = self.scaler_pre_.transform(X_dense)
+            X_pca = self.pca_.transform(X_dense_scaled)
+                
+        X_scaled = X_pca / self.global_scale_
+        
+        self.module_.eval()
+        dataset = TensorDataset(torch.tensor(X_scaled, dtype=torch.float32))
+        dataloader = DataLoader(dataset, batch_size=256, shuffle=False)
+        
+        resp_list = []
+        with torch.no_grad():
+            for batch in dataloader:
+                x_batch = batch[0].to(self.device_)
+                resp_batch = self.module_.compute_responsibilities(x_batch)
+                resp_list.append(resp_batch.cpu().numpy())
+                
+        return np.concatenate(resp_list, axis=0)
 
     def predict_activity(self, X):
         """Predict activity natively using the built-in Macro/Micro property head."""
