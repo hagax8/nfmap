@@ -356,7 +356,9 @@ class _NFMapModule(nn.Module):
         # G is the Riemannian Pullback Metric Tensor: G = J^T J
         G = torch.bmm(J.transpose(1, 2), J) # [B, n_components, n_components]
         
-        # The true magnification factor (change in volume) is sqrt(det(G))
+        # The true magnification factor (change in volume) is sqrt(det(G)).
+        # Geometrically, det(G) represents the squared volume scaling. Taking the square 
+        # root gives the linear volume scaling factor (which is equivalent to det(J) for square J).
         det_G = torch.linalg.det(G)
         
         # ── 2. Calculate the Baseline 2D Density (GMM Prior) ─────────────────
@@ -373,7 +375,8 @@ class _NFMapModule(nn.Module):
         
         # ── 3. Final Exact Density Calculation ────────────────────────────────
         # log p = log p_Z - log(magnification_factor)
-        # Note: log(sqrt(det(G))) is identical to 0.5 * log(det(G))
+        # Note: log(sqrt(det(G))) is mathematically identical to 0.5 * log(det(G))
+        # because log(det(G)^(1/2)) = 0.5 * log(det(G)).
         # Eq. 14, Brehmer & Cranmer (2020): log p_M(x) = log p(u) - ½ log det(JᵀJ)
         log_p = log_p_z - 0.5 * torch.log(torch.clamp(det_G, min=1e-12))
         return log_p
