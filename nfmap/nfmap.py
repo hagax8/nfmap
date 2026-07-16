@@ -409,7 +409,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     scikit-learn compatible wrapper class for NFMap.
     Handles data preprocessing, PyTorch training loop, and adaptive hyperparameters.
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1, early_exaggeration=True, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, max_ambient_dim=None):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components=100, random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, max_ambient_dim=None):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical

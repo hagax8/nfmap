@@ -426,9 +426,9 @@ DEFAULTS = dict(
     n_components=2,
     use_canonical=False,
     complexity='medium',
-    n_prior_components=15,
-    prior_weight=0.005,
-    graph_weight=1.0,
+    n_prior_components=100,
+    prior_weight=0.1,
+    graph_weight=5.0,
     repulsion_weight=1.0,
     random_state=42,
 )
@@ -447,8 +447,7 @@ CONFIGS = [
         "label":      "NEW: NFMap",
         "hypothesis": "Default NFMap",
         "kind":       "nfmap",
-        "overrides":  {"max_epochs": 1000, "patience": 100, "sigma_perp": 10, "graph_weight": 5.0, "negative_sample_rate": 5,
-        "n_prior_components": 100, "learnable_priors": False, "prior_weight": 0.1, "verbose": True, "graph_kernel": "umap", "early_exaggeration": False},
+        "overrides":  {"verbose": True},
     },
     # {
     #     "label":      "NEW: NFMap CURRENT BEST (Negative Sampling x5)",
