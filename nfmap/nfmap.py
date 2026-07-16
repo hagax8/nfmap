@@ -197,8 +197,6 @@ class _NFMapModule(nn.Module):
         # Penalizes off-manifold dimensions (z_perp). 
         # Unlike standard Brehmer flows which drive sigma_perp -> 0 to create a razor-thin manifold,
         # we often use a large sigma_perp (e.g. 0.5, 5, or 10) to create a "thick" manifold. 
-        # This allows z_perp to act as a storage vault for fine-grained structural details 
-        # that don't fit on the 2D map, which our micro_head can then use for property prediction!
         sigma_perp = sigma_perp if sigma_perp is not None else self.sigma_perp
         distance_to_manifold = torch.mean(z_perp ** 2, dim=-1)
         loss_manifold = (0.5 / (sigma_perp ** 2)) * distance_to_manifold
