@@ -406,8 +406,198 @@ class _NFMapModule(nn.Module):
 
 class NFMap(BaseEstimator, TransformerMixin):
     """
-    scikit-learn compatible wrapper class for NFMap.
-    Handles data preprocessing, PyTorch training loop, and adaptive hyperparameters.
+    NFMap: Normalizing Flow Manifold Mapper.
+
+    A scikit-learn compatible dimensionality reduction model that combines
+    Normalizing Flows (RealNVP) with topological graph regularization (the
+    Fuzzy Simplicial Kernel) to learn a probabilistically grounded low-dimensional
+    map of complex data manifolds.
+
+    Conceptually related to GTM (Bishop, Svensén & Williams, 1998), but replaces
+    the RBF network with a deep bijective flow and the EM update rule with gradient
+    descent. The exact data log-likelihood is computed via the pullback metric
+    (Brehmer & Cranmer, 2020).
+
+    Parameters
+    ----------
+    n_components : int, default=2
+        Dimensionality of the learned map. Typically 2 for 2D visualization.
+        Higher values may improve density estimation at the cost of interpretability.
+
+    complexity : {'low', 'medium', 'high'}, default='medium'
+        Controls the depth and width of the underlying RealNVP flow network.
+        - 'low':    4 coupling blocks, smaller hidden layers, 60 max epochs.
+                    Fast training, suitable for simple manifolds or quick prototyping.
+        - 'medium': 6 coupling blocks, medium hidden layers, 80 max epochs.
+                    Balanced. Good default for most datasets.
+        - 'high':   10 coupling blocks, larger hidden layers, 100 max epochs.
+                    Slower, but better for complex, high-dimensional datasets.
+        Note: max_epochs set by complexity are overridden by the `max_epochs` parameter.
+
+    use_canonical : bool, default=False
+        If True, enforces an orthogonality constraint on the Jacobian of the flow
+        so that the latent axes are decorrelated. Adds training overhead but can
+        improve interpretability of the map axes. Experimental.
+
+    prior_weight : float, default=0.1
+        Weight of the GMM prior loss term (negative log-likelihood on the 2D map).
+        Controls how strongly points are attracted to the GMM cluster centers.
+        - Higher values: forces points onto the GMM grid, preventing the flow from
+          collapsing or flying off to infinity. Acts as a regularizer.
+        - Lower values: looser coupling to the map prior, more freedom for the flow.
+        Typical range: 0.005 (loose) to 0.5 (tight).
+
+    graph_weight : float, default=5.0
+        Weight of the graph attraction loss term (Fuzzy Simplicial Kernel).
+        Controls how strongly neighboring points are attracted together in the
+        2D map, producing UMAP-style cluster compactness.
+        - Higher values: tighter clusters, stronger local structure preservation.
+        - Lower values: looser clusters, potentially better global structure.
+        Typical range: 1.0 (gentle) to 10.0 (aggressive).
+
+    repulsion_weight : float, default=1.0
+        Weight of the negative-sampling repulsion loss term.
+        Controls how strongly non-neighboring points are pushed apart.
+        Works together with `negative_sample_rate` to create inter-cluster whitespace.
+        Typical range: 0.5 to 2.0.
+
+    n_prior_components : int, default=100
+        Number of Gaussian components in the GMM prior on the 2D map.
+        This is analogous to the number of grid points in GTM.
+        - Higher values: finer-grained, higher-resolution density representation.
+          Better for large, complex datasets with many sub-populations.
+        - Lower values: coarser representation, faster training.
+        Typical range: 15 (coarse) to 200 (fine).
+
+    random_state : int, default=42
+        Random seed for reproducibility. Controls weight initialization,
+        PCA preprocessing, and any stochastic operations.
+
+    learnable_priors : bool, default=False
+        If True, the GMM cluster centers (prior means) are trainable parameters
+        that drift during gradient descent. Can lead to cluster collapse where all
+        centers converge to the same point.
+        If False (recommended), cluster centers are initialized on a fixed grid
+        and held constant during training, providing a stable reference frame
+        analogous to the fixed grid in GTM.
+
+    vol_weight : float, default=1.0
+        Weight of the volume-preserving (Jacobian scaling) loss term.
+        This term penalizes the flow for aggressively stretching the "garbage"
+        perpendicular dimensions to maximize log-det rewards, which would
+        otherwise bypass the topological learning objective.
+        Keeping this at 1.0 is strongly recommended. See paper notes on
+        Jacobian explosion for technical details.
+
+    sigma_perp : float, default=10.0
+        Standard deviation of the Gaussian noise applied to the off-manifold
+        (perpendicular) dimensions during training. Controls the "thickness"
+        of the learned manifold.
+        - Higher values (e.g. 10.0): broader manifold, the flow focuses its
+          capacity on the 2D layout. Produces cleaner 2D maps.
+        - Lower values (e.g. 0.05): thinner manifold, the flow must also model
+          fine-grained off-manifold structure. Can lead to unstable training.
+        Typical range: 1.0 to 20.0 for visualization tasks.
+
+    max_epochs : int, default=1000
+        Maximum number of training epochs. If `patience` is set, training may
+        stop early if no improvement is observed.
+        - 1000 is a solid default for most datasets.
+        - For quick prototyping, 200-300 is usually sufficient.
+
+    patience : int or None, default=100
+        Number of epochs to wait for loss improvement before triggering early stopping.
+        If None, trains for exactly `max_epochs` epochs with no early stopping.
+        Setting this to ~10% of `max_epochs` is a good rule of thumb.
+
+    verbose : bool, default=False
+        If True, prints a loss/LR progress line every 100 epochs during training.
+        Useful for monitoring convergence.
+
+    negative_sample_rate : int, default=5
+        Number of negative (non-neighbor) edges sampled per positive (neighbor) edge
+        during each training step. Increasing this value increases the repulsion
+        force between dissimilar points, which sharpens cluster separation.
+        - 1: minimal repulsion, clusters may overlap.
+        - 5: balanced attraction/repulsion (recommended, similar to UMAP's default).
+        - 10+: aggressive repulsion, very compact but potentially fragmented clusters.
+
+    early_exaggeration : bool, default=False
+        If True, multiplies the `graph_weight` by 4x during the first third of
+        training (similar to the early exaggeration phase in t-SNE). This forces
+        the initial layout into well-separated clusters before fine-tuning.
+        In practice, using a sustained `graph_weight=5.0` with `negative_sample_rate=5`
+        achieves similar results without the phase transition instability.
+
+    prop_weight : float, default=1.0
+        Weight of the property prediction loss term. Only active when `y_props`
+        is passed to `fit()` or when `use_native_predictor=True`.
+        Controls how strongly the map is influenced by the target property labels
+        during training, balancing topological fidelity vs. property alignment.
+
+    graph_kernel : {'fuzzy_simplicial', 'perplexity'}, default='fuzzy_simplicial'
+        The graph construction method used to identify neighbors for the
+        graph regularization loss.
+        - 'fuzzy_simplicial' (recommended): UMAP-style fuzzy graph. Adaptive
+          bandwidth per point. Better for varying local densities.
+        - 'perplexity': t-SNE-style Gaussian kernel with fixed perplexity.
+          Deprecated; will be removed in a future release.
+
+    perplexity : float, default=30
+        Perplexity for the t-SNE-style graph kernel. Only used when
+        `graph_kernel='perplexity'`. Ignored for the default 'fuzzy_simplicial' kernel.
+        Typical range: 5 to 50.
+
+    use_native_predictor : bool, default=False
+        If True, activates a dual-head property predictor (Macro + Micro heads)
+        trained jointly with the flow. Enables `predict_activity()` after fitting.
+        Requires `y_props` to be passed to `fit()`.
+        - Macro head: predicts from GMM cluster responsibilities (coarse, map-level).
+        - Micro head: predicts from off-manifold dimensions (fine, molecular-level).
+
+    max_ambient_dim : int or None, default=None
+        Maximum dimensionality of the ambient space passed to the flow network
+        after PCA preprocessing. If None, the heuristic default is used
+        (128 for binary data, 256 for continuous data). Set this to override
+        the heuristic, e.g. `max_ambient_dim=512` for very high-dimensional
+        Transformer embeddings.
+
+    Attributes
+    ----------
+    module_ : torch.nn.Module
+        The underlying trained RealNVP flow network.
+    pca_ : sklearn.decomposition.TruncatedSVD or PCA
+        The fitted PCA/SVD object used for dimensionality reduction pre-processing.
+    scaler_pre_ : sklearn.preprocessing.StandardScaler
+        The fitted StandardScaler used for pre-processing continuous data.
+    is_binary_ : bool
+        Whether the input data was detected as binary (e.g. Morgan fingerprints).
+    global_scale_ : float
+        The global scale factor applied after PCA to stabilize flow training.
+    device_ : torch.device
+        The device (CPU or GPU) on which the model is trained.
+
+    References
+    ----------
+    Bishop, C.M., Svensén, M., Williams, C.K.I. (1998).
+        "GTM: The Generative Topographic Mapping."
+        Neural Computation, 10(1), 215-234.
+
+    Brehmer, J., Cranmer, K. (2020).
+        "Flows for simultaneous manifold learning and density estimation."
+        Advances in Neural Information Processing Systems (NeurIPS).
+
+    Examples
+    --------
+    >>> from nfmap import NFMap
+    >>> from sklearn.datasets import load_digits
+    >>> X, y = load_digits(return_X_y=True)
+    >>> model = NFMap(n_components=2, complexity='medium', verbose=True)
+    >>> Z = model.fit_transform(X)
+    >>> Z.shape
+    (1797, 2)
+    >>> # Score the log-likelihood of data points on the learned map
+    >>> log_p = model.score_samples(X)
     """
     def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components=100, random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, max_ambient_dim=None):
         self.n_components = n_components
