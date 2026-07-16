@@ -156,9 +156,11 @@ class _NFMapModule(nn.Module):
         [From Literature: Manifold Normalizing Flows (Brehmer et al., 2020)]
         1. loss_prior: Forces the 2D map coordinates (z_parallel) to cluster tightly around the GMM bells.
         2. loss_manifold: Penalizes the off-manifold distance (z_perp). Forces molecules to lie flat on the 2D map.
-        3. loss_vol: A scaled log-determinant penalty that prevents the 2D map from stretching infinitely.
         
         [Novel NFMap Contributions]
+        3. loss_vol: A log-determinant penalty scaled by (n_components / d_scaled). Unlike standard Brehmer flows,
+           we aggressively scale down the volume penalty to prevent the 126 perpendicular dimensions from 
+           exploding to infinity to cheat the loss function.
         4. loss_prop: (Optional) Trains the network to predict chemical properties natively from the 2D map.
         5. loss_ortho/diag: (Optional) Conformal regularization (J^T J) to preserve distances/angles (isometric mapping).
         """
