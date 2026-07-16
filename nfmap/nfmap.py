@@ -875,18 +875,36 @@ class NFMap(BaseEstimator, TransformerMixin):
                 z_parallel = z[:, :self.n_components]
                 z_perp = z[:, self.n_components:]
                 
-                # Compute macro
+                # ── 1. Macro Property Prediction (The 2D Map) ───────────
+                # This calculates the property purely based on where the molecule lands on the 2D map.
+                # First, we calculate the Gaussian responsibilities (p_k): "Which cluster does this molecule belong to?"
                 z_expanded = z_parallel.unsqueeze(1)
                 means = self.module_.prior_means.unsqueeze(0)
                 log_scales = self.module_.prior_log_scales.unsqueeze(0)
+                
+                # Calculate Gaussian log-likelihood for each of the K components
                 diff_sq = torch.sum(((z_expanded - means) / torch.exp(log_scales).unsqueeze(-1)) ** 2, dim=-1)
                 log_N = (-0.5 * diff_sq - self.n_components * log_scales - 0.5 * self.n_components * np.log(2 * np.pi))
+                
+                # Add the prior component weights (pi) to get the full posterior log-probability
                 log_pi = torch.log_softmax(self.module_.prior_logits, dim=0).unsqueeze(0)
                 
+                # Convert log-probabilities to normalized responsibilities (p_k) using softmax
                 p_k = torch.softmax(log_pi + log_N, dim=1)
+                
+                # The "Macro" property is simply the weighted average of the learnable cluster properties
                 y_macro = torch.sum(p_k * self.module_.macro_weights.unsqueeze(0), dim=1, keepdim=True)
                 
+                # ── 2. Micro Property Prediction (The Thick Manifold) ───
+                # The 2D map can't capture every chemical nuance. The remaining perpendicular
+                # dimensions (z_perp) contain all the subtle structural details that didn't fit on the map.
+                # We feed these off-manifold dimensions through a small Feed-Forward network (micro_head)
+                # to extract a highly specific, localized property correction.
                 y_micro = self.module_.micro_head(z_perp)
+                
+                # ── 3. Final Hybrid Prediction ──────────────────────────
+                # The final prediction is the Macro baseline (general neighborhood on the map) 
+                # plus the Micro correction (specific molecular details).
                 y_pred = y_macro + y_micro
                 preds_list.append(y_pred.cpu().numpy())
                 
