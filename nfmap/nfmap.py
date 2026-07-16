@@ -510,11 +510,11 @@ class NFMap(BaseEstimator, TransformerMixin):
                 
             if X_struct is not None:
                 # Use structural fingerprints to define the exact topological neighborhood!
-                nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='brute', metric='jaccard', n_jobs=1)
+                nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='auto', metric='jaccard', n_jobs=-1)
                 nn_model.fit(X_struct)
                 knn_dists, knn_indices = nn_model.kneighbors(X_struct)
             else:
-                nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='brute', n_jobs=1)  # +1 because kneighbors includes self
+                nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='auto', n_jobs=-1)  # +1 because kneighbors includes self
                 nn_model.fit(X_scaled)
                 knn_dists, knn_indices = nn_model.kneighbors(X_scaled)
             
