@@ -303,7 +303,7 @@ class _NFMapModule(nn.Module):
 
     def exact_density(self, x):
         """
-        Calculate the exact probability density of data points on the map.
+        Calculate the exact probability density of data points on the map (log likelihood).
         
         This is the Normalizing Flow equivalent of the GTM log-likelihood 
         (cf. Bishop, Svensén, and Williams, 1998). While GTM calculates the data likelihood using 
@@ -374,6 +374,7 @@ class _NFMapModule(nn.Module):
         # ── 3. Final Exact Density Calculation ────────────────────────────────
         # log p = log p_Z - log(magnification_factor)
         # Note: log(sqrt(det(G))) is identical to 0.5 * log(det(G))
+        # Eq. 14, Brehmer & Cranmer (2020): log p_M(x) = log p(u) - ½ log det(JᵀJ)
         log_p = log_p_z - 0.5 * torch.log(torch.clamp(det_G, min=1e-12))
         return log_p
 
