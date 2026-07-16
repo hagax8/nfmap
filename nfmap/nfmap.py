@@ -844,24 +844,50 @@ class NFMap(BaseEstimator, TransformerMixin):
                 idx_batch = batch[1]
                 y_batch = batch[2].to(self.device_) if y_props is not None else None
                 optimizer.zero_grad()
+                # ── Part 1/2: Per-Sample Density Loss (inside _NFMapModule) ────────────
+                # compute_loss() handles all per-sample terms:
+                #   - GMM prior log-likelihood (ln p_Z(z))
+                #   - Volume / Jacobian scaling penalty
+                #   - Native property prediction loss (if use_native_predictor=True)
+                # It only needs the current batch — no global dataset context required.
                 loss, z_batch_par = self.module_.compute_loss(x_batch, y_props=y_batch)
 
+                # ── Part 2/2: Topological (Graph) Loss — Fuzzy Simplicial Kernel ────
+                # This loss is computed here (in fit()) rather than in compute_loss()
+                # because it requires relational lookups into the full kNN graph:
+                #   - neigh_idx looks up neighbors for the current batch from the
+                #     FULL knn_indices_tensor (built from all N training points).
+                #   - x_neigh can be any point in the dataset, not just the batch.
+                # The module's compute_loss() only receives the current batch and has
+                # no access to this dataset-level graph structure.
+                #
+                # Loss split:
+                #   compute_loss() → per-sample density (GMM prior, volume, property)
+                #   fit()          → relational topology (kNN attraction + repulsion)
                 if self.graph_weight > 0:
+                    # Sample one random neighbor per batch point from the kNN graph
                     rand_k = torch.randint(k_neighbors, (len(idx_batch),))
                     neigh_idx = knn_indices_tensor[idx_batch, rand_k]
                     neigh_weights = knn_weights_tensor[idx_batch, rand_k].to(self.device_)
                     
+                    # Map the neighbor into latent space and extract its 2D parallel coords
                     x_neigh = X_scaled_tensor[neigh_idx].to(self.device_)
                     z_neigh, _ = self.module_.inverse_flow(x_neigh)
                     z_neigh_par = z_neigh[:, :self.module_.n_components]
                     
+                    # Attraction: w_ij * log(1 + ||z_i - z_j||^2)
+                    # Weighted by fuzzy simplicial edge strength — stronger neighbors
+                    # are pulled tighter. log1p softens the gradient for very close pairs.
                     dist_sq = torch.sum((z_batch_par - z_neigh_par) ** 2, dim=-1)
                     loss_attract = torch.mean(neigh_weights * torch.log1p(dist_sq))
                     if self.early_exaggeration and epoch < (max_epochs // 3):
-                        loss_attract = loss_attract * 4.0
+                        loss_attract = loss_attract * 4.0  # t-SNE-style early phase
                     loss_graph = loss_attract
                     
                     if self.repulsion_weight > 0:
+                        # Repulsion: log(1 + 1 / (||z_i - z_neg||^2 + eps))
+                        # Non-neighbors are sampled by shuffling the batch (cheap approximation).
+                        # Pushes unrelated points apart to create whitespace between clusters.
                         z_neg_par_list = []
                         for _ in range(self.negative_sample_rate):
                             shuffle_idx = torch.randperm(z_batch_par.shape[0], device=self.device_)
