@@ -12,6 +12,12 @@ from sklearn.decomposition import TruncatedSVD, PCA
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 
+try:
+    from pynndescent import NNDescent
+    HAS_PYNNDESCENT = True
+except ImportError:
+    HAS_PYNNDESCENT = False
+
 
 class RealNVPBlock(nn.Module):
     """
@@ -510,13 +516,21 @@ class NFMap(BaseEstimator, TransformerMixin):
                 
             if X_struct is not None:
                 # Use structural fingerprints to define the exact topological neighborhood!
-                nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='auto', metric='jaccard', n_jobs=-1)
-                nn_model.fit(X_struct)
-                knn_dists, knn_indices = nn_model.kneighbors(X_struct)
+                if HAS_PYNNDESCENT:
+                    index = NNDescent(X_struct, metric='jaccard', n_neighbors=k_neighbors + 1, n_jobs=-1)
+                    knn_indices, knn_dists = index.neighbor_graph
+                else:
+                    nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='auto', metric='jaccard', n_jobs=-1)
+                    nn_model.fit(X_struct)
+                    knn_dists, knn_indices = nn_model.kneighbors(X_struct)
             else:
-                nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='auto', n_jobs=-1)  # +1 because kneighbors includes self
-                nn_model.fit(X_scaled)
-                knn_dists, knn_indices = nn_model.kneighbors(X_scaled)
+                if HAS_PYNNDESCENT:
+                    index = NNDescent(X_scaled, metric='euclidean', n_neighbors=k_neighbors + 1, n_jobs=-1)
+                    knn_indices, knn_dists = index.neighbor_graph
+                else:
+                    nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='auto', n_jobs=-1)  # +1 because kneighbors includes self
+                    nn_model.fit(X_scaled)
+                    knn_dists, knn_indices = nn_model.kneighbors(X_scaled)
             
             # Drop self-column
             knn_dists = knn_dists[:, 1:]
@@ -705,33 +719,53 @@ class NFMap(BaseEstimator, TransformerMixin):
         Takes z in R^{N x 2} or R^{N x D}, pads with zeros if needed, runs inverse flow + inverse scaling,
         and returns generated X_gen in R^{N x D}.
         """
+        # Put the PyTorch flow network into evaluation mode (turns off BatchNorm/Dropout)
         self.module_.eval()
+        
+        # Convert input to PyTorch tensor and prepare DataLoader for batch processing
+        # This prevents Out-Of-Memory (OOM) errors when generating millions of molecules
         z_tensor = torch.tensor(z, dtype=torch.float32)
         dataset = TensorDataset(z_tensor)
         dataloader = DataLoader(dataset, batch_size=256, shuffle=False)
         
         x_gen_scaled_list = []
+        
+        # Disable gradient tracking to save memory and speed up generation
         with torch.no_grad():
             for batch in dataloader:
                 z_batch = batch[0].to(self.device_)
                 N_batch = z_batch.shape[0]
+                
+                # Thick Manifold Logic: If pure 2D coordinates are passed, pad the remaining 
+                # perpendicular dimensions with zeros so the flow can invert properly.
                 if z_batch.shape[1] == self.n_components:
                     z_perp_zero = torch.zeros((N_batch, self.D_scaled_ - self.n_components), device=self.device_)
                     z_padded = torch.cat([z_batch, z_perp_zero], dim=-1)
                 else:
                     z_padded = z_batch
                 
-                
+                # Pass padded coordinates backwards through the RealNVP flow
+                # (forward_flow maps from latent space Z back to data space X)
                 x_gen_batch, _ = self.module_.forward_flow(z_padded)
+                
+                # Move generated high-dimensional embeddings back to CPU
                 x_gen_scaled_list.append(x_gen_batch.cpu().numpy())
                 
+        # Recombine batches into a single array
         x_gen_scaled = np.concatenate(x_gen_scaled_list, axis=0)
+        
+        # Reverse the global scaling applied during data preparation
         x_gen_pca = x_gen_scaled * self.global_scale_
+        
+        # Pass backwards through the PCA layer to undo dimensionality reduction
         x_gen_pre = self.pca_.inverse_transform(x_gen_pca)
+        
+        # Restore original mean and standard deviation via inverse StandardScaler
         if self.is_binary_:
             x_gen = x_gen_pre
         else:
             x_gen = self.scaler_pre_.inverse_transform(x_gen_pre)
+            
         return x_gen
 
     def score_samples(self, X):
