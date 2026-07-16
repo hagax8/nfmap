@@ -878,7 +878,7 @@ class NFMap(BaseEstimator, TransformerMixin):
                 # ── 1. Macro Property Prediction (The 2D Map) ───────────
                 # This calculates the property purely based on where the molecule lands on the 2D map.
                 # First, we calculate the Gaussian responsibilities (p_k): "Which cluster does this molecule belong to?"
-                # It's very similar to my implementation in ugtm (cf. H. Gaspar's "GTM-Based QSAR Models and Their Applicability Domains" (2015))
+                # It's very similar to my implementation in ugtm and previous papers (cf. H. Gaspar's "GTM-Based QSAR Models and Their Applicability Domains" (2015))
                 z_expanded = z_parallel.unsqueeze(1)
                 means = self.module_.prior_means.unsqueeze(0)
                 log_scales = self.module_.prior_log_scales.unsqueeze(0)
