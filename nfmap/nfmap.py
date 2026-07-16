@@ -1,6 +1,9 @@
+from __future__ import annotations
+from typing import Optional, Union
 import warnings
 import math
 import numpy as np
+from numpy.typing import ArrayLike, NDArray
 import scipy.sparse as sp
 import torch
 import torch.nn as nn
@@ -665,14 +668,28 @@ class NFMap(BaseEstimator, TransformerMixin):
         return np.all((X == 0) | (X == 1))
 
 
-    def fit_transform(self, X, y=None, y_props=None, X_struct=None, noise_std=0.0):
+    def fit_transform(
+        self,
+        X: ArrayLike,
+        y: None = None,
+        y_props: Optional[ArrayLike] = None,
+        X_struct: Optional[ArrayLike] = None,
+        noise_std: float = 0.0,
+    ) -> NDArray[np.float32]:
         """
         Fit the model with X and apply dimensionality reduction.
         """
         self.fit(X, y, y_props=y_props, X_struct=X_struct, noise_std=noise_std)
         return self.transform(X)
 
-    def fit(self, X, y=None, y_props=None, X_struct=None, noise_std=0.0):
+    def fit(
+        self,
+        X: ArrayLike,
+        y: None = None,
+        y_props: Optional[ArrayLike] = None,
+        X_struct: Optional[ArrayLike] = None,
+        noise_std: float = 0.0,
+    ) -> "NFMap":
         """
         Fit the model with X.
         """
@@ -925,7 +942,7 @@ class NFMap(BaseEstimator, TransformerMixin):
             
         return self
 
-    def transform(self, X, return_full=False):
+    def transform(self, X: ArrayLike, return_full: bool = False) -> NDArray[np.float32]:
         """Apply dimensionality reduction to X."""
         if self.is_binary_:
             X_pca = self.pca_.transform(X)
@@ -1008,7 +1025,7 @@ class NFMap(BaseEstimator, TransformerMixin):
             
         return x_gen
 
-    def score_samples(self, X):
+    def score_samples(self, X: ArrayLike) -> NDArray[np.float64]:
         """
         Returns exact probability density ln p_X(x) for the given data points 
         by computing the pullback metric.
@@ -1039,7 +1056,7 @@ class NFMap(BaseEstimator, TransformerMixin):
             
         return np.concatenate(log_p_list, axis=0)
 
-    def predict_proba(self, X):
+    def predict_proba(self, X: ArrayLike) -> NDArray[np.float32]:
         """
         Predict the GMM cluster responsibilities (probabilities) for each data point.
         Returns a matrix of shape [N_samples, n_prior_components] where each row sums to 1.
@@ -1072,7 +1089,7 @@ class NFMap(BaseEstimator, TransformerMixin):
                 
         return np.concatenate(resp_list, axis=0)
 
-    def predict_activity(self, X):
+    def predict_activity(self, X: ArrayLike) -> NDArray[np.float32]:
         """Predict activity natively using the built-in Macro/Micro property head."""
         if not getattr(self, 'use_native_predictor', False):
             raise ValueError("predict_activity requires use_native_predictor=True")
