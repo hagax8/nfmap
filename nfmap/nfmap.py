@@ -305,7 +305,12 @@ class _NFMapModule(nn.Module):
         """
         Calculate the exact probability density of data points on the map.
         
-        This relies on the change of variables formula from differential geometry.
+        This is the Normalizing Flow equivalent of the GTM log-likelihood 
+        (cf. H. Gaspar, 2015). While GTM calculates the data likelihood using 
+        an RBF mapping with isotropic Gaussian noise, NFMap calculates it 
+        using a deterministic bijection (the Flow) and the Change of Variables 
+        formula from differential geometry.
+        
         When you map a flat 2D plane into a complex d-dimensional space, the 2D plane gets
         stretched and distorted. If a 1x1 box on the map gets stretched into a 10x10
         box in the d-dimensional space, the "density" of molecules in that box drops (magnification).
