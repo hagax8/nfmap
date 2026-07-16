@@ -388,7 +388,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     scikit-learn compatible wrapper class for NFMap.
     Handles data preprocessing, PyTorch training loop, and adaptive hyperparameters.
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1, early_exaggeration=True, prop_weight=1.0, graph_kernel='perplexity', perplexity=30, use_native_predictor=False):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1, early_exaggeration=True, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -411,7 +411,7 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.use_native_predictor = use_native_predictor
         
         if self.graph_kernel == 'perplexity':
-            warnings.warn("The 'perplexity' (t-SNE) graph kernel is deprecated and will be removed in a future release. Please use the default UMAP kernel instead.", DeprecationWarning, stacklevel=2)
+            warnings.warn("The 'perplexity' (t-SNE) graph kernel is deprecated and will be removed in a future release. Please use the default 'fuzzy_simplicial' kernel instead.", DeprecationWarning, stacklevel=2)
         
     def _compute_perplexity_weights(self, distances, perplexity=30.0, tol=1e-5, max_iter=50):
         N, K = distances.shape
@@ -500,7 +500,7 @@ class NFMap(BaseEstimator, TransformerMixin):
 
         # Build kNN graph on scaled data for neighborhood-preservation loss
         if self.graph_weight > 0:
-            if getattr(self, 'graph_kernel', 'perplexity') == 'perplexity':
+            if getattr(self, 'graph_kernel', 'fuzzy_simplicial') == 'perplexity':
                 k_neighbors = min(int(3 * getattr(self, 'perplexity', 30)), N - 1)
             else:
                 k_neighbors = min(15, N - 1)
@@ -519,7 +519,7 @@ class NFMap(BaseEstimator, TransformerMixin):
             knn_dists = knn_dists[:, 1:]
             knn_indices = knn_indices[:, 1:]
             
-            if getattr(self, 'graph_kernel', 'perplexity') == 'perplexity':
+            if getattr(self, 'graph_kernel', 'fuzzy_simplicial') == 'perplexity':
                 knn_weights = self._compute_perplexity_weights(knn_dists, perplexity=getattr(self, 'perplexity', 30))
                 knn_weights = knn_weights * 3.0
             else:
