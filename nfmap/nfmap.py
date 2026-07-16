@@ -315,7 +315,7 @@ class _NFMapModule(nn.Module):
         stretched and distorted. If a 1x1 box on the map gets stretched into a 10x10
         box in the d-dimensional space, the "density" of molecules in that box drops (magnification).
         
-        Formula:
+        Formula (cf. Brehmer & Cranmer, "Flows for simultaneous manifold learning and density estimation", 2020):
         ln p_X(x) = ln p_Z(z) - ln(magnification_factor)
         ln p_X(x) = ln p_Z(z) - 1/2 * ln(det(G))
         
