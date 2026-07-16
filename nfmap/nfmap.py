@@ -400,7 +400,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     scikit-learn compatible wrapper class for NFMap.
     Handles data preprocessing, PyTorch training loop, and adaptive hyperparameters.
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1, early_exaggeration=True, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.005, graph_weight=1.0, repulsion_weight=1.0, n_prior_components=15, random_state=42, learnable_priors=True, vol_weight=1.0, sigma_perp=0.05, max_epochs=None, patience=None, verbose=False, negative_sample_rate=1, early_exaggeration=True, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, max_ambient_dim=None):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -421,6 +421,7 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.graph_kernel = graph_kernel
         self.perplexity = perplexity
         self.use_native_predictor = use_native_predictor
+        self.max_ambient_dim = max_ambient_dim
         
         if self.graph_kernel == 'perplexity':
             warnings.warn("The 'perplexity' (t-SNE) graph kernel is deprecated and will be removed in a future release. Please use the default 'fuzzy_simplicial' kernel instead.", DeprecationWarning, stacklevel=2)
@@ -481,9 +482,14 @@ class NFMap(BaseEstimator, TransformerMixin):
         
         # PCA + Scaling
         self.is_binary_ = (X.dtype == bool or (X.max() <= 1 and X.min() >= 0))
+        
+        # Determine ambient dimension limits (use smart defaults if not explicitly set)
+        cap_binary = 128 if self.max_ambient_dim is None else self.max_ambient_dim
+        cap_cont = 256 if self.max_ambient_dim is None else self.max_ambient_dim
+        
         if self.is_binary_:
             # Binary data: Simple TruncatedSVD for binary features
-            n_components_pca = min(128, X.shape[1] - 1)
+            n_components_pca = min(cap_binary, X.shape[1] - 1)
             self.pca_ = TruncatedSVD(n_components=n_components_pca, random_state=self.random_state)
             X_pca = self.pca_.fit_transform(X)
         else:
@@ -494,9 +500,13 @@ class NFMap(BaseEstimator, TransformerMixin):
             self.scaler_pre_ = StandardScaler()
             X_dense_scaled = self.scaler_pre_.fit_transform(X_dense)
             
-            n_components_pca = min(256, X_dense_scaled.shape[1])
+            n_components_pca = min(cap_cont, X_dense_scaled.shape[1])
             if y_props is not None:
                 n_components_pca = max(n_components_pca, min(y_props.shape[1] + self.n_components + 10, X_dense_scaled.shape[1]))
+            
+            # If user explicitly set max_ambient_dim, enforce it as a hard cap
+            if self.max_ambient_dim is not None:
+                n_components_pca = min(n_components_pca, self.max_ambient_dim)
                 
             # Use randomized solver for high efficiency on large datasets if size/dimensions are high
             solver = 'randomized' if (X_dense_scaled.shape[0] > 10000 and n_components_pca > 10) else 'auto'
