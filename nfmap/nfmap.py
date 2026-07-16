@@ -567,15 +567,15 @@ class NFMap(BaseEstimator, TransformerMixin):
         # Adaptive Hyperparameter Engine based on complexity
         if self.complexity == 'low':
             n_blocks = 4
-            hidden_dim = int(1.5 * D_scaled)
+            hidden_dim = int(1.5 * D_scaled)  # Previously: max(64, min(2 * D_scaled, 128))
             max_epochs = 60
         elif self.complexity == 'high':
             n_blocks = 10
-            hidden_dim = int(4.0 * D_scaled)
+            hidden_dim = int(4.0 * D_scaled)  # Previously: max(128, min(4 * D_scaled, 512))
             max_epochs = 100
         else: # 'medium'
             n_blocks = 6
-            hidden_dim = int(2.5 * D_scaled)
+            hidden_dim = int(2.5 * D_scaled)  # Previously: max(64, min(3 * D_scaled, 256))
             max_epochs = 80
             
         if self.max_epochs is not None:
