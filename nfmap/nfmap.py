@@ -885,13 +885,19 @@ class NFMap(BaseEstimator, TransformerMixin):
                 
                 # Calculate Gaussian log-likelihood for each of the K components
                 diff_sq = torch.sum(((z_expanded - means) / torch.exp(log_scales).unsqueeze(-1)) ** 2, dim=-1)
-
+                
+                # Conditional probability
+                # in GMM terminology, it's p(z|k): (if we're in cluster k, what's the probability of generating z?)
                 log_N = (-0.5 * diff_sq - self.n_components * log_scales - 0.5 * self.n_components * np.log(2 * np.pi))
                 
-                # Add the prior component weights (pi) to get the full posterior log-probability
+                # Compute priors
+                # in GMM terminology, it's actually p(k)
                 log_pi = torch.log_softmax(self.module_.prior_logits, dim=0).unsqueeze(0)
                 
-                # Convert log-probabilities to normalized responsibilities (p_k) using softmax
+                # Add the prior component weights (pi) to get the full posterior log-probability
+                # And convert log-probabilities to normalized responsibilities (p_k) using softmax
+                # in GMM terminology, it's p(k|z)
+                # (nb: marginal probability is computed implicitely in the softmax)
                 p_k = torch.softmax(log_pi + log_N, dim=1)
                 
                 # The "Macro" property is simply the weighted average of the learnable cluster properties
