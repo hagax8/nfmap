@@ -500,10 +500,13 @@ class NFMap(BaseEstimator, TransformerMixin):
 
         # Build kNN graph on scaled data for neighborhood-preservation loss
         if self.graph_weight > 0:
-            if getattr(self, 'graph_kernel', 'fuzzy_simplicial') == 'perplexity':
+            kernel_name = getattr(self, 'graph_kernel', 'fuzzy_simplicial')
+            if kernel_name == 'fuzzy_simplicial':
+                k_neighbors = min(15, N - 1)
+            elif kernel_name == 'perplexity':
                 k_neighbors = min(int(3 * getattr(self, 'perplexity', 30)), N - 1)
             else:
-                k_neighbors = min(15, N - 1)
+                raise ValueError(f"Unknown graph kernel: {kernel_name}")
                 
             if X_struct is not None:
                 # Use structural fingerprints to define the exact topological neighborhood!
@@ -519,13 +522,13 @@ class NFMap(BaseEstimator, TransformerMixin):
             knn_dists = knn_dists[:, 1:]
             knn_indices = knn_indices[:, 1:]
             
-            if getattr(self, 'graph_kernel', 'fuzzy_simplicial') == 'perplexity':
-                knn_weights = self._compute_perplexity_weights(knn_dists, perplexity=getattr(self, 'perplexity', 30))
-                knn_weights = knn_weights * 3.0
-            else:
+            if kernel_name == 'fuzzy_simplicial':
                 rho = knn_dists[:, 0:1]
                 sigmas = np.mean(knn_dists - rho, axis=1, keepdims=True) + 1e-8
                 knn_weights = np.exp(-(knn_dists - rho) / sigmas)
+            elif kernel_name == 'perplexity':
+                knn_weights = self._compute_perplexity_weights(knn_dists, perplexity=getattr(self, 'perplexity', 30))
+                knn_weights = knn_weights * 3.0
             
             knn_indices_tensor = torch.tensor(knn_indices, dtype=torch.long)
             knn_weights_tensor = torch.tensor(knn_weights, dtype=torch.float32)
