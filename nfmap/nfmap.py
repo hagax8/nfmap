@@ -253,9 +253,14 @@ class _NFMapModule(nn.Module):
             loss_manifold = 0.0
 
         # ── Volume term: full-flow log-det scaled to manifold dims ───────────
-        # In a standard Normalizing Flow, we maximize the log determinant of the Jacobian.
-        # But here, our intrinsic space (n_components=2) is much smaller than the ambient space (d_scaled).
-        # We scale the log-det down to prevent the 2D map from "exploding" and stretching infinitely.
+        # In maximum likelihood training, the flow maximizes the log-determinant of the Jacobian 
+        # (i.e., it gets a "reward" for stretching the space).
+        # In standard flows, this stretching is balanced by the prior penalizing points far from the origin.
+        # However, because we only care about a 2D intrinsic manifold (n_components=2), the remaining 
+        # perpendicular dimensions (e.g., 126 dims) are loosely constrained by `sigma_perp` (our Thick Manifold).
+        # If left unscaled, the network will "cheat" by aggressively stretching those 126 perpendicular 
+        # dimensions to infinity to artificially inflate the log-det reward, causing gradients to explode.
+        # We scale the log-det down by (2 / D) to prevent these "garbage" dimensions from overpowering the loss.
         loss_vol = -log_det_inv * (self.n_components / self.d_scaled) * self.vol_weight
 
         # Combine all standard losses into a single scalar that the optimizer will minimize
@@ -730,13 +735,12 @@ class NFMap(BaseEstimator, TransformerMixin):
         
         x_gen_scaled_list = []
         
-        # Disable gradient tracking to save memory and speed up generation
         with torch.no_grad():
             for batch in dataloader:
                 z_batch = batch[0].to(self.device_)
                 N_batch = z_batch.shape[0]
                 
-                # Thick Manifold Logic: If pure 2D coordinates are passed, pad the remaining 
+                # If pure 2D coordinates are passed, pad the remaining 
                 # perpendicular dimensions with zeros so the flow can invert properly.
                 if z_batch.shape[1] == self.n_components:
                     z_perp_zero = torch.zeros((N_batch, self.D_scaled_ - self.n_components), device=self.device_)
