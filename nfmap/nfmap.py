@@ -306,7 +306,7 @@ class _NFMapModule(nn.Module):
         Calculate the exact probability density of data points on the map.
         
         This is the Normalizing Flow equivalent of the GTM log-likelihood 
-        (cf. H. Gaspar, 2015). While GTM calculates the data likelihood using 
+        (cf. Bishop, Svensén, and Williams, 1998). While GTM calculates the data likelihood using 
         an RBF mapping with isotropic Gaussian noise, NFMap calculates it 
         using a deterministic bijection (the Flow) and the Change of Variables 
         formula from differential geometry.
