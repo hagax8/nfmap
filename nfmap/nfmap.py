@@ -878,12 +878,14 @@ class NFMap(BaseEstimator, TransformerMixin):
                 # ── 1. Macro Property Prediction (The 2D Map) ───────────
                 # This calculates the property purely based on where the molecule lands on the 2D map.
                 # First, we calculate the Gaussian responsibilities (p_k): "Which cluster does this molecule belong to?"
+                # It's very similar to my implementation in ugtm (cf. H. Gaspar's "GTM-Based QSAR Models and Their Applicability Domains" (2015))
                 z_expanded = z_parallel.unsqueeze(1)
                 means = self.module_.prior_means.unsqueeze(0)
                 log_scales = self.module_.prior_log_scales.unsqueeze(0)
                 
                 # Calculate Gaussian log-likelihood for each of the K components
                 diff_sq = torch.sum(((z_expanded - means) / torch.exp(log_scales).unsqueeze(-1)) ** 2, dim=-1)
+
                 log_N = (-0.5 * diff_sq - self.n_components * log_scales - 0.5 * self.n_components * np.log(2 * np.pi))
                 
                 # Add the prior component weights (pi) to get the full posterior log-probability
