@@ -269,6 +269,7 @@ class _NFMapModule(nn.Module):
         # ── Optional conformal regularization ────────────────────────────────
         # This enforces that the map is "isometric" (preserves distances and angles perfectly).
         # It calculates the pullback metric tensor G = J^T J and forces it to be the Identity matrix.
+        # To use with toy data, not complex high-dim stuff
         if self.use_canonical:
             z_para_req  = z_parallel.detach().requires_grad_(True)
             z_perp_zero = torch.zeros_like(z_perp)
@@ -305,9 +306,9 @@ class _NFMapModule(nn.Module):
         Calculate the exact probability density of data points on the map.
         
         This relies on the change of variables formula from differential geometry.
-        When you map a flat 2D plane into a complex 128D space, the 2D plane gets
+        When you map a flat 2D plane into a complex d-dimensional space, the 2D plane gets
         stretched and distorted. If a 1x1 box on the map gets stretched into a 10x10
-        box in 128D space, the "density" of molecules in that box drops (magnification).
+        box in the d-dimensional space, the "density" of molecules in that box drops (magnification).
         
         Formula:
         ln p_X(x) = ln p_Z(z) - ln(magnification_factor)
@@ -344,7 +345,7 @@ class _NFMapModule(nn.Module):
             )[0]
             J_cols.append(J_col)
             
-        # J is the Jacobian matrix (maps small changes in 2D to changes in 128D)
+        # J is the Jacobian matrix (maps small changes in 2D to changes in d-dim space)
         J = torch.stack(J_cols, dim=2) # [B, D, n_components]
         
         # G is the Riemannian Pullback Metric Tensor: G = J^T J
