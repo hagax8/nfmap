@@ -1,3 +1,4 @@
+import warnings
 import math
 import numpy as np
 import scipy.sparse as sp
@@ -408,6 +409,9 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.graph_kernel = graph_kernel
         self.perplexity = perplexity
         self.use_native_predictor = use_native_predictor
+        
+        if self.graph_kernel == 'perplexity':
+            warnings.warn("The 'perplexity' (t-SNE) graph kernel is deprecated and will be removed in a future release. Please use the default UMAP kernel instead.", DeprecationWarning, stacklevel=2)
         
     def _compute_perplexity_weights(self, distances, perplexity=30.0, tol=1e-5, max_iter=50):
         N, K = distances.shape
