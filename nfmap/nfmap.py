@@ -787,6 +787,7 @@ class NFMap(BaseEstimator, TransformerMixin):
         """
         Returns exact probability density ln p_X(x) for the given data points 
         by computing the pullback metric.
+        In GMM terminology it's the log-likelihood.
         """
         if self.is_binary_:
             X_pca = self.pca_.transform(X)
