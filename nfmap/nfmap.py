@@ -818,6 +818,8 @@ class NFMap(BaseEstimator, TransformerMixin):
         Predict the GMM cluster responsibilities (probabilities) for each data point.
         Returns a matrix of shape [N_samples, n_prior_components] where each row sums to 1.
         Useful for coloring maps by cluster or extracting soft clustering labels.
+        Responsibilities are posterior probabilities p(k|z): 
+        "Given that we are looking at $z$, what is the probability that it belongs to cluster k?"
         """
         if self.is_binary_:
             X_pca = self.pca_.transform(X)
