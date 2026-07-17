@@ -950,8 +950,10 @@ class NFMap(BaseEstimator, TransformerMixin):
                 if getattr(self, 'inject_weight', 0.0) > 0:
                     # Pairwise 2D distances within the batch
                     dists_z = torch.cdist(z_batch_par, z_batch_par)          # (B, B)
-                    # Median-heuristic bandwidth: adapts to current embedding scale automatically
-                    tau = dists_z.detach().median().clamp(min=1e-6)
+                    # Fixed bandwidth: prevents the runaway expansion loop because the 
+                    # penalty naturally dies out once points are further than ~2.0 apart.
+                    # Since our GMM grid is always anchored in [-3, 3], a fixed tau works perfectly.
+                    tau = 1.0
                     w_inject = torch.exp(-dists_z ** 2 / (tau ** 2))         # (B, B)
                     # Pairwise input-space distances within the batch
                     dists_x = torch.cdist(x_batch, x_batch)                  # (B, B)
@@ -1014,6 +1016,47 @@ class NFMap(BaseEstimator, TransformerMixin):
                     z_parallel_list.append(z[:, :self.n_components].cpu().numpy())
                 
         return np.concatenate(z_parallel_list, axis=0)
+
+    def generate(self, coords, z_perp_strategy='zeros', z_perp_noise_std=1.0, random_state=None):
+        """
+        Generate high-dimensional data samples (X) from specified 2D coordinates.
+        
+        Parameters
+        ----------
+        coords : array-like of shape (n_samples, 2)
+            The target 2D coordinates on the map.
+        z_perp_strategy : str, default='zeros'
+            How to fill the orthogonal (non-manifold) dimensions.
+            - 'zeros': Sets all orthogonal dimensions to exactly 0.
+            - 'noise': Samples orthogonal dimensions from a normal distribution.
+        z_perp_noise_std : float, default=1.0
+            The standard deviation of the noise if z_perp_strategy='noise'.
+        random_state : int or None
+            Seed for random number generator if using noise.
+            
+        Returns
+        -------
+        X_gen : np.ndarray of shape (n_samples, n_features)
+            The generated data points in the original ambient space.
+        """
+        coords = np.asarray(coords)
+        if coords.ndim == 1:
+            coords = coords.reshape(1, -1)
+            
+        n_samples = coords.shape[0]
+        
+        if random_state is not None:
+            np.random.seed(random_state)
+            
+        z = np.zeros((n_samples, self.module_.n_ambient))
+        z[:, :self.n_components] = coords
+        
+        if z_perp_strategy == 'noise':
+            z[:, self.n_components:] = np.random.normal(
+                0, z_perp_noise_std, size=(n_samples, self.module_.n_ambient - self.n_components)
+            )
+            
+        return self.inverse_transform(z)
 
     def inverse_transform(self, z):
         """
