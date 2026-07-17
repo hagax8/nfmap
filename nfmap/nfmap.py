@@ -1048,12 +1048,12 @@ class NFMap(BaseEstimator, TransformerMixin):
         if random_state is not None:
             np.random.seed(random_state)
             
-        z = np.zeros((n_samples, self.module_.n_ambient))
+        z = np.zeros((n_samples, self.D_scaled_))
         z[:, :self.n_components] = coords
         
         if z_perp_strategy == 'noise':
             z[:, self.n_components:] = np.random.normal(
-                0, z_perp_noise_std, size=(n_samples, self.module_.n_ambient - self.n_components)
+                0, z_perp_noise_std, size=(n_samples, self.D_scaled_ - self.n_components)
             )
             
         return self.inverse_transform(z)
