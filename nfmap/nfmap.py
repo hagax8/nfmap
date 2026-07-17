@@ -558,6 +558,28 @@ class NFMap(BaseEstimator, TransformerMixin):
         - Macro head: predicts from GMM cluster responsibilities (coarse, map-level).
         - Micro head: predicts from off-manifold dimensions (fine, molecular-level).
 
+    inject_weight : float, default=0.0
+        Weight of the local injectivity loss — a regularizer that prevents the 2D map
+        from projecting structurally different molecules to the same region.
+
+        **Motivation**: The flow is bijective over the full (z_par, z_perp) space, but NOT
+        over z_par alone — two very different molecules can share the same 2D coordinates
+        with different perpendicular dimensions. This loss enforces that molecules which
+        land close together in the 2D map are also close in the original input space.
+        Particularly useful when `generate()` will be used (Paper 2 / Imolgen workflow).
+
+        **Method**: Gaussian kernel with automatic median-heuristic bandwidth. For each
+        batch, the kernel width τ is set to the median pairwise 2D distance, so no manual
+        bandwidth tuning is required. The loss is:
+
+            L_inject = Σ_{(i,j)} exp(−‖z_i − z_j‖² / τ²) · ‖x_i − x_j‖
+
+        - Disabled by default (`inject_weight=0.0`) — has zero effect on existing results.
+        - Typical values if enabled: 0.1 – 1.0. Start at 0.1 and increase if needed.
+        - Note: this loss is **complementary** to `graph_weight` (which attracts kNN
+          neighbors together); `inject_weight` prevents dissimilar molecules from
+          collapsing to the same point.
+
     max_ambient_dim : int or None, default=None
         Maximum dimensionality of the ambient space passed to the flow network
         after PCA preprocessing. If None, the heuristic default is used
@@ -602,7 +624,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     >>> # Score the log-likelihood of data points on the learned map
     >>> log_p = model.score_samples(X)
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components=100, random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, max_ambient_dim=None):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components=100, random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, max_ambient_dim=None, inject_weight=0.0):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -624,6 +646,7 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.perplexity = perplexity
         self.use_native_predictor = use_native_predictor
         self.max_ambient_dim = max_ambient_dim
+        self.inject_weight = inject_weight
         
         if self.graph_kernel == 'perplexity':
             warnings.warn("The 'perplexity' (t-SNE) graph kernel is deprecated and will be removed in a future release. Please use the default 'fuzzy_simplicial' kernel instead.", DeprecationWarning, stacklevel=2)
@@ -915,6 +938,26 @@ class NFMap(BaseEstimator, TransformerMixin):
                         loss_graph = loss_graph + self.repulsion_weight * loss_repel
 
                     loss = loss + self.graph_weight * loss_graph
+
+                # ── Part 3/3: Local Injectivity Loss (optional, inject_weight=0.0 by default) ──
+                # Prevents the 2D map from collapsing structurally different molecules to the
+                # same region of latent space (many-to-one folding). This is complementary to
+                # the graph attraction loss:
+                #   graph_weight:  similar in X  → close in z_par  (attraction)
+                #   inject_weight: close in z_par → similar in X   (injectivity)
+                # Uses a Gaussian kernel with median-heuristic bandwidth (no manual tau needed).
+                # Only active when inject_weight > 0; completely inactive by default.
+                if getattr(self, 'inject_weight', 0.0) > 0:
+                    # Pairwise 2D distances within the batch
+                    dists_z = torch.cdist(z_batch_par, z_batch_par)          # (B, B)
+                    # Median-heuristic bandwidth: adapts to current embedding scale automatically
+                    tau = dists_z.detach().median().clamp(min=1e-6)
+                    w_inject = torch.exp(-dists_z ** 2 / (tau ** 2))         # (B, B)
+                    # Pairwise input-space distances within the batch
+                    dists_x = torch.cdist(x_batch, x_batch)                  # (B, B)
+                    # Penalise: large input distance when 2D coords are close
+                    loss_inject = (w_inject * dists_x).mean()
+                    loss = loss + self.inject_weight * loss_inject
 
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(self.module_.parameters(), max_norm=1.0)
