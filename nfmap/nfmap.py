@@ -96,16 +96,35 @@ class _NFMapModule(nn.Module):
         if dim != 2:
             return torch.randn(n_comps, dim) * 2.0
         if layout == 'concentric':
+            if n_comps <= 1:
+                return torch.zeros(n_comps, dim)
+            
+            # Estimate optimal number of rings R based on standard concentric hexagonal progression: 
+            # S(R) = 1 + 3*R*(R+1) => R \approx \sqrt{n_comps / 3}
+            R = int(np.round(np.sqrt((n_comps - 1) / 3.0)))
+            R = max(1, R)
+            
+            # Distribute points to rings proportional to their circumference (radius)
+            ring_weights = np.arange(1, R + 1)
+            total_weight = ring_weights.sum()
+            points_per_ring = ((n_comps - 1) * ring_weights / total_weight).astype(int)
+            
+            # Adjust for rounding difference to ensure sum is exactly n_comps - 1
+            diff = (n_comps - 1) - points_per_ring.sum()
+            for i in range(abs(diff)):
+                # Adjust starting from the outer (largest) rings
+                idx = (R - 1 - i) % R
+                points_per_ring[idx] += 1 if diff > 0 else -1
+                
             means = [[0.0, 0.0]]
-            ring = 1
-            while len(means) < n_comps:
-                # Number of points on this ring (increases linearly with radius)
-                n_points = min(6 * ring, n_comps - len(means))
-                radius = 1.0 * ring
-                for i in range(n_points):
-                    angle = (2.0 * np.pi * i) / n_points
-                    means.append([radius * np.cos(angle), radius * np.sin(angle)])
-                ring += 1
+            scale_factor = 3.0 / R
+            for r in range(1, R + 1):
+                n_points = points_per_ring[r - 1]
+                if n_points > 0:
+                    radius = r * scale_factor
+                    for i in range(n_points):
+                        angle = (2.0 * np.pi * i) / n_points
+                        means.append([radius * np.cos(angle), radius * np.sin(angle)])
             return torch.tensor(means, dtype=torch.float32)
         else: # square
             side = int(np.ceil(np.sqrt(n_comps)))
