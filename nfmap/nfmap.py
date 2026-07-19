@@ -117,7 +117,7 @@ class _NFMapModule(nn.Module):
                 points_per_ring[idx] += 1 if diff > 0 else -1
                 
             means = [[0.0, 0.0]]
-            scale_factor = 3.0 / R
+            scale_factor = 3.5 / R
             for r in range(1, R + 1):
                 n_points = points_per_ring[r - 1]
                 if n_points > 0:
@@ -128,7 +128,7 @@ class _NFMapModule(nn.Module):
             return torch.tensor(means, dtype=torch.float32)
         else: # square
             side = int(np.ceil(np.sqrt(n_comps)))
-            grid_1d = torch.linspace(-3.0, 3.0, side)
+            grid_1d = torch.linspace(-3.5, 3.5, side)
             xx, yy = torch.meshgrid(grid_1d, grid_1d, indexing='ij')
             grid = torch.stack([xx.flatten(), yy.flatten()], dim=-1)
             return grid[:n_comps, :]
