@@ -92,16 +92,29 @@ class _NFMapModule(nn.Module):
     3. Flouris & Konukoglu (NeurIPS 2023) — Canonical/Orthogonal Regularization:
        https://github.com/k-flouris/cmf
     """
-    def _get_grid_means(self, n_comps, dim):
+    def _get_grid_means(self, n_comps, dim, layout='square'):
         if dim != 2:
             return torch.randn(n_comps, dim) * 2.0
-        side = int(np.ceil(np.sqrt(n_comps)))
-        grid_1d = torch.linspace(-3.0, 3.0, side)
-        xx, yy = torch.meshgrid(grid_1d, grid_1d, indexing='ij')
-        grid = torch.stack([xx.flatten(), yy.flatten()], dim=-1)
-        return grid[:n_comps, :]
+        if layout == 'concentric':
+            means = [[0.0, 0.0]]
+            ring = 1
+            while len(means) < n_comps:
+                # Number of points on this ring (increases linearly with radius)
+                n_points = min(6 * ring, n_comps - len(means))
+                radius = 1.0 * ring
+                for i in range(n_points):
+                    angle = (2.0 * np.pi * i) / n_points
+                    means.append([radius * np.cos(angle), radius * np.sin(angle)])
+                ring += 1
+            return torch.tensor(means, dtype=torch.float32)
+        else: # square
+            side = int(np.ceil(np.sqrt(n_comps)))
+            grid_1d = torch.linspace(-3.0, 3.0, side)
+            xx, yy = torch.meshgrid(grid_1d, grid_1d, indexing='ij')
+            grid = torch.stack([xx.flatten(), yy.flatten()], dim=-1)
+            return grid[:n_comps, :]
 
-    def __init__(self, d_scaled, n_components=2, n_blocks=5, hidden_dim=512, use_canonical=False, sigma_perp=0.05, prior_weight=0.005, n_prior_components=15, learnable_priors=True, vol_weight=1.0, prop_weight=1.0, **kwargs):
+    def __init__(self, d_scaled, n_components=2, n_blocks=5, hidden_dim=512, use_canonical=False, sigma_perp=0.05, prior_weight=0.005, n_prior_components=15, learnable_priors=True, vol_weight=1.0, prop_weight=1.0, prior_layout='square', **kwargs):
         super().__init__()
         self.d_scaled = d_scaled
         self.n_components = n_components
@@ -111,6 +124,7 @@ class _NFMapModule(nn.Module):
         self.vol_weight = vol_weight
         self.n_prior_components = n_prior_components
         self.prop_weight = prop_weight
+        self.prior_layout = prior_layout
         self.use_native_predictor = kwargs.get('use_native_predictor', False)
         
         # Native Predictor Parameters
@@ -121,7 +135,7 @@ class _NFMapModule(nn.Module):
             nn.init.zeros_(self.micro_head.bias)
         
         # GMM Prior Parameters
-        grid_means = self._get_grid_means(n_prior_components, n_components)
+        grid_means = self._get_grid_means(n_prior_components, n_components, layout=self.prior_layout)
         if learnable_priors:
             self.prior_means = nn.Parameter(grid_means)
             self.prior_log_scales = nn.Parameter(torch.full((n_prior_components,), -1.0))
@@ -624,7 +638,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     >>> # Score the log-likelihood of data points on the learned map
     >>> log_p = model.score_samples(X)
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components=100, random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, max_ambient_dim=None, inject_weight=0.0):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components=100, random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, max_ambient_dim=None, inject_weight=0.0, prior_layout='square'):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -647,6 +661,7 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.use_native_predictor = use_native_predictor
         self.max_ambient_dim = max_ambient_dim
         self.inject_weight = inject_weight
+        self.prior_layout = prior_layout
         
         if self.graph_kernel == 'perplexity':
             warnings.warn("The 'perplexity' (t-SNE) graph kernel is deprecated and will be removed in a future release. Please use the default 'fuzzy_simplicial' kernel instead.", DeprecationWarning, stacklevel=2)
@@ -840,6 +855,7 @@ class NFMap(BaseEstimator, TransformerMixin):
             learnable_priors=self.learnable_priors,
             vol_weight=self.vol_weight,
             prop_weight=self.prop_weight,
+            prior_layout=self.prior_layout,
             use_native_predictor=self.use_native_predictor
         )
 
@@ -1246,5 +1262,22 @@ class NFMap(BaseEstimator, TransformerMixin):
                 # plus the Micro correction (specific molecular details).
                 y_pred = y_macro + y_micro
                 preds_list.append(y_pred.cpu().numpy())
-                
+
         return np.concatenate(preds_list, axis=0)
+
+    def save(self, path: str) -> None:
+        """
+        Persist the fitted estimator (torch weights, fitted PCA/scaler, and
+        any ad-hoc attributes set after fit, e.g. scaler_y_mean_/scaler_y_std_)
+        to a single file via joblib. Nothing on the instance is unpicklable —
+        NNDescent indices used during fit() are local to that call and never
+        stored on self — so a plain dump/load round-trips the whole model.
+        """
+        import joblib
+        joblib.dump(self, path)
+
+    @staticmethod
+    def load(path: str) -> "NFMap":
+        """Load a model previously written by `save()`."""
+        import joblib
+        return joblib.load(path)
