@@ -11,7 +11,7 @@ from torch.utils.data import TensorDataset, DataLoader
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import LambdaLR
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.decomposition import TruncatedSVD, PCA
+from sklearn.decomposition import TruncatedSVD, PCA, IncrementalPCA
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 
@@ -92,32 +92,55 @@ class _NFMapModule(nn.Module):
     3. Flouris & Konukoglu (NeurIPS 2023) — Canonical/Orthogonal Regularization:
        https://github.com/k-flouris/cmf
     """
-    def _get_grid_means(self, n_comps, dim, layout='square'):
+    def _get_grid_means(self, n_comps, dim, layout='square', grid_bounds=3.0):
         if dim != 2:
             return torch.randn(n_comps, dim) * 2.0
-        if layout == 'concentric':
+            
+        if layout == 'hexagonal':
             if n_comps <= 1:
                 return torch.zeros(n_comps, dim)
             
-            # Estimate optimal number of rings R based on standard concentric hexagonal progression: 
-            # S(R) = 1 + 3*R*(R+1) => R \approx \sqrt{n_comps / 3}
-            R = int(np.round(np.sqrt((n_comps - 1) / 3.0)))
-            R = max(1, R)
+            # Area of circle
+            target_area = np.pi * grid_bounds**2
+            area_per_point = target_area / n_comps
+            # Hexagonal packing distance
+            d = np.sqrt((2 * area_per_point) / np.sqrt(3))
             
-            # Distribute points to rings proportional to their circumference (radius)
-            ring_weights = np.arange(1, R + 1)
-            total_weight = ring_weights.sum()
-            points_per_ring = ((n_comps - 1) * ring_weights / total_weight).astype(int)
+            points = []
+            n_steps = int(np.ceil(grid_bounds / d)) + 2
+            for i in range(-n_steps, n_steps + 1):
+                for j in range(-n_steps, n_steps + 1):
+                    x = i * d
+                    if j % 2 != 0:
+                        x += d / 2.0
+                    y = j * (np.sqrt(3) / 2.0) * d
+                    points.append([x, y])
+                    
+            points = np.array(points)
+            # Sort by distance from origin and take nearest n_comps
+            distances = np.linalg.norm(points, axis=1)
+            sorted_indices = np.argsort(distances)
+            best_points = points[sorted_indices[:n_comps]]
             
-            # Adjust for rounding difference to ensure sum is exactly n_comps - 1
-            diff = (n_comps - 1) - points_per_ring.sum()
-            for i in range(abs(diff)):
-                # Adjust starting from the outer (largest) rings
-                idx = (R - 1 - i) % R
+            return torch.tensor(best_points, dtype=torch.float32)
+            
+        elif layout == 'concentric':
+            if n_comps <= 1:
+                return torch.zeros(n_comps, dim)
+            
+            R = int(np.round(np.sqrt(n_comps))) 
+            if R < 1: R = 1
+            
+            c = (n_comps - 1) / (R * (R + 1) / 2)
+            points_per_ring = [int(np.round(c * r)) for r in range(1, R + 1)]
+            
+            diff = (n_comps - 1) - sum(points_per_ring)
+            for _ in range(abs(diff)):
+                idx = np.random.randint(0, R)
                 points_per_ring[idx] += 1 if diff > 0 else -1
                 
             means = [[0.0, 0.0]]
-            scale_factor = 4.0 / R
+            scale_factor = grid_bounds / R
             for r in range(1, R + 1):
                 n_points = points_per_ring[r - 1]
                 if n_points > 0:
@@ -126,14 +149,15 @@ class _NFMapModule(nn.Module):
                         angle = (2.0 * np.pi * i) / n_points
                         means.append([radius * np.cos(angle), radius * np.sin(angle)])
             return torch.tensor(means, dtype=torch.float32)
+            
         else: # square
             side = int(np.ceil(np.sqrt(n_comps)))
-            grid_1d = torch.linspace(-4.0, 4.0, side)
+            grid_1d = torch.linspace(-grid_bounds, grid_bounds, side)
             xx, yy = torch.meshgrid(grid_1d, grid_1d, indexing='ij')
             grid = torch.stack([xx.flatten(), yy.flatten()], dim=-1)
             return grid[:n_comps, :]
 
-    def __init__(self, d_scaled, n_components=2, n_blocks=5, hidden_dim=512, use_canonical=False, sigma_perp=0.05, prior_weight=0.005, n_prior_components=15, learnable_priors=True, vol_weight=1.0, prop_weight=1.0, prior_layout='square', **kwargs):
+    def __init__(self, d_scaled, n_components=2, n_blocks=5, hidden_dim=512, use_canonical=False, sigma_perp=0.05, prior_weight=0.005, n_prior_components=15, learnable_priors=True, vol_weight=1.0, prop_weight=1.0, prior_layout='square', grid_bounds=3.0, **kwargs):
         super().__init__()
         self.d_scaled = d_scaled
         self.n_components = n_components
@@ -145,6 +169,7 @@ class _NFMapModule(nn.Module):
         self.prop_weight = prop_weight
         self.prior_layout = prior_layout
         self.use_native_predictor = kwargs.get('use_native_predictor', False)
+        self.use_lmdt_head = kwargs.get('use_lmdt_head', True)
         
         # Native Predictor Parameters
         if self.use_native_predictor:
@@ -152,9 +177,23 @@ class _NFMapModule(nn.Module):
             self.micro_head = nn.Linear(d_scaled - n_components, 1)
             nn.init.normal_(self.micro_head.weight, std=0.01)
             nn.init.zeros_(self.micro_head.bias)
+            
+        # LMDT Predictor Head
+        if self.use_lmdt_head:
+            self.lmdt_head = nn.Sequential(
+                nn.Linear(d_scaled, 128),
+                nn.ReLU(),
+                nn.Linear(128, 1)
+            )
+            # Initialize with small weights
+            for m in self.lmdt_head.modules():
+                if isinstance(m, nn.Linear):
+                    nn.init.normal_(m.weight, std=0.01)
+                    nn.init.zeros_(m.bias)
         
+        self.grid_bounds = grid_bounds
         # GMM Prior Parameters
-        grid_means = self._get_grid_means(n_prior_components, n_components, layout=self.prior_layout)
+        grid_means = self._get_grid_means(n_prior_components, n_components, layout=self.prior_layout, grid_bounds=self.grid_bounds)
         if learnable_priors:
             self.prior_means = nn.Parameter(grid_means)
             self.prior_log_scales = nn.Parameter(torch.full((n_prior_components,), -1.0))
@@ -657,7 +696,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     >>> # Score the log-likelihood of data points on the learned map
     >>> log_p = model.score_samples(X)
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components=100, random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, max_ambient_dim=None, inject_weight=0.0, prior_layout='square'):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components='auto', random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, use_lmdt_head=False, max_ambient_dim=None, inject_weight=0.0, prior_layout='square', grid_bounds='auto'):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -678,9 +717,11 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.graph_kernel = graph_kernel
         self.perplexity = perplexity
         self.use_native_predictor = use_native_predictor
+        self.use_lmdt_head = use_lmdt_head
         self.max_ambient_dim = max_ambient_dim
         self.inject_weight = inject_weight
         self.prior_layout = prior_layout
+        self.grid_bounds = grid_bounds
         
         if self.graph_kernel == 'perplexity':
             warnings.warn("The 'perplexity' (t-SNE) graph kernel is deprecated and will be removed in a future release. Please use the default 'fuzzy_simplicial' kernel instead.", DeprecationWarning, stacklevel=2)
@@ -758,7 +799,7 @@ class NFMap(BaseEstimator, TransformerMixin):
         
         # Determine ambient dimension limits (use smart defaults if not explicitly set)
         cap_binary = 128 if self.max_ambient_dim is None else self.max_ambient_dim
-        cap_cont = 256 if self.max_ambient_dim is None else self.max_ambient_dim
+        cap_cont = X.shape[1] if self.max_ambient_dim is None else self.max_ambient_dim
         
         if self.is_binary_:
             # Binary data: Simple TruncatedSVD for binary features
@@ -781,10 +822,16 @@ class NFMap(BaseEstimator, TransformerMixin):
             if self.max_ambient_dim is not None:
                 n_components_pca = min(n_components_pca, self.max_ambient_dim)
                 
-            # Use randomized solver for high efficiency on large datasets if size/dimensions are high
-            solver = 'randomized' if (X_dense_scaled.shape[0] > 10000 and n_components_pca > 10) else 'auto'
-            self.pca_ = PCA(n_components=n_components_pca, svd_solver=solver, random_state=self.random_state)
-            X_pca = self.pca_.fit_transform(X_dense_scaled)
+            # Use IncrementalPCA for massive dense datasets to prevent OOM
+            if X_dense_scaled.shape[0] > 100000:
+                self.pca_ = IncrementalPCA(n_components=n_components_pca, batch_size=min(5000, X_dense_scaled.shape[0]))
+            else:
+                # Use randomized solver for high efficiency on large datasets if size/dimensions are high
+                solver = 'randomized' if (X_dense_scaled.shape[0] > 10000 and n_components_pca > 10) else 'auto'
+                self.pca_ = PCA(n_components=n_components_pca, svd_solver=solver, random_state=self.random_state)
+                
+            self.pca_.fit(X_dense_scaled)
+            X_pca = self.pca_.transform(X_dense_scaled)
                 
         # Step 2: Global Scaling (preserve relative PCA variances)
         self.global_scale_ = np.std(X_pca[:, 0]) if np.std(X_pca[:, 0]) > 1e-6 else 1.0
@@ -804,12 +851,16 @@ class NFMap(BaseEstimator, TransformerMixin):
                 raise ValueError(f"Unknown graph kernel: {kernel_name}")
                 
             if X_struct is not None:
-                # Use structural fingerprints to define the exact topological neighborhood!
+                # Determine if X_struct is binary or continuous
+                is_struct_binary = (X_struct.dtype == bool or (X_struct.max() <= 1 and X_struct.min() >= 0))
+                struct_metric = 'jaccard' if is_struct_binary else 'euclidean'
+                
+                # Use structural features to define the exact topological neighborhood!
                 if HAS_PYNNDESCENT:
-                    index = NNDescent(X_struct, metric='jaccard', n_neighbors=k_neighbors + 1, n_jobs=-1)
+                    index = NNDescent(X_struct, metric=struct_metric, n_neighbors=k_neighbors + 1, n_jobs=-1)
                     knn_indices, knn_dists = index.neighbor_graph
                 else:
-                    nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='auto', metric='jaccard', n_jobs=-1)
+                    nn_model = NearestNeighbors(n_neighbors=k_neighbors + 1, algorithm='auto', metric=struct_metric, n_jobs=-1)
                     nn_model.fit(X_struct)
                     knn_dists, knn_indices = nn_model.kneighbors(X_struct)
             else:
@@ -862,6 +913,18 @@ class NFMap(BaseEstimator, TransformerMixin):
         if self.random_state is not None:
             torch.manual_seed(self.random_state)
 
+        self.resolved_n_prior_components_ = self.n_prior_components
+        if self.resolved_n_prior_components_ == 'auto':
+            # Heuristic: roughly scale with sqrt(N), bounded [10, 400]
+            self.resolved_n_prior_components_ = int(np.clip(np.sqrt(N) * 4, 10, 400))
+            
+        self.resolved_grid_bounds_ = self.grid_bounds
+        if self.resolved_grid_bounds_ == 'auto':
+            # Heuristic: Larger datasets naturally contain more clusters and need a wider canvas.
+            # Minimum is 3.0 to ensure enough Gaussian coverage.
+            # N=100 -> 3.0, N=1,000 -> 3.0, N=10,000 -> 3.3, N=100,000 -> 3.6
+            self.resolved_grid_bounds_ = float(np.clip(2.0 + np.log10(N) * 0.33, 3.0, 4.5))
+
         self.module_ = _NFMapModule(
             d_scaled=D_scaled,
             n_components=self.n_components,
@@ -870,15 +933,22 @@ class NFMap(BaseEstimator, TransformerMixin):
             use_canonical=self.use_canonical,
             sigma_perp=self.sigma_perp,
             prior_weight=self.prior_weight,
-            n_prior_components=self.n_prior_components,
+            n_prior_components=self.resolved_n_prior_components_,
             learnable_priors=self.learnable_priors,
             vol_weight=self.vol_weight,
             prop_weight=self.prop_weight,
             prior_layout=self.prior_layout,
-            use_native_predictor=self.use_native_predictor
+            grid_bounds=self.resolved_grid_bounds_,
+            use_native_predictor=self.use_native_predictor,
+            use_lmdt_head=self.use_lmdt_head
         )
 
-        self.device_ = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        if torch.cuda.is_available():
+            self.device_ = torch.device('cuda')
+        elif torch.backends.mps.is_available():
+            self.device_ = torch.device('mps')
+        else:
+            self.device_ = torch.device('cpu')
         self.module_.to(self.device_)
 
         optimizer = AdamW(self.module_.parameters(), lr=base_lr, weight_decay=weight_decay)
@@ -971,6 +1041,27 @@ class NFMap(BaseEstimator, TransformerMixin):
                         dist_sq_neg = torch.sum((z_batch_par.unsqueeze(1) - z_neg_par) ** 2, dim=-1)
                         loss_repel = torch.mean(torch.log1p(1.0 / (dist_sq_neg + 1e-4)))
                         loss_graph = loss_graph + self.repulsion_weight * loss_repel
+                        
+                    if getattr(self, 'use_lmdt_head', False):
+                        # 1. Predict distance for real (ID) data
+                        pred_id = self.module_.lmdt_head(x_batch).squeeze()
+                        # Target is actual Euclidean distance in 2D
+                        target_id = torch.sqrt(dist_sq.detach() + 1e-8)
+                        
+                        # 2. Predict distance for fake (OOD) data
+                        # Generate OOD data by independently permuting each feature column
+                        # across the batch to destroy covariance but preserve marginal distributions.
+                        x_ood = x_batch.clone()
+                        for i in range(x_ood.shape[1]):
+                            x_ood[:, i] = x_ood[torch.randperm(x_batch.shape[0]), i]
+                        pred_ood = self.module_.lmdt_head(x_ood).squeeze()
+                        target_ood = torch.full_like(pred_ood, 10.0)
+                        
+                        # 3. MSE Loss
+                        loss_lmdt = torch.nn.functional.mse_loss(pred_id, target_id) + \
+                                    torch.nn.functional.mse_loss(pred_ood, target_ood)
+                        # We can just add it directly because the head has completely independent weights
+                        loss = loss + loss_lmdt
 
                     loss = loss + self.graph_weight * loss_graph
 
@@ -1019,7 +1110,19 @@ class NFMap(BaseEstimator, TransformerMixin):
                 
         if best_state is not None:
             self.module_.load_state_dict(best_state)
-            
+
+        # Calibrate LMDT score if enabled
+        if getattr(self, 'use_lmdt_head', False):
+            self.module_.eval()
+            with torch.no_grad():
+                raw_preds = []
+                for i in range(0, len(X_scaled), 256):
+                    xb = torch.tensor(X_scaled[i:i+256], dtype=torch.float32, device=self.device_)
+                    raw_preds.append(self.module_.lmdt_head(xb).squeeze().cpu().numpy())
+                raw_preds = np.concatenate(raw_preds)
+                self.lmdt_p95_ = float(np.percentile(raw_preds, 95))
+            self.module_.train()
+
         return self
 
     def transform(self, X: ArrayLike, return_full: bool = False) -> NDArray[np.float32]:

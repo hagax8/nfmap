@@ -13,6 +13,7 @@ dependencies = [
     "scipy",
     "torch",
     "scikit-learn",
+    "pynndescent",
     "tqdm"
 ]
 

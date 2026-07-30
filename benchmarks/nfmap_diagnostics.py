@@ -426,10 +426,13 @@ DEFAULTS = dict(
     n_components=2,
     use_canonical=False,
     complexity='medium',
+    inject_weight=0.5,
     n_prior_components=100,
     prior_weight=0.1,
+    grid_bounds=3.0,
     graph_weight=5.0,
     repulsion_weight=1.0,
+    prior_layout='hexagonal',
     random_state=42,
 )
 
