@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Union
+import os
 import warnings
 import math
 import numpy as np
@@ -77,6 +78,44 @@ class RealNVPBlock(nn.Module):
         x_in = (x_out - t) * torch.exp(-s)
         log_det = -s.sum(dim=-1)
         return x_in, log_det
+
+
+class _ZPerpMDNHead(nn.Module):
+    """
+    Small Mixture Density Network (Bishop, 1994) predicting a distribution over
+    z_perp conditioned on the 2D map coordinates (z_parallel).
+
+    Used to fill z_perp during generate(z_perp_strategy='predicted') with values
+    that reflect real, locally-typical structure instead of zeros/global noise.
+    A mixture (rather than a single Gaussian) is needed because a single Gaussian
+    fit to a multimodal location regresses to the average of the modes, which is
+    typically the least-typical point in that neighborhood.
+    """
+    def __init__(self, n_components, d_perp, n_mixture=3, hidden_dim=128):
+        super().__init__()
+        self.n_mixture = n_mixture
+        self.d_perp = d_perp
+        self.net = nn.Sequential(
+            nn.Linear(n_components, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+        )
+        self.logit_head = nn.Linear(hidden_dim, n_mixture)
+        self.mu_head = nn.Linear(hidden_dim, n_mixture * d_perp)
+        self.log_sigma_head = nn.Linear(hidden_dim, n_mixture * d_perp)
+
+        for m in (self.logit_head, self.mu_head, self.log_sigma_head):
+            nn.init.normal_(m.weight, std=0.01)
+            nn.init.zeros_(m.bias)
+
+    def forward(self, coords):
+        """coords: (B, n_components) -> log_pi (B,K), mu (B,K,D_perp), log_sigma (B,K,D_perp)."""
+        h = self.net(coords)
+        log_pi = torch.log_softmax(self.logit_head(h), dim=-1)
+        mu = self.mu_head(h).view(-1, self.n_mixture, self.d_perp)
+        log_sigma = self.log_sigma_head(h).view(-1, self.n_mixture, self.d_perp).clamp(-5.0, 2.0)
+        return log_pi, mu, log_sigma
 
 
 class _NFMapModule(nn.Module):
@@ -170,7 +209,8 @@ class _NFMapModule(nn.Module):
         self.prior_layout = prior_layout
         self.use_native_predictor = kwargs.get('use_native_predictor', False)
         self.use_lmdt_head = kwargs.get('use_lmdt_head', True)
-        
+        self.use_zperp_mdn = kwargs.get('use_zperp_mdn', False)
+
         # Native Predictor Parameters
         if self.use_native_predictor:
             self.macro_weights = nn.Parameter(torch.zeros(n_prior_components))
@@ -190,7 +230,16 @@ class _NFMapModule(nn.Module):
                 if isinstance(m, nn.Linear):
                     nn.init.normal_(m.weight, std=0.01)
                     nn.init.zeros_(m.bias)
-        
+
+        # z_perp Mixture Density Head (predicts z_perp distribution from 2D coords)
+        if self.use_zperp_mdn:
+            self.zperp_mdn = _ZPerpMDNHead(
+                n_components,
+                d_scaled - n_components,
+                n_mixture=kwargs.get('n_mdn_components', 3),
+                hidden_dim=kwargs.get('mdn_hidden_dim', 128),
+            )
+
         self.grid_bounds = grid_bounds
         # GMM Prior Parameters
         grid_means = self._get_grid_means(n_prior_components, n_components, layout=self.prior_layout, grid_bounds=self.grid_bounds)
@@ -696,7 +745,7 @@ class NFMap(BaseEstimator, TransformerMixin):
     >>> # Score the log-likelihood of data points on the learned map
     >>> log_p = model.score_samples(X)
     """
-    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components='auto', random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, use_lmdt_head=False, max_ambient_dim=None, inject_weight=0.0, prior_layout='square', grid_bounds='auto'):
+    def __init__(self, n_components=2, complexity='medium', use_canonical=False, prior_weight=0.1, graph_weight=5.0, repulsion_weight=1.0, n_prior_components='auto', random_state=42, learnable_priors=False, vol_weight=1.0, sigma_perp=10.0, max_epochs=1000, patience=100, verbose=False, negative_sample_rate=5, early_exaggeration=False, prop_weight=1.0, graph_kernel='fuzzy_simplicial', perplexity=30, use_native_predictor=False, use_lmdt_head=False, max_ambient_dim=None, inject_weight=0.0, prior_layout='square', grid_bounds='auto', use_zperp_mdn=False, n_mdn_components=3, mdn_hidden_dim=128, mdn_epochs=200, zperp_lmdt_weight=20.0, checkpoint_path=None, checkpoint_every=10):
         self.n_components = n_components
         self.complexity = complexity
         self.use_canonical = use_canonical
@@ -722,7 +771,20 @@ class NFMap(BaseEstimator, TransformerMixin):
         self.inject_weight = inject_weight
         self.prior_layout = prior_layout
         self.grid_bounds = grid_bounds
-        
+        self.use_zperp_mdn = use_zperp_mdn
+        self.n_mdn_components = n_mdn_components
+        self.mdn_hidden_dim = mdn_hidden_dim
+        self.mdn_epochs = mdn_epochs
+        self.zperp_lmdt_weight = zperp_lmdt_weight
+        # checkpoint_path: if set, fit() saves training progress (model/optimizer/
+        # scheduler state + early-stopping bookkeeping) to this path every
+        # checkpoint_every epochs, and automatically resumes from it if it already
+        # exists when fit() is called again - for long runs (large-N training sets)
+        # where losing progress to a crash/sleep/interrupt would be costly. No
+        # effect on behavior or results when left as None (the default).
+        self.checkpoint_path = checkpoint_path
+        self.checkpoint_every = checkpoint_every
+
         if self.graph_kernel == 'perplexity':
             warnings.warn("The 'perplexity' (t-SNE) graph kernel is deprecated and will be removed in a future release. Please use the default 'fuzzy_simplicial' kernel instead.", DeprecationWarning, stacklevel=2)
         
@@ -940,7 +1002,10 @@ class NFMap(BaseEstimator, TransformerMixin):
             prior_layout=self.prior_layout,
             grid_bounds=self.resolved_grid_bounds_,
             use_native_predictor=self.use_native_predictor,
-            use_lmdt_head=self.use_lmdt_head
+            use_lmdt_head=self.use_lmdt_head,
+            use_zperp_mdn=self.use_zperp_mdn,
+            n_mdn_components=self.n_mdn_components,
+            mdn_hidden_dim=self.mdn_hidden_dim
         )
 
         if torch.cuda.is_available():
@@ -977,10 +1042,25 @@ class NFMap(BaseEstimator, TransformerMixin):
         best_loss = float('inf')
         epochs_without_improvement = 0
         best_state = None
+        start_epoch = 0
+
+        if self.checkpoint_path and os.path.exists(self.checkpoint_path):
+            if self.verbose:
+                print(f"Resuming from checkpoint: {self.checkpoint_path}")
+            ckpt = torch.load(self.checkpoint_path, map_location=self.device_, weights_only=False)
+            self.module_.load_state_dict(ckpt['module_state'])
+            optimizer.load_state_dict(ckpt['optimizer_state'])
+            scheduler.load_state_dict(ckpt['scheduler_state'])
+            start_epoch = ckpt['epoch'] + 1
+            best_loss = ckpt['best_loss']
+            epochs_without_improvement = ckpt['epochs_without_improvement']
+            best_state = ckpt['best_state']
+            if self.verbose:
+                print(f"  Resumed at epoch {start_epoch}/{max_epochs}, best_loss={best_loss:.4f}")
 
         # Training loop
         self.module_.train()
-        for epoch in range(max_epochs):
+        for epoch in range(start_epoch, max_epochs):
             epoch_loss = 0.0
             for batch in dataloader:
                 x_batch = batch[0].to(self.device_)
@@ -1105,9 +1185,24 @@ class NFMap(BaseEstimator, TransformerMixin):
             else:
                 epochs_without_improvement += 1
                 
+            if (
+                self.checkpoint_path
+                and self.checkpoint_every > 0
+                and ((epoch + 1) % self.checkpoint_every == 0 or epochs_without_improvement >= patience)
+            ):
+                torch.save({
+                    'epoch': epoch,
+                    'module_state': self.module_.state_dict(),
+                    'optimizer_state': optimizer.state_dict(),
+                    'scheduler_state': scheduler.state_dict(),
+                    'best_loss': best_loss,
+                    'epochs_without_improvement': epochs_without_improvement,
+                    'best_state': best_state,
+                }, self.checkpoint_path)
+
             if epochs_without_improvement >= patience:
                 break
-                
+
         if best_state is not None:
             self.module_.load_state_dict(best_state)
 
@@ -1123,7 +1218,79 @@ class NFMap(BaseEstimator, TransformerMixin):
                 self.lmdt_p95_ = float(np.percentile(raw_preds, 95))
             self.module_.train()
 
+        # Train z_perp Mixture Density Head (predicts z_perp distribution from 2D coords)
+        if getattr(self, 'use_zperp_mdn', False):
+            self.module_.eval()
+
+            # Cache (z_parallel, z_perp) for every training point via one inverse_flow pass.
+            z_par_list, z_perp_list = [], []
+            with torch.no_grad():
+                for i in range(0, len(X_scaled), 256):
+                    xb = torch.tensor(X_scaled[i:i+256], dtype=torch.float32, device=self.device_)
+                    z_full, _ = self.module_.inverse_flow(xb)
+                    z_par_list.append(z_full[:, :self.n_components])
+                    z_perp_list.append(z_full[:, self.n_components:])
+            z_par_cache = torch.cat(z_par_list, dim=0)
+            z_perp_cache = torch.cat(z_perp_list, dim=0)
+
+            self._fit_zperp_mdn(z_par_cache, z_perp_cache, batch_size)
+
         return self
+
+    def _fit_zperp_mdn(self, z_par_cache, z_perp_cache, batch_size):
+        """
+        Train self.module_.zperp_mdn to predict a mixture-of-Gaussians distribution
+        over z_perp conditioned on z_parallel, given cached (z_parallel, z_perp) pairs
+        from real training data. Factored out of fit() so it can also be driven
+        directly with hand-constructed pairs (see experiments/prove_zperp_mdn.py).
+        """
+        # Freeze everything except the new head. Gradients from the (optional)
+        # typicality term still flow through forward_flow/lmdt_head into the head's
+        # outputs — freezing a module's params doesn't cut the autograd graph, it
+        # just stops gradient accumulating on those params.
+        for p in self.module_.parameters():
+            p.requires_grad_(False)
+        for p in self.module_.zperp_mdn.parameters():
+            p.requires_grad_(True)
+
+        mdn_optimizer = torch.optim.Adam(self.module_.zperp_mdn.parameters(), lr=1e-3)
+        mdn_loader = DataLoader(TensorDataset(z_par_cache, z_perp_cache), batch_size=batch_size, shuffle=True)
+        use_typicality = getattr(self, 'use_lmdt_head', False) and self.zperp_lmdt_weight > 0
+        d_perp = self.module_.zperp_mdn.d_perp
+
+        for _ in range(self.mdn_epochs):
+            for z_par_b, z_perp_b in mdn_loader:
+                mdn_optimizer.zero_grad()
+                log_pi, mu, log_sigma = self.module_.zperp_mdn(z_par_b)
+
+                sigma = torch.exp(log_sigma)
+                diff = (z_perp_b.unsqueeze(1) - mu) / sigma
+                log_prob_k = (-0.5 * diff.pow(2).sum(-1)
+                              - log_sigma.sum(-1)
+                              - 0.5 * d_perp * math.log(2 * math.pi))
+                loss = -torch.logsumexp(log_pi + log_prob_k, dim=1).mean()
+
+                if use_typicality:
+                    # Score each component's own mean (not a pi-weighted blend of
+                    # means — blending in latent space is exactly the "in-between,
+                    # off-manifold" failure this term is meant to avoid), weighted
+                    # by that component's responsibility.
+                    pi = torch.exp(log_pi)
+                    B, K, _ = mu.shape
+                    z_query = torch.cat(
+                        [z_par_b.unsqueeze(1).expand(-1, K, -1), mu], dim=-1
+                    ).reshape(B * K, -1)
+                    x_hat, _ = self.module_.forward_flow(z_query)
+                    lmdt_pred = self.module_.lmdt_head(x_hat).squeeze(-1).view(B, K)
+                    loss = loss + self.zperp_lmdt_weight * (pi * lmdt_pred).sum(dim=1).mean()
+
+                loss.backward()
+                mdn_optimizer.step()
+
+        # Restore gradients on the rest of the module for any future re-fit.
+        for p in self.module_.parameters():
+            p.requires_grad_(True)
+        self.module_.train()
 
     def transform(self, X: ArrayLike, return_full: bool = False) -> NDArray[np.float32]:
         """Apply dimensionality reduction to X."""
@@ -1155,10 +1322,10 @@ class NFMap(BaseEstimator, TransformerMixin):
                 
         return np.concatenate(z_parallel_list, axis=0)
 
-    def generate(self, coords, z_perp_strategy='zeros', z_perp_noise_std=1.0, random_state=None):
+    def generate(self, coords, z_perp_strategy='zeros', z_perp_noise_std=1.0, temperature=1.0, random_state=None):
         """
         Generate high-dimensional data samples (X) from specified 2D coordinates.
-        
+
         Parameters
         ----------
         coords : array-like of shape (n_samples, 2)
@@ -1167,11 +1334,17 @@ class NFMap(BaseEstimator, TransformerMixin):
             How to fill the orthogonal (non-manifold) dimensions.
             - 'zeros': Sets all orthogonal dimensions to exactly 0.
             - 'noise': Samples orthogonal dimensions from a normal distribution.
+            - 'predicted': Samples from the coordinate-conditioned mixture density
+              head (requires the model to have been fit with use_zperp_mdn=True).
         z_perp_noise_std : float, default=1.0
             The standard deviation of the noise if z_perp_strategy='noise'.
+        temperature : float, default=1.0
+            Only used when z_perp_strategy='predicted'. Scales the sampled component's
+            std when drawing z_perp. temperature=0 returns the deterministic mean of
+            the most likely mixture component instead of a stochastic draw.
         random_state : int or None
-            Seed for random number generator if using noise.
-            
+            Seed for random number generator if using noise or predicted.
+
         Returns
         -------
         X_gen : np.ndarray of shape (n_samples, n_features)
@@ -1180,20 +1353,44 @@ class NFMap(BaseEstimator, TransformerMixin):
         coords = np.asarray(coords)
         if coords.ndim == 1:
             coords = coords.reshape(1, -1)
-            
+
         n_samples = coords.shape[0]
-        
+
         if random_state is not None:
             np.random.seed(random_state)
-            
+
         z = np.zeros((n_samples, self.D_scaled_))
         z[:, :self.n_components] = coords
-        
+
         if z_perp_strategy == 'noise':
             z[:, self.n_components:] = np.random.normal(
                 0, z_perp_noise_std, size=(n_samples, self.D_scaled_ - self.n_components)
             )
-            
+        elif z_perp_strategy == 'predicted':
+            if not hasattr(self.module_, 'zperp_mdn'):
+                raise ValueError(
+                    "z_perp_strategy='predicted' requires the model to have been fit "
+                    "with use_zperp_mdn=True."
+                )
+            if random_state is not None:
+                torch.manual_seed(random_state)
+            self.module_.eval()
+            with torch.no_grad():
+                coords_tensor = torch.tensor(coords, dtype=torch.float32, device=self.device_)
+                log_pi, mu, log_sigma = self.module_.zperp_mdn(coords_tensor)
+                if temperature <= 0:
+                    component_idx = torch.argmax(log_pi, dim=-1)
+                else:
+                    component_idx = torch.multinomial(torch.exp(log_pi), 1).squeeze(-1)
+                idx = component_idx.view(-1, 1, 1).expand(-1, 1, mu.shape[-1])
+                mu_sel = torch.gather(mu, 1, idx).squeeze(1)
+                if temperature > 0:
+                    log_sigma_sel = torch.gather(log_sigma, 1, idx).squeeze(1)
+                    z_perp_pred = mu_sel + temperature * torch.exp(log_sigma_sel) * torch.randn_like(mu_sel)
+                else:
+                    z_perp_pred = mu_sel
+            z[:, self.n_components:] = z_perp_pred.cpu().numpy()
+
         return self.inverse_transform(z)
 
     def inverse_transform(self, z):
