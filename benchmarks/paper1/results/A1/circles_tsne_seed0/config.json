@@ -1,0 +1,8 @@
+{
+  "dataset": "circles",
+  "kind": "tsne",
+  "label": "t-SNE\n(reference)",
+  "seed": 0,
+  "ok": true,
+  "elapsed_s": 1.1154332160949707
+}

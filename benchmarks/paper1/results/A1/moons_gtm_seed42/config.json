@@ -1,0 +1,8 @@
+{
+  "dataset": "moons",
+  "kind": "gtm",
+  "label": "GTM\n(reference)",
+  "seed": 42,
+  "ok": false,
+  "elapsed_s": 0.010416984558105469
+}

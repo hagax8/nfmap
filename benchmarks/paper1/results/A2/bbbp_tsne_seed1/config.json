@@ -1,0 +1,8 @@
+{
+  "dataset": "bbbp",
+  "kind": "tsne",
+  "label": "t-SNE\n(reference)",
+  "seed": 1,
+  "ok": true,
+  "elapsed_s": 1.3620409965515137
+}

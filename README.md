@@ -1,33 +1,50 @@
 # NFMap: Bounded Normalizing Flow Maps
 
-A PyTorch and scikit-learn compatible library for **Bounded Normalizing Flow Maps**, designed specifically for continuous dimensionality reduction, metric-preserving visualization, and interpolatable manifold projection.
+A PyTorch and scikit-learn compatible library for 2D dimensionality reduction
+with a **bijective normalizing flow** over a **fixed Gaussian-mixture grid
+prior**.
 
-`NFMap` is particularly optimized for mapping complex continuous spaces (like molecular Morgan Fingerprints or dense graph latent embeddings) into a stable, bounded 2D coordinate system without the boundary extrapolation issues ("explosions") typical of standard normalizing flows or sequence-based autoencoders.
+NFMap maps data to a latent space of the same dimension, split into a
+2-dimensional navigable map (`z_parallel`) and an off-manifold residual
+(`z_perp`). Because the flow is bijective, the map is **fully invertible**: any
+location on the 2D canvas can be carried back to data space. Because the prior
+over the map coordinates is a *fixed* grid rather than a learned mixture, map
+positions are defined by construction and comparable across models — the
+property NFMap inherits from Generative Topographic Mapping (GTM).
 
----
+## What is distinctive
 
-## Repository Structure
+- **Fixed GMM grid prior.** Component means sit on a hexagonal or square grid of
+  radius `grid_bounds` and are not learned. This is GTM's construction, carried
+  into a flow.
+- **A single scalar for the local/global trade-off.** The prior factorises as
+  `p(z) = p_GMM(z_par) · N(z_perp; 0, sigma_perp² I)`. Because the flow is
+  bijective and volume-penalised, variance squeezed out of `z_perp` must
+  reappear in `z_par`, so `sigma_perp` controls how much of the data's geometry
+  is expressed in the two visible dimensions.
+- **Exact likelihood**, usable as an applicability-domain / out-of-distribution
+  signal.
+- **Out-of-sample projection and exact inversion**, neither of which t-SNE or
+  UMAP provides.
 
-The repository has been cleaned up and structured as a professional, installable Python package:
+A caveat worth stating up front: the *direction* of the `sigma_perp` trade-off
+depends on the data. On high-dimensional descriptor data, shrinking it improves
+global distance fidelity; on low-dimensional manifolds that fold back on
+themselves in the ambient space, it degrades them. See `benchmarks/paper1/`.
 
-```text
-├── nfmap/               # Core Python package
-│   ├── __init__.py      # Package entry point (imports NFMap)
-│   └── nfmap.py         # PyTorch RealNVP & Pullback geometry logic
-├── benchmarks/          # Performance benchmarks & diagnostics
-│   ├── nfmap_diagnostics.py
-│   └── test_heldout_diagnostics.py
-├── docs/                # Core mathematical write-ups & guides
-├── planning_docs/       # Spec and plans for future phases (e.g., Imolgen Graph VAE)
-├── experiments/         # CDDD, ChemBed, and Molecular VAE experiments
-└── archive/             # Preserved raw historical research, scripts, and plots
-```
+## Related work
 
----
+NFMap was developed independently from, and concurrently with,
+[FloDR](https://arxiv.org/abs/2607.26278) (Baraka & Probst, arXiv:2607.26278,
+July 2026), which also trains a bijection from affine coupling layers, reads the
+leading coordinates as a 2D embedding and retains the remainder as a residual.
+The approaches differ in two respects: NFMap places a **fixed grid prior** on
+the map coordinates where FloDR learns a Gaussian mixture, and NFMap models the
+residual **isotropically with a single scale** `sigma_perp` where FloDR
+conditions the residual on the embedding and trades local against global
+structure through an ordinal loss weight.
 
 ## Installation
-
-To install `NFMap` in editable mode:
 
 ```bash
 git clone https://github.com/hagax8/nfmap.git
@@ -35,50 +52,48 @@ cd nfmap
 pip install -e .
 ```
 
-### Dependencies
-- Python >= 3.8
-- PyTorch
-- Scikit-Learn
-- SciPy
-- NumPy
-- Tqdm
+Requires Python >= 3.8, PyTorch, NumPy, scikit-learn.
 
----
-
-## Quick Start
-
-`NFMap` exposes a scikit-learn compatible API (`fit`, `transform`, `inverse_transform`):
+## Usage
 
 ```python
-import numpy as np
 from nfmap import NFMap
 
-# Generate dummy high-dimensional data (e.g., 600 samples of 128D vectors)
-X = np.random.randn(600, 128)
-
-# Initialize the flow mapper
-mapper = NFMap(
-    n_components=2,          # Target dimension (2D for mapping)
-    n_blocks=5,              # Number of flow coupling blocks
-    hidden_dim=512,          # Hidden layers in coupling blocks
-    prior_weight=0.005,      # Weight of log-likelihood prior
-    verbose=True
-)
-
-# Fit the map and project points to 2D
-X_2d = mapper.fit_transform(X)
-
-# Map a new 2D coordinate back to the 128D space
-Z_flow = np.array([[0.5, -0.2, 0.0, ..., 0.0]])  # Pad extra dims with 0
-X_reconstructed = mapper.inverse_transform(Z_flow)
+model = NFMap(n_components=2, sigma_perp=10.0, grid_bounds=12.0)
+Z = model.fit_transform(X)          # (n_samples, 2) map coordinates
+Z_new = model.transform(X_new)      # project unseen points
+X_back = model.inverse_transform(Z) # carry map locations back to data space
+logp = model.score_samples(X_new)   # exact log-likelihood
 ```
 
----
+`sigma_perp` is the main dial. Small values push geometry into the 2D map
+(better global distance fidelity, worse neighbourhood fidelity); large values
+leave it in the residual. `grid_bounds` must be chosen together with it — the
+two are coupled, and sweeping either alone gives misleading conclusions.
 
-## Benchmarks & Diagnostics
+## Repository structure
 
-To run the benchmarking suite comparing `NFMap` with UMAP, t-SNE, and GTM on standard ML manifolds (Moons, Swiss Roll, S-Curve, or Digits):
-
-```bash
-python benchmarks/nfmap_diagnostics.py --dataset digits
+```text
+├── nfmap/                # Core package (RealNVP blocks, pullback geometry)
+├── benchmarks/
+│   ├── nfmap_diagnostics.py   # NFMap vs GTM / t-SNE / UMAP
+│   └── paper1/                # Full benchmark suite and results
+│       ├── common/            # Shared data, metrics and IO layer
+│       ├── b*.py              # Individual experiments
+│       └── results/           # Per-run configs and metrics
+└── docs/                 # Mathematical write-ups
 ```
+
+The benchmark suite in `benchmarks/paper1/` reports every method on an
+identical input matrix, with three seeds per cell, and includes hyperparameter
+sweeps of the baselines as well as of NFMap. A manuscript describing these
+results is in preparation.
+
+## Status
+
+Research code, under active development. A single fit has non-trivial
+run-to-run variation, so results should be averaged over seeds.
+
+## Licence
+
+MIT — see [LICENSE](LICENSE).

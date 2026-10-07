@@ -1,0 +1,8 @@
+{
+  "dataset": "wine",
+  "kind": "umap",
+  "label": "UMAP\n(reference)",
+  "seed": 42,
+  "ok": true,
+  "elapsed_s": 3.5429766178131104
+}

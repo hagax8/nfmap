@@ -1,0 +1,19 @@
+{
+  "n_components": 2,
+  "use_canonical": false,
+  "complexity": "medium",
+  "inject_weight": 0.5,
+  "n_prior_components": 100,
+  "prior_weight": 0.1,
+  "grid_bounds": 6.0,
+  "graph_weight": 5.0,
+  "repulsion_weight": 2.0,
+  "prior_layout": "hexagonal",
+  "random_state": 1,
+  "dataset": "digits",
+  "param_swept": "repulsion_weight",
+  "value": 2.0,
+  "seed": 1,
+  "ok": true,
+  "elapsed_s": 54.05594801902771
+}

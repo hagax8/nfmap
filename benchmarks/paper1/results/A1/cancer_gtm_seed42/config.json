@@ -1,0 +1,8 @@
+{
+  "dataset": "cancer",
+  "kind": "gtm",
+  "label": "GTM\n(reference)",
+  "seed": 42,
+  "ok": true,
+  "elapsed_s": 0.19831204414367676
+}

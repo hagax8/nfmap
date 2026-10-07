@@ -19,14 +19,28 @@ import warnings
 warnings.filterwarnings('ignore')
 
 import os
-# Fix macOS OpenMP/Accelerate segfaults triggered by scikit-learn/UMAP/Numba imports
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
-os.environ["NUMEXPR_NUM_THREADS"] = "1"
-os.environ["NUMBA_NUM_THREADS"] = "1"
-os.environ["TBB_CXX_TYPE"] = "clang"
+# These pinned every BLAS/OpenMP pool to a single thread to work around macOS
+# segfaults on scikit-learn/UMAP/Numba import. That workaround is no longer
+# needed - the segfaults came from a conflicting TensorFlow install (removed
+# 2026-10-03), and UMAP/t-SNE/GTM now import and run cleanly without it.
+#
+# Pinning them here was ALSO actively harmful, because it is set at import time
+# and so applies to the NFMap fits too, while the ablation scripts (B2/B2D/B2E/
+# B4C/B4D/B3B, ~1500 fits) run with the BLAS pools unpinned. The two code paths
+# were therefore measuring in different numerical environments, and NFMap's
+# optimisation turns out to be sensitive to the resulting change in float
+# reduction order: on DRD2 at sigma_perp=0.003/grid_bounds=12, identical data,
+# parameters and seed give DistCor 0.4206 single-threaded vs 0.5833 unpinned.
+# That is a 0.16 swing from floating-point associativity alone, i.e. Table 1 and
+# the ablations were not comparable.
+#
+# Set NFMAP_PIN_THREADS=1 to restore the old behaviour (e.g. if the macOS
+# segfaults reappear on another machine); leave it unset for the paper's runs.
+if os.environ.get("NFMAP_PIN_THREADS") == "1":
+    for _v in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
+               "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS", "NUMBA_NUM_THREADS"):
+        os.environ[_v] = "1"
+    os.environ["TBB_CXX_TYPE"] = "clang"
 
 import time
 import argparse
@@ -34,7 +48,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import datasets, manifold
-from sklearn.metrics import silhouette_score
+from sklearn.metrics import silhouette_score, roc_auc_score
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.manifold import trustworthiness
@@ -61,10 +75,50 @@ except ImportError:
 
 # ── Arguments ─────────────────────────────────────────────────────────────────
 parser = argparse.ArgumentParser(description="NFMap Diagnostics")
-parser.add_argument("--dataset", type=str, default="digits", choices=["digits", "wine", "cancer", "iris", "moons", "circles", "swiss_roll", "s_curve", "bbbp", "bace", "esol", "distinct_chems", "dude"], help="Dataset to evaluate on")
+parser.add_argument("--dataset", type=str, default="digits", choices=["digits", "wine", "cancer", "iris", "moons", "circles", "swiss_roll", "s_curve", "severed_sphere", "bbbp", "bace", "esol", "distinct_chems", "dude", "drd2", "egfr"], help="Dataset to evaluate on")
+parser.add_argument("--seed", type=int, default=42,
+                    help="Fit seed. Threaded into every method's random_state (NFMap, "
+                         "t-SNE, UMAP, GTM) and into the saved run's label, so three "
+                         "invocations with different --seed give three independent fits "
+                         "of the SAME sample rather than overwriting each other. The "
+                         "data subsetting itself stays at 42 - the question the paper "
+                         "asks of these numbers is run-to-run variance of the fit, not "
+                         "of the sample.")
 parser.add_argument("--save_latent", action="store_true", help="Save the full D-dimensional latent representations for NFMap to .npy files")
 parser.add_argument("--use_struct", action="store_true", help="Pass structural fingerprints to NFMap as X_struct")
 parser.add_argument("--use_props", action="store_true", help="Pass physical properties to NFMap as y_props")
+parser.add_argument("--save-results", action="store_true", help="Persist each config's config/metrics/embeddings "
+                     "under paper1/results/A1/<dataset>_<kind>/, per nfmap_paper_experiments.md's Part A1 "
+                     "reproducibility policy. Off by default — does not change any existing behavior.")
+parser.add_argument("--experiment-id", default="A1", help="Experiment id to save results under (default A1; "
+                     "A2 for chemistry-benchmark datasets, per nfmap_paper_experiments.md).")
+parser.add_argument("--prior-layout", type=str, default=None, choices=["hexagonal", "square"],
+                     help="Override DEFAULTS' prior_layout ('hexagonal') for this run only, e.g. 'square' "
+                          "for manifold-unrolling datasets where a rectangular grid may better match the "
+                          "unrolled sheet's natural topology (see nfmap_paper_experiments.md A1).")
+parser.add_argument("--grid-bounds", type=float, default=None,
+                     help="Override NFMap's grid_bounds for this run only. Needed because "
+                          "grid_bounds and sigma_perp are NOT independent: squeezing z_perp "
+                          "pushes variance into z_par, which then needs canvas to land on "
+                          "(B2D). The shipped 'auto' resolves from N alone (3.0 at N=600), "
+                          "which is indexed on the wrong quantity - B2D's chemistry optimum "
+                          "is 12.0.")
+parser.add_argument("--nfmap-variants", type=str, default=None,
+                     help="Fit several NFMap configurations in one invocation, as a "
+                          "comma-separated list of name=sigma_perp pairs, e.g. "
+                          "'local=10.0,global=0.003'. Each becomes its own method with "
+                          "kind 'nfmap_<name>', so the variants get separate result "
+                          "directories instead of overwriting each other. Fitting them "
+                          "together (rather than via repeated invocations) also means the "
+                          "GTM/t-SNE/UMAP baselines are fit ONCE and shared, so every NFMap "
+                          "variant is compared against numerically identical baselines. "
+                          "Default (unset) keeps the single-NFMap behaviour.")
+parser.add_argument("--sigma-perp", type=float, default=None,
+                     help="Override NFMap's sigma_perp (default 10.0) for this run only. For genuinely "
+                          "low-intrinsic-dimensionality inputs (e.g. 3D manifold datasets, where z_perp "
+                          "ends up with only 1 dimension after PCA/scaling) a small value may help by "
+                          "denying the flow an easy escape-hatch dimension to leak real 2D structure into "
+                          "(see nfmap_paper_experiments.md A1's prior_layout note and B1's related finding).")
 args = parser.parse_args()
 
 X_struct_subset = None
@@ -77,7 +131,11 @@ def get_features(mol):
     import datamol as dm
     import numpy as np
     from rdkit.Chem import Descriptors
-    fp = dm.to_fp(mol, fpSize=128, as_array=True)
+    # 2048-bit Morgan r=2 + 8 descriptors. The descriptors are kept on purpose:
+    # Euclidean distance on a fingerprint alone concentrates (pairwise distance
+    # std/mean ~0.135 on BACE), which makes DistCor meaningless; adding them
+    # roughly doubles that spread. See common/data.py's _get_features.
+    fp = dm.to_fp(mol, fpSize=2048, as_array=True).astype(np.float32)
     desc = [
         Descriptors.MolWt(mol),
         Descriptors.MolLogP(mol),
@@ -88,7 +146,7 @@ def get_features(mol):
         Descriptors.NumHDonors(mol),
         Descriptors.NumHAcceptors(mol)
     ]
-    return np.concatenate([fp, desc]), fp, desc
+    return np.concatenate([fp, desc]).astype(np.float32), fp, desc
 
 if args.dataset == "digits":
     digits = datasets.load_digits(n_class=10)
@@ -137,12 +195,14 @@ elif args.dataset == "bbbp":
     y_props_subset = (y_props_subset - np.mean(y_props_subset, axis=0)) / (np.std(y_props_subset, axis=0) + 1e-8)
     
     # Standardize before PCA so MolWt doesn't dominate
-    X_subset = (X_subset - np.mean(X_subset, axis=0)) / (np.std(X_subset, axis=0) + 1e-8)
-    
+    # Standardise -> 32 components -> standardise, so every method (NFMap, GTM,
+    # t-SNE, UMAP) consumes the identical, well-scaled matrix. Reducing here
+    # rather than inside NFMap is what keeps the comparison about algorithms
+    # instead of input spaces.
     from sklearn.decomposition import PCA
-    print(f"Applying PCA to reduce hybrid features to 32 dimensions...")
-    pca = PCA(n_components=32, random_state=42)
-    X_subset = pca.fit_transform(X_subset).astype(np.float32)
+    X_subset = (X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)
+    X_subset = PCA(n_components=32, random_state=42).fit_transform(X_subset)
+    X_subset = ((X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)).astype(np.float32)
     
     # Standard Scaling (Mean=0, Std=1) for Normalizing Flow
     X_scaled = (X_subset - np.mean(X_subset, axis=0)) / (np.std(X_subset, axis=0) + 1e-8)
@@ -186,12 +246,14 @@ elif args.dataset == "bace":
     y_props_subset = (y_props_subset - np.mean(y_props_subset, axis=0)) / (np.std(y_props_subset, axis=0) + 1e-8)
     
     # Standardize before PCA so MolWt doesn't dominate
-    X_subset = (X_subset - np.mean(X_subset, axis=0)) / (np.std(X_subset, axis=0) + 1e-8)
-    
+    # Standardise -> 32 components -> standardise, so every method (NFMap, GTM,
+    # t-SNE, UMAP) consumes the identical, well-scaled matrix. Reducing here
+    # rather than inside NFMap is what keeps the comparison about algorithms
+    # instead of input spaces.
     from sklearn.decomposition import PCA
-    print(f"Applying PCA to reduce hybrid features to 32 dimensions...")
-    pca = PCA(n_components=32, random_state=42)
-    X_subset = pca.fit_transform(X_subset).astype(np.float32)
+    X_subset = (X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)
+    X_subset = PCA(n_components=32, random_state=42).fit_transform(X_subset)
+    X_subset = ((X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)).astype(np.float32)
     
     # Standard Scaling (Mean=0, Std=1) for Normalizing Flow
     X_scaled = (X_subset - np.mean(X_subset, axis=0)) / (np.std(X_subset, axis=0) + 1e-8)
@@ -241,14 +303,77 @@ elif args.dataset == "esol":
     y_props_subset = (y_props_subset - np.mean(y_props_subset, axis=0)) / (np.std(y_props_subset, axis=0) + 1e-8)
     
     # Standardize before PCA so MolWt doesn't dominate
-    X_subset = (X_subset - np.mean(X_subset, axis=0)) / (np.std(X_subset, axis=0) + 1e-8)
-    
+    # Standardise -> 32 components -> standardise, so every method (NFMap, GTM,
+    # t-SNE, UMAP) consumes the identical, well-scaled matrix. Reducing here
+    # rather than inside NFMap is what keeps the comparison about algorithms
+    # instead of input spaces.
     from sklearn.decomposition import PCA
-    print(f"Applying PCA to reduce hybrid features to 32 dimensions...")
-    pca = PCA(n_components=32, random_state=42)
-    X_subset = pca.fit_transform(X_subset).astype(np.float32)
-    
+    X_subset = (X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)
+    X_subset = PCA(n_components=32, random_state=42).fit_transform(X_subset)
+    X_subset = ((X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)).astype(np.float32)
+
     # Standard Scaling (Mean=0, Std=1) for Normalizing Flow
+    X_scaled = (X_subset - np.mean(X_subset, axis=0)) / (np.std(X_subset, axis=0) + 1e-8)
+elif args.dataset in ("drd2", "egfr"):
+    # ChEMBL target-activity sets (distinct from the DUD-E EGFR actives/decoys
+    # set above) - real potency data, not a MoleculeNet benchmark. Local CSVs
+    # already fetched via experiments/chembed_generation/fetch_chembl_target_data.py
+    # (see planning_docs/how_to_generate_and_evaluate_target_maps.md).
+    #
+    # Label: active/inactive via pIC50 >= 7.0 (IC50 < 100nM, a standard QSAR
+    # threshold), NOT Murcko scaffold id. An earlier version used scaffold id
+    # (hundreds of mostly-singleton classes) - dropped by design decision:
+    # it broke macro-averaged AUC (trivially inflated by singleton classes)
+    # and gave a much harder, less interpretable task than every other A2
+    # dataset (BBBP/BACE/DUD-E are all binary active/inactive already).
+    # pIC50>=7.0 gives a well-balanced split for both targets (44% active for
+    # DRD2, 50% for EGFR).
+    try:
+        import pandas as pd
+        import datamol as dm
+    except ImportError:
+        print("Please install pandas and datamol to run this dataset.")
+        exit(1)
+
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                             "experiments", "chembed_generation", f"{args.dataset}_clean.csv")
+    print(f"Loading {args.dataset.upper()} ChEMBL target set from {csv_path}...")
+    df = pd.read_csv(csv_path)
+
+    ACTIVE_THRESHOLD = 7.0
+    X_list, y_list, fp_list, desc_list = [], [], [], []
+    for _, row in df.iterrows():
+        mol = dm.to_mol(row["smiles"])
+        if mol is not None:
+            feat, fp, desc = get_features(mol)
+            X_list.append(feat)
+            fp_list.append(fp)
+            desc_list.append(desc)
+            y_list.append(1 if row["pIC50"] >= ACTIVE_THRESHOLD else 0)
+
+    X_full = np.array(X_list, dtype=np.float32)
+    y_full = np.array(y_list, dtype=np.int32)
+    fp_full = np.array(fp_list, dtype=np.float32)
+    desc_full = np.array(desc_list, dtype=np.float32)
+    print(f"{len(y_full)} molecules, {y_full.mean()*100:.1f}% active (pIC50 >= {ACTIVE_THRESHOLD})")
+
+    sss = StratifiedShuffleSplit(n_splits=1, train_size=min(len(y_full) - 1, 600), random_state=42)
+    train_idx, _ = next(sss.split(X_full, y_full))
+    X_subset = X_full[train_idx]
+    y_subset = y_full[train_idx]
+    X_struct_subset = fp_full[train_idx]
+    y_props_subset = desc_full[train_idx]
+    y_props_subset = (y_props_subset - np.mean(y_props_subset, axis=0)) / (np.std(y_props_subset, axis=0) + 1e-8)
+
+    # Standardise -> 32 components -> standardise, so every method (NFMap, GTM,
+    # t-SNE, UMAP) consumes the identical, well-scaled matrix. Reducing here
+    # rather than inside NFMap is what keeps the comparison about algorithms
+    # instead of input spaces.
+    from sklearn.decomposition import PCA
+    X_subset = (X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)
+    X_subset = PCA(n_components=32, random_state=42).fit_transform(X_subset)
+    X_subset = ((X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)).astype(np.float32)
+
     X_scaled = (X_subset - np.mean(X_subset, axis=0)) / (np.std(X_subset, axis=0) + 1e-8)
 elif args.dataset == "distinct_chems":
     try:
@@ -374,16 +499,12 @@ elif args.dataset == "dude":
     y_props_subset = desc_full[train_idx]
     y_props_subset = (y_props_subset - np.mean(y_props_subset, axis=0)) / (np.std(y_props_subset, axis=0) + 1e-8)
     
-    # Standardize before PCA so MolWt doesn't dominate
-    X_subset = (X_subset - np.mean(X_subset, axis=0)) / (np.std(X_subset, axis=0) + 1e-8)
-    
+    # See the note on the other chemistry branches.
     from sklearn.decomposition import PCA
-    # print(f"Applying PCA to reduce hybrid features to 32 dimensions...")
-    # pca = PCA(n_components=32, random_state=42)
-    # X_subset = pca.fit_transform(X_subset).astype(np.float32)
-    
-    # Standard Scaling (Mean=0, Std=1) for Normalizing Flow
-    X_scaled = (X_subset - np.mean(X_subset, axis=0)) / (np.std(X_subset, axis=0) + 1e-8)
+    X_subset = (X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)
+    X_subset = PCA(n_components=32, random_state=42).fit_transform(X_subset)
+    X_subset = ((X_subset - X_subset.mean(0)) / (X_subset.std(0) + 1e-8)).astype(np.float32)
+    X_scaled = X_subset
 elif args.dataset == "wine":
     X, y = datasets.load_wine(return_X_y=True)
     X_scaled = (X - np.min(X, axis=0)) / (np.max(X, axis=0) - np.min(X, axis=0))
@@ -412,8 +533,26 @@ elif args.dataset == "s_curve":
     X, y = datasets.make_s_curve(n_samples=600, noise=0.0, random_state=42)
     X_scaled = (X - np.min(X, axis=0)) / (np.max(X, axis=0) - np.min(X, axis=0))
     X_subset, y_subset = X, y
+elif args.dataset == "severed_sphere":
+    # Classic manifold-unrolling test case (cf. sklearn's "Manifold Learning
+    # methods on a severed sphere" example, and ugtm's own visualization
+    # examples gallery) - a sphere with both poles AND an azimuthal wedge
+    # removed, leaving a surface that's topologically a disk with a boundary
+    # (unlike a full closed sphere, which provably can't be flattened onto a
+    # plane without tearing) - a genuinely different unrolling challenge from
+    # swiss_roll/s_curve's already-open strips.
+    rng = np.random.RandomState(42)
+    n_init = 800
+    p = rng.rand(n_init) * (2 * np.pi - 0.55)
+    t = rng.rand(n_init) * np.pi
+    indices = (t < (np.pi - (np.pi / 8))) & (t > (np.pi / 8))
+    p, t = p[indices], t[indices]
+    X = np.stack([np.sin(t) * np.cos(p), np.sin(t) * np.sin(p), np.cos(t)], axis=1)
+    y = p  # continuous color = azimuthal angle, the "unrolled" coordinate
+    X_scaled = (X - np.min(X, axis=0)) / (np.max(X, axis=0) - np.min(X, axis=0))
+    X_subset, y_subset = X, y
 
-is_continuous = args.dataset in ["swiss_roll", "s_curve"]
+is_continuous = args.dataset in ["swiss_roll", "s_curve", "severed_sphere"]
 
 #X = X_scaled
 X = X_scaled
@@ -422,6 +561,11 @@ print(f"Dataset: {args.dataset.capitalize()}")
 print(f"Subset: {X_subset.shape[0]} samples × {X_subset.shape[1]} features, {len(np.unique(y_subset))} classes\n")
 
 # ── Shared NFMap defaults (only overrides differ between configs) ──────────────
+# grid_bounds=6.0, not 3.0: matches benchmarks/paper1/run_ablation.py's DEFAULTS
+# (bumped 2026-09-13 — at 3.0, 16-60% of points land outside the visible grid
+# for ablations/benchmarks that aren't themselves about grid containment,
+# which is a distracting, unrelated artifact in the resulting figures. See
+# nfmap_paper_experiments.md's B9 for the finding this responds to.
 DEFAULTS = dict(
     n_components=2,
     use_canonical=False,
@@ -429,12 +573,52 @@ DEFAULTS = dict(
     inject_weight=0.5,
     n_prior_components=100,
     prior_weight=0.1,
-    grid_bounds=3.0,
+    grid_bounds=6.0,
     graph_weight=5.0,
     repulsion_weight=1.0,
     prior_layout='hexagonal',
-    random_state=42,
+    random_state=args.seed,
 )
+
+# ── NFMap configurations ──────────────────────────────────────────────────────
+# One entry per --nfmap-variants pair, or a single default entry when that flag
+# is unset. Each variant gets kind "nfmap_<name>": save_run keys the output
+# directory on the kind, so sharing "nfmap" across variants would silently
+# leave only whichever ran last.
+def _shared_overrides():
+    return {"verbose": True,
+            **({"prior_layout": args.prior_layout} if args.prior_layout else {}),
+            **({"grid_bounds": args.grid_bounds} if args.grid_bounds is not None else {})}
+
+
+def _nfmap_configs():
+    if not args.nfmap_variants:
+        return [{
+            "label":      "NEW: NFMap",
+            "hypothesis": "Default NFMap",
+            "kind":       "nfmap",
+            "overrides":  {**_shared_overrides(),
+                           **({"sigma_perp": args.sigma_perp} if args.sigma_perp is not None else {})},
+        }]
+    out = []
+    for pair in args.nfmap_variants.split(","):
+        name, _, raw = pair.partition("=")
+        name = name.strip()
+        if not name or not raw.strip():
+            raise SystemExit(f"--nfmap-variants: expected name=sigma_perp pairs, got {pair!r}")
+        sigma = float(raw)
+        out.append({
+            "label":      f"NEW: NFMap ({name})",
+            "hypothesis": f"NFMap, sigma_perp={sigma} ({name}-optimising end of the dial)",
+            "kind":       f"nfmap_{name}",
+            "overrides":  {**_shared_overrides(), "sigma_perp": sigma},
+        })
+    return out
+
+
+def _is_nfmap(kind):
+    return bool(kind) and kind.startswith("nfmap")
+
 
 # ── Experiment configurations ─────────────────────────────────────────────────
 # Each entry overrides only the variable under test; everything else is DEFAULTS.
@@ -446,12 +630,7 @@ CONFIGS = [
     #     "kind":       "nfmap",
     #     "overrides":  {"max_epochs": 1000, "patience": 100, "sigma_perp": 10.0, "graph_weight": 5.0},
     # },
-    {
-        "label":      "NEW: NFMap",
-        "hypothesis": "Default NFMap",
-        "kind":       "nfmap",
-        "overrides":  {"verbose": True},
-    },
+    *_nfmap_configs(),
     # {
     #     "label":      "NEW: NFMap CURRENT BEST (Negative Sampling x5)",
     #     "hypothesis": "Sample 5 negative edges per positive to push clusters apart",
@@ -503,7 +682,7 @@ for i, config in enumerate(CONFIGS):
         
         # Determine instantiation based on kind
         prior_means = None
-        if config["kind"] == "nfmap":
+        if _is_nfmap(config["kind"]):
             params = DEFAULTS.copy()
             params.update(config.get("overrides", {}))
             
@@ -525,19 +704,28 @@ for i, config in enumerate(CONFIGS):
 
         elif config["kind"] == "tsne":
             Z = manifold.TSNE(
-                n_components=2, init='pca', random_state=42, perplexity=30
+                n_components=2, init='pca', random_state=args.seed, perplexity=30
             ).fit_transform(X)
 
         elif config["kind"] == "gtm":
             if HAS_GTM:
-                Z = eGTM(m=6).fit_transform(X)
+                # k=10 -> a 10x10 grid = 100 GTM nodes, matching NFMap's
+                # n_prior_components=100. This had been eGTM(m=6), which leaves
+                # k at its default 16 (a 16x16 grid = 256 nodes, 2.56x finer
+                # than NFMap's) and instead tunes m, the RBF-centre count -
+                # GTM's mapping flexibility, which has no NFMap analogue since
+                # the flow replaces the RBF mapping. Grid resolution is the one
+                # hyperparameter the two methods define identically, and
+                # Novelty #5 is a claim about exactly that grid, so it has to
+                # be matched for the comparison to mean anything.
+                Z = eGTM(k=10, m=6, random_state=args.seed).fit_transform(X)
             else:
                 Z = np.full((len(y), 2), np.nan)
 
         elif config["kind"] == "umap":
             if HAS_UMAP:
                 Z = umap_lib.UMAP(
-                    n_neighbors=15, min_dist=0.1, random_state=42
+                    n_neighbors=15, min_dist=0.1, random_state=args.seed
                 ).fit_transform(X)
             else:
                 Z = np.full((len(y), 2), np.nan)
@@ -564,25 +752,82 @@ for i, config in enumerate(CONFIGS):
                 sil = silhouette_score(Z, y)
                 knn = KNeighborsClassifier(n_neighbors=5, algorithm='brute').fit(Z, y)
                 acc = knn.score(Z, y)
+                # AUC: how well the map's own local geometry discriminates
+                # classes, using a KNN classifier's soft cluster-assignment
+                # scores (predict_proba) as the discriminator - the "GMM
+                # cluster assignment score" the doc's A1/A2 metric spec calls
+                # for, implemented via KNN-on-the-embedding rather than the
+                # GMM prior's own (unsupervised, not label-aware) posterior,
+                # since the GMM components aren't fit per-class. Binary ->
+                # standard ROC-AUC; multi-class -> macro-averaged one-vs-rest
+                # (sklearn's roc_auc_score(multi_class='ovr')). NaN if it
+                # can't be computed (e.g. a class with too few members for a
+                # stable one-vs-rest score) rather than crashing the run.
+                try:
+                    proba = knn.predict_proba(Z)
+                    if proba.shape[1] == 2:
+                        auc = roc_auc_score(y, proba[:, 1])
+                    else:
+                        auc = roc_auc_score(y, proba, multi_class='ovr', average='macro')
+                except ValueError:
+                    auc = float('nan')
             else:
                 sil = float('nan')
                 knn = KNeighborsRegressor(n_neighbors=5, algorithm='brute').fit(Z, y)
                 acc = knn.score(Z, y)
+                auc = float('nan')  # AUC is a classification metric; undefined for continuous targets
         else:
-            trust, cont, t_c_f1, dist_corr, dens_corr, sil, acc = float('nan'), float('nan'), float('nan'), float('nan'), float('nan'), float('nan'), float('nan')
+            trust, cont, t_c_f1, dist_corr, dens_corr, sil, acc, auc = float('nan'), float('nan'), float('nan'), float('nan'), float('nan'), float('nan'), float('nan'), float('nan')
 
-        print(f"    T/C_F1={t_c_f1:.3f} Trst={trust:.3f} Cont={cont:.3f} DistCor={dist_corr:.3f} DensCor={dens_corr:.3f} Sil={sil:.3f} (time: {elapsed:.1f}s)")
-        results.append({"label": config["label"], "hypothesis": config["hypothesis"],
-                         "Z": Z, "sil": sil, "trust": trust, "cont": cont, "t_c_f1": t_c_f1, "dist_corr": dist_corr, "dens_corr": dens_corr, "acc": acc, "ok": True, "time": elapsed, "prior_means": prior_means})
+        print(f"    T/C_F1={t_c_f1:.3f} Trst={trust:.3f} Cont={cont:.3f} DistCor={dist_corr:.3f} DensCor={dens_corr:.3f} Sil={sil:.3f} AUC={auc:.3f} (time: {elapsed:.1f}s)")
+        # Store the ACTUAL params used for this run (DEFAULTS + this config's
+        # overrides, e.g. --prior-layout), not just DEFAULTS - otherwise a
+        # saved config.json silently misreports any override (found 2026-09-16
+        # via a --prior-layout square run whose config.json still said
+        # "hexagonal": the fit itself used the override correctly, only the
+        # saved metadata was wrong).
+        results.append({"label": config["label"], "hypothesis": config["hypothesis"], "kind": config["kind"],
+                         "Z": Z, "sil": sil, "trust": trust, "cont": cont, "t_c_f1": t_c_f1, "dist_corr": dist_corr, "dens_corr": dens_corr, "acc": acc, "auc": auc, "ok": True, "time": elapsed, "prior_means": prior_means,
+                         "nfmap_params": params if _is_nfmap(config["kind"]) else None})
         if "NFMap" in config["label"]:
-            results.append({"label": config["label"] + " (No Prior Overlay)", "hypothesis": "Plot without grid overlay for clarity",
-                             "Z": Z.copy() if Z is not None else None, "sil": sil, "trust": trust, "cont": cont, "t_c_f1": t_c_f1, "dist_corr": dist_corr, "dens_corr": dens_corr, "acc": acc, "ok": True, "time": 0.0, "prior_means": None})
+            results.append({"label": config["label"] + " (No Prior Overlay)", "hypothesis": "Plot without grid overlay for clarity", "kind": None,
+                             "Z": Z.copy() if Z is not None else None, "sil": sil, "trust": trust, "cont": cont, "t_c_f1": t_c_f1, "dist_corr": dist_corr, "dens_corr": dens_corr, "acc": acc, "auc": auc, "ok": True, "time": 0.0, "prior_means": None})
     except Exception as e:
         t1 = time.time()
         elapsed = t1 - t0 if 't0' in locals() else 0.0
         print(f"    FAILED: {e} (time: {elapsed:.1f}s)")
-        results.append({"label": config["label"], "hypothesis": config["hypothesis"],
-                         "Z": None, "sil": float('nan'), "trust": float('nan'), "cont": float('nan'), "t_c_f1": float('nan'), "dist_corr": float('nan'), "dens_corr": float('nan'), "acc": float('nan'), "ok": False, "time": elapsed, "prior_means": None})
+        results.append({"label": config["label"], "hypothesis": config["hypothesis"], "kind": config["kind"],
+                         "Z": None, "sil": float('nan'), "trust": float('nan'), "cont": float('nan'), "t_c_f1": float('nan'), "dist_corr": float('nan'), "dens_corr": float('nan'), "acc": float('nan'), "auc": float('nan'), "ok": False, "time": elapsed, "prior_means": None})
+
+# ── Persist results (opt-in, --save-results) ───────────────────────────────────
+# Reuses benchmarks/paper1/common/io.py's save_run so these runs land in the
+# same results/<experiment_id>/<dataset>_<method>/{config,metrics,embeddings}
+# layout as the rest of the paper1 ablation harness, per
+# nfmap_paper_experiments.md's reproducibility policy. Off by default so this
+# doesn't change nfmap_diagnostics.py's existing interactive-use behavior.
+if args.save_results:
+    _paper1_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "paper1")
+    if _paper1_dir not in sys.path:
+        sys.path.insert(0, _paper1_dir)
+    from common.io import save_run
+
+    n_saved = 0
+    for res in results:
+        if res["kind"] is None:
+            continue  # skip the "(No Prior Overlay)" plot-only duplicate — not a separate run
+        metrics_out = {k: res[k] for k in ("trust", "cont", "t_c_f1", "dist_corr", "dens_corr", "sil", "acc", "auc")}
+        config_out = {"dataset": args.dataset, "kind": res["kind"], "label": res["label"],
+                       "seed": args.seed, "ok": res["ok"], "elapsed_s": res["time"]}
+        if _is_nfmap(res["kind"]):
+            config_out.update(res.get("nfmap_params") or DEFAULTS)
+        # Seed in the directory name, not just in config.json: save_run keys on
+        # the method name, so without it a second seed would silently overwrite
+        # the first and the "3-seed" table would be one run reported three times.
+        save_run(args.experiment_id, args.dataset, f"{res['kind']}_seed{args.seed}",
+                 config_out, metrics_out, res["Z"], y=y,
+                 prior_means=res.get("prior_means"))
+        n_saved += 1
+    print(f"\nSaved {n_saved} runs under paper1/results/{args.experiment_id}/{args.dataset}_<kind>/")
 
 # ── Plot ──────────────────────────────────────────────────────────────────────
 # Calculate grid size dynamically

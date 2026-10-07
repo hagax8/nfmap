@@ -1,0 +1,8 @@
+{
+  "dataset": "moons",
+  "kind": "tsne",
+  "label": "t-SNE\n(reference)",
+  "seed": 42,
+  "ok": true,
+  "elapsed_s": 1.1672697067260742
+}

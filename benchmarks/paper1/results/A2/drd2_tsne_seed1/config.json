@@ -1,0 +1,8 @@
+{
+  "dataset": "drd2",
+  "kind": "tsne",
+  "label": "t-SNE\n(reference)",
+  "seed": 1,
+  "ok": true,
+  "elapsed_s": 1.201282262802124
+}

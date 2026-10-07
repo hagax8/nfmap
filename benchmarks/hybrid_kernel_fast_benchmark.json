@@ -1,0 +1,34 @@
+{
+  "fingerprint_time_s": 698.8772819042206,
+  "fingerprint_ms_per_mol": 0.9984046747603845,
+  "n_valid": 699994,
+  "checkpoints": [
+    {
+      "N": 200000,
+      "pack_time_s": 3.003756046295166,
+      "packed_array_gb": 0.1536,
+      "build_time_s": 26.422397136688232,
+      "build_ms_per_mol": 0.13211198568344115,
+      "rss_before_gb": 1.09297664,
+      "rss_after_gb": 2.181726208
+    },
+    {
+      "N": 400000,
+      "pack_time_s": 8.419646978378296,
+      "packed_array_gb": 0.3072,
+      "build_time_s": 64.22563409805298,
+      "build_ms_per_mol": 0.16056408524513244,
+      "rss_before_gb": 2.181726208,
+      "rss_after_gb": 2.181726208
+    },
+    {
+      "N": 699994,
+      "pack_time_s": 12.971801996231079,
+      "packed_array_gb": 0.537595392,
+      "build_time_s": 342.6428213119507,
+      "build_ms_per_mol": 0.48949394039370436,
+      "rss_before_gb": 2.181726208,
+      "rss_after_gb": 2.354184192
+    }
+  ]
+}

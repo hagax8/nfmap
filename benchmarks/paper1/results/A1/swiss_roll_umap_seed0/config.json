@@ -1,0 +1,8 @@
+{
+  "dataset": "swiss_roll",
+  "kind": "umap",
+  "label": "UMAP\n(reference)",
+  "seed": 0,
+  "ok": true,
+  "elapsed_s": 4.015867710113525
+}

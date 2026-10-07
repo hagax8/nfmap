@@ -1,0 +1,8 @@
+{
+  "dataset": "s_curve",
+  "kind": "gtm",
+  "label": "GTM\n(reference)",
+  "seed": 42,
+  "ok": true,
+  "elapsed_s": 0.12523698806762695
+}

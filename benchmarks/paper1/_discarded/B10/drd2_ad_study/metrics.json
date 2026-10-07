@@ -1,0 +1,18 @@
+{
+  "overall_rmse": 0.9229769706726074,
+  "head_ref_pearson": 0.6644036735637773,
+  "head_ref_spearman": 0.6792892736125743,
+  "head_ref_spearman_p": 6.841909552141153e-25,
+  "head_spearman": 0.18444830433668385,
+  "head_spearman_p": 0.014832396214003686,
+  "ref_spearman": 0.2083396452062986,
+  "ref_spearman_p": 0.005802842755549347,
+  "knn_spearman": 0.2566348700133831,
+  "knn_spearman_p": 0.0006301862099592156,
+  "head_perm_ood_auc": 0.9316290130796671,
+  "ref_perm_ood_auc": 0.9592086140837627,
+  "knn_perm_ood_auc": 0.9160391068833399,
+  "head_realerror_auc": 0.5850178359096314,
+  "ref_realerror_auc": 0.5973047958779231,
+  "knn_realerror_auc": 0.6304663760073986
+}

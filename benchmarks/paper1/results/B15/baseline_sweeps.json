@@ -1,0 +1,3458 @@
+[
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 5,
+    "dist_corr": 0.31057113054113844,
+    "t_c_f1": 0.9901070931218956,
+    "acc": 0.8433333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 5,
+    "dist_corr": 0.31746958205416886,
+    "t_c_f1": 0.9897692337588201,
+    "acc": 0.845
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 5,
+    "dist_corr": 0.3137824395435362,
+    "t_c_f1": 0.9909350470806307,
+    "acc": 0.845
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 15,
+    "dist_corr": 0.13864296407925322,
+    "t_c_f1": 0.9898731205685447,
+    "acc": 0.8533333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 15,
+    "dist_corr": 0.08814438337413799,
+    "t_c_f1": 0.9897077751348939,
+    "acc": 0.85
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 15,
+    "dist_corr": 0.08671690170049674,
+    "t_c_f1": 0.990566754096679,
+    "acc": 0.855
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 30,
+    "dist_corr": 0.09785281558539866,
+    "t_c_f1": 0.9889001292170063,
+    "acc": 0.8566666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 30,
+    "dist_corr": 0.10498975866884822,
+    "t_c_f1": 0.9892536684105477,
+    "acc": 0.8516666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 30,
+    "dist_corr": 0.10453611715428987,
+    "t_c_f1": 0.9898970989190283,
+    "acc": 0.8533333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 50,
+    "dist_corr": 0.25222332926077,
+    "t_c_f1": 0.987223869436203,
+    "acc": 0.8533333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 50,
+    "dist_corr": 0.22147942606161908,
+    "t_c_f1": 0.9874610651668174,
+    "acc": 0.8583333333333333
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 50,
+    "dist_corr": 0.24005495818537673,
+    "t_c_f1": 0.9843499190901676,
+    "acc": 0.8566666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 100,
+    "dist_corr": 0.47588024799508927,
+    "t_c_f1": 0.9830930353208083,
+    "acc": 0.845
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 100,
+    "dist_corr": 0.457055949927054,
+    "t_c_f1": 0.9872601805934628,
+    "acc": 0.8416666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 100,
+    "dist_corr": 0.49967334002398817,
+    "t_c_f1": 0.9886117352907728,
+    "acc": 0.84
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 200,
+    "dist_corr": 0.6121632426947465,
+    "t_c_f1": 0.9824110979187862,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 200,
+    "dist_corr": 0.614432516416453,
+    "t_c_f1": 0.9827184016564176,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 200,
+    "dist_corr": 0.6115302630200212,
+    "t_c_f1": 0.9830844284872219,
+    "acc": 0.835
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.27377024645913917,
+    "t_c_f1": 0.9856187207401802,
+    "acc": 0.8366666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.28529784391679724,
+    "t_c_f1": 0.9822435231705209,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.31417172440028407,
+    "t_c_f1": 0.9824435855452527,
+    "acc": 0.8416666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.24288393086860482,
+    "t_c_f1": 0.9877901048848043,
+    "acc": 0.845
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.1103652021760313,
+    "t_c_f1": 0.9874879426048456,
+    "acc": 0.8366666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.23864710584567456,
+    "t_c_f1": 0.9885907751416089,
+    "acc": 0.8433333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.15993581978068763,
+    "t_c_f1": 0.9794181487132464,
+    "acc": 0.84
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.1840126411353932,
+    "t_c_f1": 0.9810225319175336,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.17747510124635682,
+    "t_c_f1": 0.9809217440339252,
+    "acc": 0.8383333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.15234933878976398,
+    "t_c_f1": 0.977553779496972,
+    "acc": 0.8333333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.1359895421468851,
+    "t_c_f1": 0.9761679118631883,
+    "acc": 0.8383333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.15479236934148383,
+    "t_c_f1": 0.9775503056321545,
+    "acc": 0.82
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.13388574601955255,
+    "t_c_f1": 0.9757714765577751,
+    "acc": 0.8516666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.1503839723664715,
+    "t_c_f1": 0.9755432236233329,
+    "acc": 0.8333333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.1675994045469935,
+    "t_c_f1": 0.9776415184274618,
+    "acc": 0.84
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.16625811907071475,
+    "t_c_f1": 0.9727759461410104,
+    "acc": 0.8366666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.16998656412151958,
+    "t_c_f1": 0.9787621852313907,
+    "acc": 0.835
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.1433358178497449,
+    "t_c_f1": 0.9757478160266404,
+    "acc": 0.8333333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.25504984344419557,
+    "t_c_f1": 0.9839569289456854,
+    "acc": 0.85
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.25755938472590084,
+    "t_c_f1": 0.9836489760318222,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.2665822286714725,
+    "t_c_f1": 0.9786572618474397,
+    "acc": 0.8333333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.3238500179667118,
+    "t_c_f1": 0.9878295728859616,
+    "acc": 0.8316666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.2741982960064392,
+    "t_c_f1": 0.9856800982557702,
+    "acc": 0.85
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.2671727261983519,
+    "t_c_f1": 0.9862339743467834,
+    "acc": 0.845
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.29218631584650895,
+    "t_c_f1": 0.9865120955726889,
+    "acc": 0.8383333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.2771097337360172,
+    "t_c_f1": 0.9813524302736961,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.32993438264461816,
+    "t_c_f1": 0.9863763999853083,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 5,
+    "dist_corr": 0.39239481087414163,
+    "t_c_f1": 0.9296807018779525,
+    "acc": 0.89
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 5,
+    "dist_corr": 0.4426615797220627,
+    "t_c_f1": 0.9289414413192675,
+    "acc": 0.895
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 5,
+    "dist_corr": 0.4319159522900005,
+    "t_c_f1": 0.9262408212729829,
+    "acc": 0.8966666666666666
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 15,
+    "dist_corr": 0.36781174353997315,
+    "t_c_f1": 0.9293841954043854,
+    "acc": 0.8966666666666666
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 15,
+    "dist_corr": 0.37845851369030525,
+    "t_c_f1": 0.9294513578569464,
+    "acc": 0.905
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 15,
+    "dist_corr": 0.39318596066679823,
+    "t_c_f1": 0.9265645426081022,
+    "acc": 0.8983333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 30,
+    "dist_corr": 0.3845442791981383,
+    "t_c_f1": 0.9174009524984845,
+    "acc": 0.8966666666666666
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 30,
+    "dist_corr": 0.3954654491033646,
+    "t_c_f1": 0.9288554448505703,
+    "acc": 0.9033333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 30,
+    "dist_corr": 0.39287942295142597,
+    "t_c_f1": 0.9227969529578361,
+    "acc": 0.9016666666666666
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 50,
+    "dist_corr": 0.43436340707826526,
+    "t_c_f1": 0.9182260530930654,
+    "acc": 0.8833333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 50,
+    "dist_corr": 0.4399553536200377,
+    "t_c_f1": 0.928295919669047,
+    "acc": 0.9033333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 50,
+    "dist_corr": 0.4251560653780557,
+    "t_c_f1": 0.9239627051420208,
+    "acc": 0.8916666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 100,
+    "dist_corr": 0.4874416845657475,
+    "t_c_f1": 0.9150503818749227,
+    "acc": 0.9033333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 100,
+    "dist_corr": 0.4791754553759018,
+    "t_c_f1": 0.9210714282529866,
+    "acc": 0.9016666666666666
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 100,
+    "dist_corr": 0.48277235026218457,
+    "t_c_f1": 0.9217539190361873,
+    "acc": 0.8966666666666666
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 200,
+    "dist_corr": 0.5905645234884745,
+    "t_c_f1": 0.9097568913797301,
+    "acc": 0.89
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 200,
+    "dist_corr": 0.5857598743800805,
+    "t_c_f1": 0.9087037809418388,
+    "acc": 0.89
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 200,
+    "dist_corr": 0.599569008864197,
+    "t_c_f1": 0.90434304356073,
+    "acc": 0.8916666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.383015263427854,
+    "t_c_f1": 0.923740287812623,
+    "acc": 0.9
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.39063869612038005,
+    "t_c_f1": 0.9246109235523144,
+    "acc": 0.895
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.3532342330973362,
+    "t_c_f1": 0.9215960716701262,
+    "acc": 0.9
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.1844769382934756,
+    "t_c_f1": 0.9153282971205947,
+    "acc": 0.89
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.20442560288084735,
+    "t_c_f1": 0.9138825941236546,
+    "acc": 0.8983333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.15107150127687125,
+    "t_c_f1": 0.9137702446760771,
+    "acc": 0.89
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.15492212159247354,
+    "t_c_f1": 0.8988355059213665,
+    "acc": 0.9
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.1415262510822412,
+    "t_c_f1": 0.894387146062214,
+    "acc": 0.895
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.09992442991029332,
+    "t_c_f1": 0.8925264587541388,
+    "acc": 0.8866666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.10203024398524747,
+    "t_c_f1": 0.8815153473351899,
+    "acc": 0.885
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.10817727356894752,
+    "t_c_f1": 0.881436508234931,
+    "acc": 0.8766666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.12036762568046172,
+    "t_c_f1": 0.8789418115006308,
+    "acc": 0.89
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.11355750142370123,
+    "t_c_f1": 0.8687446335366632,
+    "acc": 0.8716666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.10666882872368198,
+    "t_c_f1": 0.8663657097294329,
+    "acc": 0.8983333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.1166929318584812,
+    "t_c_f1": 0.8731165279625162,
+    "acc": 0.8833333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.1464379556267811,
+    "t_c_f1": 0.8719302852110848,
+    "acc": 0.8816666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.14254705575579224,
+    "t_c_f1": 0.8698003928847575,
+    "acc": 0.8616666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.11472817401134376,
+    "t_c_f1": 0.8597509303524263,
+    "acc": 0.8583333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.36727937246670006,
+    "t_c_f1": 0.9227332269914365,
+    "acc": 0.8983333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.4091299240142,
+    "t_c_f1": 0.9241045895677674,
+    "acc": 0.8983333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.37901014943960437,
+    "t_c_f1": 0.9228064159454258,
+    "acc": 0.895
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.40994426627356456,
+    "t_c_f1": 0.9093764923484362,
+    "acc": 0.895
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.34760466248416816,
+    "t_c_f1": 0.9026724730267621,
+    "acc": 0.8866666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.3859864521838804,
+    "t_c_f1": 0.9111167418588806,
+    "acc": 0.9
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.3713964079092591,
+    "t_c_f1": 0.8985861997151189,
+    "acc": 0.8866666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.41996546155382625,
+    "t_c_f1": 0.8980296108785596,
+    "acc": 0.8866666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.3664482127138312,
+    "t_c_f1": 0.8969140423248156,
+    "acc": 0.8933333333333333
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 5,
+    "dist_corr": 0.16635177423480008,
+    "t_c_f1": 0.9198049878895375,
+    "acc": 0.71
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 5,
+    "dist_corr": 0.17585473815303543,
+    "t_c_f1": 0.92121472725347,
+    "acc": 0.7216666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 5,
+    "dist_corr": 0.15801681881542512,
+    "t_c_f1": 0.9226547844054308,
+    "acc": 0.705
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 15,
+    "dist_corr": 0.17888482968797964,
+    "t_c_f1": 0.9205867418989784,
+    "acc": 0.6866666666666666
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 15,
+    "dist_corr": 0.17422157399056584,
+    "t_c_f1": 0.9220504063121401,
+    "acc": 0.6966666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 15,
+    "dist_corr": 0.17013060680802589,
+    "t_c_f1": 0.9213149684705223,
+    "acc": 0.695
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 30,
+    "dist_corr": 0.2244030631584915,
+    "t_c_f1": 0.9137195095862436,
+    "acc": 0.715
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 30,
+    "dist_corr": 0.20352654450252397,
+    "t_c_f1": 0.9147565852381386,
+    "acc": 0.71
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 30,
+    "dist_corr": 0.24037915896399067,
+    "t_c_f1": 0.9171875819360248,
+    "acc": 0.7016666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 50,
+    "dist_corr": 0.27531976636592864,
+    "t_c_f1": 0.9134433066154183,
+    "acc": 0.7
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 50,
+    "dist_corr": 0.26382872158728626,
+    "t_c_f1": 0.9145351897104751,
+    "acc": 0.695
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 50,
+    "dist_corr": 0.2399605316354218,
+    "t_c_f1": 0.9194613377573364,
+    "acc": 0.6916666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 100,
+    "dist_corr": 0.3392886897133997,
+    "t_c_f1": 0.9104695101649221,
+    "acc": 0.695
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 100,
+    "dist_corr": 0.3722545562908226,
+    "t_c_f1": 0.9125292248551891,
+    "acc": 0.7133333333333334
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 100,
+    "dist_corr": 0.3530009839409447,
+    "t_c_f1": 0.912813943047807,
+    "acc": 0.7216666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 200,
+    "dist_corr": 0.4538953499843315,
+    "t_c_f1": 0.8961615408373547,
+    "acc": 0.7033333333333334
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 200,
+    "dist_corr": 0.48585239175012396,
+    "t_c_f1": 0.9018174355668271,
+    "acc": 0.7066666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 200,
+    "dist_corr": 0.46711934879025,
+    "t_c_f1": 0.9003121826855742,
+    "acc": 0.69
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.191442214647756,
+    "t_c_f1": 0.9118609003742065,
+    "acc": 0.7
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.18135677003748327,
+    "t_c_f1": 0.9140857422747551,
+    "acc": 0.7033333333333334
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.1693555931266399,
+    "t_c_f1": 0.9156134111028255,
+    "acc": 0.6933333333333334
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.016786344066518976,
+    "t_c_f1": 0.9070439462639354,
+    "acc": 0.7283333333333334
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.030995108476833358,
+    "t_c_f1": 0.9091086082311077,
+    "acc": 0.7033333333333334
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.027309557170069245,
+    "t_c_f1": 0.9106109249942071,
+    "acc": 0.715
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": -0.013439386185994167,
+    "t_c_f1": 0.8950615802786563,
+    "acc": 0.715
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": -0.010035166832470762,
+    "t_c_f1": 0.8944947865209988,
+    "acc": 0.6916666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.0012571152071049695,
+    "t_c_f1": 0.892776714342634,
+    "acc": 0.7166666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": -0.0009683753152429867,
+    "t_c_f1": 0.8802069074905737,
+    "acc": 0.6983333333333334
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": -0.02706974984873118,
+    "t_c_f1": 0.8792031809587294,
+    "acc": 0.6733333333333333
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": -0.015742116859195965,
+    "t_c_f1": 0.8828982663207003,
+    "acc": 0.6866666666666666
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": -0.024996610047938357,
+    "t_c_f1": 0.8763743777468483,
+    "acc": 0.71
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": -0.024315455100884575,
+    "t_c_f1": 0.8817918482311004,
+    "acc": 0.6483333333333333
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": -0.020216757945999204,
+    "t_c_f1": 0.8779407733675374,
+    "acc": 0.6916666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": -0.037923938073032785,
+    "t_c_f1": 0.862413638469167,
+    "acc": 0.6966666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": -0.029392519308234433,
+    "t_c_f1": 0.870958458468123,
+    "acc": 0.6983333333333334
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": -0.05756221448446319,
+    "t_c_f1": 0.8667056495648189,
+    "acc": 0.67
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.1607240344496273,
+    "t_c_f1": 0.9123778607469181,
+    "acc": 0.6966666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.18735345112715873,
+    "t_c_f1": 0.9140746943229213,
+    "acc": 0.6783333333333333
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.12817558541619026,
+    "t_c_f1": 0.9134849608287966,
+    "acc": 0.6916666666666667
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.18136245153250435,
+    "t_c_f1": 0.9087018905640339,
+    "acc": 0.72
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.16461762488137965,
+    "t_c_f1": 0.9069391041731267,
+    "acc": 0.685
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.13506124054717555,
+    "t_c_f1": 0.9036916765332124,
+    "acc": 0.6816666666666666
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.14729874872169646,
+    "t_c_f1": 0.8896559244365325,
+    "acc": 0.68
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.16008638333046915,
+    "t_c_f1": 0.8913202200140988,
+    "acc": 0.695
+  },
+  {
+    "dataset": "esol",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.1464822115822854,
+    "t_c_f1": 0.8910662288458848,
+    "acc": 0.6966666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 5,
+    "dist_corr": 0.12595172179146036,
+    "t_c_f1": 0.9836891068431288,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 5,
+    "dist_corr": 0.11158726635168087,
+    "t_c_f1": 0.9815468816469359,
+    "acc": 0.845
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 5,
+    "dist_corr": 0.19280146345299795,
+    "t_c_f1": 0.9837278197354046,
+    "acc": 0.84
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 15,
+    "dist_corr": 0.0051004796908232265,
+    "t_c_f1": 0.9849282598678673,
+    "acc": 0.8533333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 15,
+    "dist_corr": 0.05896332181045875,
+    "t_c_f1": 0.9851223140420851,
+    "acc": 0.845
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 15,
+    "dist_corr": 0.016291161644814357,
+    "t_c_f1": 0.9832566084441751,
+    "acc": 0.85
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 30,
+    "dist_corr": 0.02678010316405615,
+    "t_c_f1": 0.9837740373187549,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 30,
+    "dist_corr": 0.0028570064592317894,
+    "t_c_f1": 0.9827848384906324,
+    "acc": 0.85
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 30,
+    "dist_corr": -0.00508892005839712,
+    "t_c_f1": 0.9826563880892059,
+    "acc": 0.85
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 50,
+    "dist_corr": 0.11129347955387323,
+    "t_c_f1": 0.9779000750720925,
+    "acc": 0.8483333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 50,
+    "dist_corr": 0.13336573571886337,
+    "t_c_f1": 0.978525890327949,
+    "acc": 0.8533333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 50,
+    "dist_corr": 0.11148757128512453,
+    "t_c_f1": 0.9805067350241669,
+    "acc": 0.8316666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 100,
+    "dist_corr": 0.3416039719955272,
+    "t_c_f1": 0.9772168864436322,
+    "acc": 0.8583333333333333
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 100,
+    "dist_corr": 0.34941184435784534,
+    "t_c_f1": 0.9774223815344897,
+    "acc": 0.8583333333333333
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 100,
+    "dist_corr": 0.33068783061142054,
+    "t_c_f1": 0.9773100460774921,
+    "acc": 0.8483333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 200,
+    "dist_corr": 0.5315016459989188,
+    "t_c_f1": 0.961687797177776,
+    "acc": 0.8433333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 200,
+    "dist_corr": 0.5257167785395326,
+    "t_c_f1": 0.9652256423523781,
+    "acc": 0.8483333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 200,
+    "dist_corr": 0.5116924478809799,
+    "t_c_f1": 0.9690708283741561,
+    "acc": 0.83
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.17962383843272772,
+    "t_c_f1": 0.9779880087737471,
+    "acc": 0.8533333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.16806914789097707,
+    "t_c_f1": 0.9745676756754675,
+    "acc": 0.84
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.17860102268460898,
+    "t_c_f1": 0.9752104337947665,
+    "acc": 0.84
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.03646556186183259,
+    "t_c_f1": 0.9817784387201463,
+    "acc": 0.8383333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.05099191026725927,
+    "t_c_f1": 0.9789048598788568,
+    "acc": 0.8483333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.024533099022399765,
+    "t_c_f1": 0.9797242072146907,
+    "acc": 0.8283333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": -0.010723931436510178,
+    "t_c_f1": 0.9759145583538508,
+    "acc": 0.84
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": -0.005980938954651365,
+    "t_c_f1": 0.9731770234062448,
+    "acc": 0.8433333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": -0.009202867371125783,
+    "t_c_f1": 0.9756609685785952,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": -0.010820244121547511,
+    "t_c_f1": 0.9690832842614862,
+    "acc": 0.8483333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.02579858421913192,
+    "t_c_f1": 0.9666675244575202,
+    "acc": 0.82
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.00820662550586181,
+    "t_c_f1": 0.9718759369899141,
+    "acc": 0.8233333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.0448063140312269,
+    "t_c_f1": 0.9619533119193182,
+    "acc": 0.8416666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.04320411033898857,
+    "t_c_f1": 0.9694046762234562,
+    "acc": 0.8366666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.04286095412393857,
+    "t_c_f1": 0.9634094065030282,
+    "acc": 0.8316666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.042507459655894905,
+    "t_c_f1": 0.9609658938959593,
+    "acc": 0.8216666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.03926368786103828,
+    "t_c_f1": 0.9612521482051023,
+    "acc": 0.8366666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.0331788827463831,
+    "t_c_f1": 0.9605668733710285,
+    "acc": 0.8233333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.1395982821461919,
+    "t_c_f1": 0.9762267876468008,
+    "acc": 0.8533333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.15046167977237387,
+    "t_c_f1": 0.9757716991357667,
+    "acc": 0.8483333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.1701811041102711,
+    "t_c_f1": 0.9785425399820594,
+    "acc": 0.8433333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.24934213740020536,
+    "t_c_f1": 0.9736474722034458,
+    "acc": 0.87
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.2314717389297375,
+    "t_c_f1": 0.9763098533424508,
+    "acc": 0.8583333333333333
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.22325272665641704,
+    "t_c_f1": 0.9784545794999837,
+    "acc": 0.845
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.2567978008186596,
+    "t_c_f1": 0.9744651071126776,
+    "acc": 0.86
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.20791030869942578,
+    "t_c_f1": 0.9749004234908963,
+    "acc": 0.8433333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.23932772982900324,
+    "t_c_f1": 0.9741738029373198,
+    "acc": 0.8483333333333334
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 5,
+    "dist_corr": 0.27180813683716587,
+    "t_c_f1": 0.9611629863203254,
+    "acc": 0.7866666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 5,
+    "dist_corr": 0.2781289087866032,
+    "t_c_f1": 0.9622906184505144,
+    "acc": 0.7916666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 5,
+    "dist_corr": 0.264347451309052,
+    "t_c_f1": 0.9612956751779547,
+    "acc": 0.7916666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 15,
+    "dist_corr": 0.17032108253236528,
+    "t_c_f1": 0.9620990713436585,
+    "acc": 0.775
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 15,
+    "dist_corr": 0.17744592276380186,
+    "t_c_f1": 0.9622655892767609,
+    "acc": 0.795
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 15,
+    "dist_corr": 0.17489317692056294,
+    "t_c_f1": 0.961682732550896,
+    "acc": 0.785
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 30,
+    "dist_corr": 0.21538851106883092,
+    "t_c_f1": 0.9536270413981441,
+    "acc": 0.7866666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 30,
+    "dist_corr": 0.21667561872081278,
+    "t_c_f1": 0.9560024618632452,
+    "acc": 0.7833333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 30,
+    "dist_corr": 0.28660684772163686,
+    "t_c_f1": 0.9534864121664773,
+    "acc": 0.7666666666666667
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 50,
+    "dist_corr": 0.3632668093609941,
+    "t_c_f1": 0.9518943333482749,
+    "acc": 0.78
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 50,
+    "dist_corr": 0.3505975924745286,
+    "t_c_f1": 0.9470090365527349,
+    "acc": 0.7633333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 50,
+    "dist_corr": 0.3778383545565796,
+    "t_c_f1": 0.9541621808421762,
+    "acc": 0.7983333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 100,
+    "dist_corr": 0.4768098437458278,
+    "t_c_f1": 0.9522936366050548,
+    "acc": 0.7666666666666667
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 100,
+    "dist_corr": 0.4923536222165895,
+    "t_c_f1": 0.948509892904961,
+    "acc": 0.7816666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 100,
+    "dist_corr": 0.4933222034515133,
+    "t_c_f1": 0.9473113994826639,
+    "acc": 0.7716666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 200,
+    "dist_corr": 0.6121817507704049,
+    "t_c_f1": 0.9303909981942322,
+    "acc": 0.7783333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 200,
+    "dist_corr": 0.608572244639296,
+    "t_c_f1": 0.940236747136117,
+    "acc": 0.7766666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 200,
+    "dist_corr": 0.589673784644368,
+    "t_c_f1": 0.9395037301000341,
+    "acc": 0.7916666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.33123951296988285,
+    "t_c_f1": 0.9520521042860566,
+    "acc": 0.7883333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.3328746796330957,
+    "t_c_f1": 0.9518298490980027,
+    "acc": 0.7783333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.3075876892208654,
+    "t_c_f1": 0.9548468883126978,
+    "acc": 0.805
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.12698703913364148,
+    "t_c_f1": 0.9520957006709786,
+    "acc": 0.7866666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.13585572999159007,
+    "t_c_f1": 0.950863116034862,
+    "acc": 0.7883333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.15207498895897387,
+    "t_c_f1": 0.9582215248831145,
+    "acc": 0.7783333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.08225524267982308,
+    "t_c_f1": 0.9394706068608716,
+    "acc": 0.7833333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.08036351522868804,
+    "t_c_f1": 0.9439633895960353,
+    "acc": 0.7816666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.07636601977291001,
+    "t_c_f1": 0.93543476368813,
+    "acc": 0.7866666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.06399886341990706,
+    "t_c_f1": 0.9270316263381128,
+    "acc": 0.795
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.06688944208099937,
+    "t_c_f1": 0.9257768932033378,
+    "acc": 0.7683333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.06927628607710859,
+    "t_c_f1": 0.9325039554794837,
+    "acc": 0.7716666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.05983739212441324,
+    "t_c_f1": 0.9234653814928697,
+    "acc": 0.775
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.07393079332400081,
+    "t_c_f1": 0.9188209168338307,
+    "acc": 0.775
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.044856980494044456,
+    "t_c_f1": 0.9191555458964277,
+    "acc": 0.7716666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.08440124569874298,
+    "t_c_f1": 0.9154519849355378,
+    "acc": 0.755
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.08438586126350958,
+    "t_c_f1": 0.9122788592933776,
+    "acc": 0.775
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.057229043082033436,
+    "t_c_f1": 0.9085397873789083,
+    "acc": 0.7666666666666667
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.33117651177880664,
+    "t_c_f1": 0.9529474707017108,
+    "acc": 0.78
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.3334342366292578,
+    "t_c_f1": 0.9531380286079119,
+    "acc": 0.7883333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.0,
+    "dist_corr": 0.3607023361324277,
+    "t_c_f1": 0.9516877433167749,
+    "acc": 0.7833333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.3581038142922091,
+    "t_c_f1": 0.9501235819135314,
+    "acc": 0.7933333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.31305211908052843,
+    "t_c_f1": 0.9405464309386146,
+    "acc": 0.7916666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.5,
+    "dist_corr": 0.3351177939509732,
+    "t_c_f1": 0.9483657420004307,
+    "acc": 0.7933333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.3985961606483,
+    "t_c_f1": 0.9341692645441052,
+    "acc": 0.7733333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.3272952183009823,
+    "t_c_f1": 0.9294653031002782,
+    "acc": 0.7866666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.99,
+    "dist_corr": 0.3520334474238465,
+    "t_c_f1": 0.937662404543,
+    "acc": 0.7933333333333333
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 5,
+    "dist_corr": 0.6472216006676523,
+    "t_c_f1": 0.9966915869826664,
+    "acc": 0.9991696482495861
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 5,
+    "dist_corr": 0.6474542545033839,
+    "t_c_f1": 0.9967080344282838,
+    "acc": 0.9991699627600646
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 5,
+    "dist_corr": 0.6479602144632028,
+    "t_c_f1": 0.9966685029250554,
+    "acc": 0.9991661624084994
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 15,
+    "dist_corr": 0.4414073588057275,
+    "t_c_f1": 0.99849495960321,
+    "acc": 0.9993747093037177
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 15,
+    "dist_corr": 0.436472348609791,
+    "t_c_f1": 0.998485642866045,
+    "acc": 0.9993774897457635
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 15,
+    "dist_corr": 0.430453300290743,
+    "t_c_f1": 0.9984769075998868,
+    "acc": 0.9993674518977612
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 30,
+    "dist_corr": 0.693042683487225,
+    "t_c_f1": 0.9964321023197235,
+    "acc": 0.9994653511613293
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 30,
+    "dist_corr": 0.6925214331608582,
+    "t_c_f1": 0.996405723367195,
+    "acc": 0.9994721916798991
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 30,
+    "dist_corr": 0.6927935761619675,
+    "t_c_f1": 0.9964400699551584,
+    "acc": 0.9994614655056405
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 50,
+    "dist_corr": 0.6198604671978295,
+    "t_c_f1": 0.9943657945120529,
+    "acc": 0.9994714805597154
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 50,
+    "dist_corr": 0.6170175718922429,
+    "t_c_f1": 0.9943656998019118,
+    "acc": 0.9994615453108828
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 50,
+    "dist_corr": 0.6195816419608515,
+    "t_c_f1": 0.9943688356360313,
+    "acc": 0.9994745984707996
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 100,
+    "dist_corr": 0.6775956654777746,
+    "t_c_f1": 0.9933718085990401,
+    "acc": 0.9909942567941177
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 100,
+    "dist_corr": 0.6739201638016447,
+    "t_c_f1": 0.9932808502842062,
+    "acc": 0.9880648280243763
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 100,
+    "dist_corr": 0.659335771210233,
+    "t_c_f1": 0.994817553529648,
+    "acc": 0.9968825638205462
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 200,
+    "dist_corr": 0.714790570013533,
+    "t_c_f1": 0.9892037550381312,
+    "acc": 0.551172864062152
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 200,
+    "dist_corr": 0.7146443997530132,
+    "t_c_f1": 0.9891961879210662,
+    "acc": 0.5457449629884006
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 200,
+    "dist_corr": 0.7642869406621646,
+    "t_c_f1": 0.9875233136164064,
+    "acc": 0.8150679404430564
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.4332060091607916,
+    "t_c_f1": 0.9967084383761954,
+    "acc": 0.9990495712942709
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.39957818731271777,
+    "t_c_f1": 0.996223893199786,
+    "acc": 0.9990023507114777
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.42981922202178974,
+    "t_c_f1": 0.9963216641229631,
+    "acc": 0.9990057420319473
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.28951800187020876,
+    "t_c_f1": 0.997724191526832,
+    "acc": 0.9991214362427164
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.2103444640449838,
+    "t_c_f1": 0.9979132905887749,
+    "acc": 0.9991432784102959
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.2809937937565583,
+    "t_c_f1": 0.9979253051115344,
+    "acc": 0.9991286349575126
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.6554492048214413,
+    "t_c_f1": 0.9966521449008273,
+    "acc": 0.9991780345852235
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.652271715565069,
+    "t_c_f1": 0.9964348226936767,
+    "acc": 0.9991120765217658
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.6610134418029435,
+    "t_c_f1": 0.9956846586372948,
+    "acc": 0.9991889344161922
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.6366302747245014,
+    "t_c_f1": 0.9949204380536532,
+    "acc": 0.9823688189276066
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.6539732616627828,
+    "t_c_f1": 0.9955317710394104,
+    "acc": 0.9872068265358023
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.6557985304491064,
+    "t_c_f1": 0.9955007896777189,
+    "acc": 0.9896824474114484
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.6532172027583902,
+    "t_c_f1": 0.9939025485196464,
+    "acc": 0.9504951292566204
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.6338483488155919,
+    "t_c_f1": 0.9945126168282814,
+    "acc": 0.9701463333122325
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.643793758712069,
+    "t_c_f1": 0.9939059324564609,
+    "acc": 0.9475401803198457
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.6127147044314846,
+    "t_c_f1": 0.9914767396447932,
+    "acc": 0.9008060427270977
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.5981652879434859,
+    "t_c_f1": 0.9925847102576364,
+    "acc": 0.887353171608869
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.6151939231152506,
+    "t_c_f1": 0.9910773459103395,
+    "acc": 0.9033577123368776
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.0,
+    "dist_corr": 0.6694885751569987,
+    "t_c_f1": 0.9950348905381807,
+    "acc": 0.999024741555976
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.0,
+    "dist_corr": 0.654950686652855,
+    "t_c_f1": 0.9947864704630106,
+    "acc": 0.9990583942068815
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.0,
+    "dist_corr": 0.6644188095089029,
+    "t_c_f1": 0.9948962551800006,
+    "acc": 0.9990245801063798
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.5,
+    "dist_corr": 0.6682775518459951,
+    "t_c_f1": 0.9934522724873986,
+    "acc": 0.9241687707098027
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.5,
+    "dist_corr": 0.7032844624780457,
+    "t_c_f1": 0.9948635152031338,
+    "acc": 0.9624838501564352
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.5,
+    "dist_corr": 0.6654555499867262,
+    "t_c_f1": 0.9929525806476778,
+    "acc": 0.9416348319189161
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.99,
+    "dist_corr": 0.6080811719227035,
+    "t_c_f1": 0.9882673451856314,
+    "acc": 0.8798781926248666
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.99,
+    "dist_corr": 0.6443607021647252,
+    "t_c_f1": 0.9891949938004929,
+    "acc": 0.8086191992689746
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.99,
+    "dist_corr": 0.6091116010564349,
+    "t_c_f1": 0.9888394952178395,
+    "acc": 0.8632672951016557
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 5,
+    "dist_corr": 0.7696960290937788,
+    "t_c_f1": 0.9967784542030441,
+    "acc": 0.9991591249941051
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 5,
+    "dist_corr": 0.7657061759223421,
+    "t_c_f1": 0.9969341223482835,
+    "acc": 0.999169851380697
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 5,
+    "dist_corr": 0.7631784090875435,
+    "t_c_f1": 0.9968194410787291,
+    "acc": 0.9991589961323081
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 15,
+    "dist_corr": 0.647273992653195,
+    "t_c_f1": 0.9986723434774445,
+    "acc": 0.999334048693951
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 15,
+    "dist_corr": 0.64712759144547,
+    "t_c_f1": 0.9986698044128746,
+    "acc": 0.9993336640000747
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 15,
+    "dist_corr": 0.6475240345941299,
+    "t_c_f1": 0.9986729081598508,
+    "acc": 0.99933327815098
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 30,
+    "dist_corr": 0.6429634086105874,
+    "t_c_f1": 0.9993186537114859,
+    "acc": 0.9995103051023674
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 30,
+    "dist_corr": 0.6431379452846415,
+    "t_c_f1": 0.9993240035952901,
+    "acc": 0.9995077058813526
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 30,
+    "dist_corr": 0.6429201488244471,
+    "t_c_f1": 0.9993189382261084,
+    "acc": 0.9995085770622082
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 50,
+    "dist_corr": 0.6428213223829149,
+    "t_c_f1": 0.9994625436812493,
+    "acc": 0.9995572304654259
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 50,
+    "dist_corr": 0.6427909055013025,
+    "t_c_f1": 0.999461980618179,
+    "acc": 0.9995581731866798
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 50,
+    "dist_corr": 0.6427622058801221,
+    "t_c_f1": 0.9994616988960796,
+    "acc": 0.9995584112478394
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 100,
+    "dist_corr": 0.6349357046474225,
+    "t_c_f1": 0.9992792374731032,
+    "acc": 0.9995830081566697
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 100,
+    "dist_corr": 0.6380020204561639,
+    "t_c_f1": 0.9994422852587752,
+    "acc": 0.9995561953557807
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 100,
+    "dist_corr": 0.6381301727772092,
+    "t_c_f1": 0.999485358014325,
+    "acc": 0.9995512975508744
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 200,
+    "dist_corr": 0.8263676124008542,
+    "t_c_f1": 0.9952804814124931,
+    "acc": 0.999417953063474
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 200,
+    "dist_corr": 0.8081487379822345,
+    "t_c_f1": 0.9955420628028623,
+    "acc": 0.9994784004340734
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 200,
+    "dist_corr": 0.8192204063878892,
+    "t_c_f1": 0.9958154592803419,
+    "acc": 0.9994966808006333
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.5461697043429613,
+    "t_c_f1": 0.996082265889482,
+    "acc": 0.998943067214317
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.5291045003398147,
+    "t_c_f1": 0.996012705762148,
+    "acc": 0.9989100110034363
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.5363691423670458,
+    "t_c_f1": 0.9961761586144585,
+    "acc": 0.9988654382784629
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.6177347391437122,
+    "t_c_f1": 0.9968591309986646,
+    "acc": 0.9989858008629554
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.6174766310078446,
+    "t_c_f1": 0.9977359820118767,
+    "acc": 0.9991265634438975
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.6439549997490889,
+    "t_c_f1": 0.9976318988080723,
+    "acc": 0.9990995707627878
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.6262478438080415,
+    "t_c_f1": 0.9981871147312635,
+    "acc": 0.9991423110229801
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.6275466787030607,
+    "t_c_f1": 0.9979931599659889,
+    "acc": 0.9991421125819275
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.6234238813430494,
+    "t_c_f1": 0.9979410913641528,
+    "acc": 0.9991663873108932
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.6308094836073715,
+    "t_c_f1": 0.9981486377778286,
+    "acc": 0.9991378564853867
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.6323977458469414,
+    "t_c_f1": 0.998324026211631,
+    "acc": 0.9991771956330187
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.6301024050793156,
+    "t_c_f1": 0.9981387864498656,
+    "acc": 0.9990675546660785
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.6311460366089519,
+    "t_c_f1": 0.9978485233270925,
+    "acc": 0.9990723226022976
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.626890952327505,
+    "t_c_f1": 0.9979166648795935,
+    "acc": 0.9991051052456108
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.6258039375738761,
+    "t_c_f1": 0.9976466484625571,
+    "acc": 0.9991173409480893
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.6296128888216007,
+    "t_c_f1": 0.9977877198553695,
+    "acc": 0.9990456811175393
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.6259833589945071,
+    "t_c_f1": 0.9978533219112253,
+    "acc": 0.9991224879339813
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.6285408728853324,
+    "t_c_f1": 0.9978279764523085,
+    "acc": 0.9991296791850163
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.0,
+    "dist_corr": 0.6198149306994658,
+    "t_c_f1": 0.9972386859319601,
+    "acc": 0.9989662913267124
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.0,
+    "dist_corr": 0.6191313561011594,
+    "t_c_f1": 0.9972871612990573,
+    "acc": 0.9989969397198493
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.0,
+    "dist_corr": 0.6231906044867148,
+    "t_c_f1": 0.9970201292249935,
+    "acc": 0.9988823061948398
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.5,
+    "dist_corr": 0.6506091631279394,
+    "t_c_f1": 0.9989414328008807,
+    "acc": 0.9993362291703701
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.5,
+    "dist_corr": 0.6535867879612932,
+    "t_c_f1": 0.999074885832453,
+    "acc": 0.9993562137854829
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.5,
+    "dist_corr": 0.6369347416677915,
+    "t_c_f1": 0.9985965619143304,
+    "acc": 0.9993222050410208
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.99,
+    "dist_corr": 0.6287360552439176,
+    "t_c_f1": 0.9974149041102723,
+    "acc": 0.9992840590164338
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.99,
+    "dist_corr": 0.6572444359970196,
+    "t_c_f1": 0.9988631725016672,
+    "acc": 0.9993575840770084
+  },
+  {
+    "dataset": "s_curve",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.99,
+    "dist_corr": 0.6431629265755395,
+    "t_c_f1": 0.9981913955779167,
+    "acc": 0.9992765308214115
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 5,
+    "dist_corr": 0.7403653908831455,
+    "t_c_f1": 0.9971318776219055,
+    "acc": 0.9981434355533177
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 5,
+    "dist_corr": 0.7421515845071134,
+    "t_c_f1": 0.9971447528424402,
+    "acc": 0.998115275916535
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 5,
+    "dist_corr": 0.7416441850855415,
+    "t_c_f1": 0.9971220934913472,
+    "acc": 0.9981574121936356
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 15,
+    "dist_corr": 0.6914820557542086,
+    "t_c_f1": 0.9984633978139992,
+    "acc": 0.9984867102082067
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 15,
+    "dist_corr": 0.6890966847914324,
+    "t_c_f1": 0.9984741467810968,
+    "acc": 0.9985054112195322
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 15,
+    "dist_corr": 0.6894236630050716,
+    "t_c_f1": 0.9984803514874201,
+    "acc": 0.9985044445523814
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 30,
+    "dist_corr": 0.6875869733841704,
+    "t_c_f1": 0.9989741104937016,
+    "acc": 0.9987986734688088
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 30,
+    "dist_corr": 0.6871325328581273,
+    "t_c_f1": 0.9989692944225934,
+    "acc": 0.998792686779503
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 30,
+    "dist_corr": 0.6868064581256434,
+    "t_c_f1": 0.998967315733758,
+    "acc": 0.9987930582944627
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 50,
+    "dist_corr": 0.706570061980259,
+    "t_c_f1": 0.9991861366745527,
+    "acc": 0.9989400649337542
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 50,
+    "dist_corr": 0.7064368290467385,
+    "t_c_f1": 0.9991838763791648,
+    "acc": 0.9989352453543632
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 50,
+    "dist_corr": 0.7061314186686777,
+    "t_c_f1": 0.9991850058256945,
+    "acc": 0.9989276753296283
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 100,
+    "dist_corr": 0.7445921437913908,
+    "t_c_f1": 0.9993166838314197,
+    "acc": 0.9989344679585762
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 100,
+    "dist_corr": 0.7453970796133176,
+    "t_c_f1": 0.9993226157646228,
+    "acc": 0.9989295518213998
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 100,
+    "dist_corr": 0.7453763773627825,
+    "t_c_f1": 0.9993237457378481,
+    "acc": 0.9989210536947197
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 200,
+    "dist_corr": 0.7945994092367082,
+    "t_c_f1": 0.9990508715765093,
+    "acc": 0.9983898048402456
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 200,
+    "dist_corr": 0.7951727841354242,
+    "t_c_f1": 0.9990359001404698,
+    "acc": 0.998393135459388
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 200,
+    "dist_corr": 0.7810449482184552,
+    "t_c_f1": 0.9971766717504241,
+    "acc": 0.9979822015695932
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.6594400794798427,
+    "t_c_f1": 0.9944432127884759,
+    "acc": 0.997652370598245
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.6925837425975708,
+    "t_c_f1": 0.9951014431601501,
+    "acc": 0.9975557165519225
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 5,
+    "min_dist": 0.1,
+    "dist_corr": 0.6732407365113213,
+    "t_c_f1": 0.9951406753844575,
+    "acc": 0.9978703133855051
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.6412405798688167,
+    "t_c_f1": 0.9974960726821931,
+    "acc": 0.997940119970191
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.6653921607399221,
+    "t_c_f1": 0.9974916138984807,
+    "acc": 0.9979197095194899
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "dist_corr": 0.6374473297359586,
+    "t_c_f1": 0.9972001061296749,
+    "acc": 0.9979467690567099
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.6844704012073158,
+    "t_c_f1": 0.9982623460461315,
+    "acc": 0.9979425441589156
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.6775149273044899,
+    "t_c_f1": 0.9981899793844928,
+    "acc": 0.9982090763577268
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 50,
+    "min_dist": 0.1,
+    "dist_corr": 0.6886380013353159,
+    "t_c_f1": 0.9982298190445497,
+    "acc": 0.9979010432371963
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.6910638264333633,
+    "t_c_f1": 0.9981999933141626,
+    "acc": 0.9979303538917943
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.6823559459326776,
+    "t_c_f1": 0.9981765221548969,
+    "acc": 0.9981510981767062
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 100,
+    "min_dist": 0.1,
+    "dist_corr": 0.6972556606350837,
+    "t_c_f1": 0.9982632435933779,
+    "acc": 0.9980179486394978
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.7038690786209048,
+    "t_c_f1": 0.9983822041161947,
+    "acc": 0.9980998485235316
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.7010317516383611,
+    "t_c_f1": 0.998255950022913,
+    "acc": 0.9979974194664566
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 200,
+    "min_dist": 0.1,
+    "dist_corr": 0.7066653892638249,
+    "t_c_f1": 0.9983729076680906,
+    "acc": 0.9980221263909385
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.712254374964569,
+    "t_c_f1": 0.9983808153606382,
+    "acc": 0.9980933788142445
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.7138581020244522,
+    "t_c_f1": 0.9982746085945772,
+    "acc": 0.9980107449036223
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.1,
+    "dist_corr": 0.7121318603927839,
+    "t_c_f1": 0.9983472156610088,
+    "acc": 0.9981612935064147
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.0,
+    "dist_corr": 0.6873609848937122,
+    "t_c_f1": 0.9977150718514392,
+    "acc": 0.9977112410803097
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.0,
+    "dist_corr": 0.7073390273921282,
+    "t_c_f1": 0.9978010344321807,
+    "acc": 0.9977849526353557
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.0,
+    "dist_corr": 0.6972274554681089,
+    "t_c_f1": 0.997746274376176,
+    "acc": 0.9978317682627167
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.5,
+    "dist_corr": 0.7340883612230177,
+    "t_c_f1": 0.9987455059006853,
+    "acc": 0.9985200906589842
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.5,
+    "dist_corr": 0.7375742338600109,
+    "t_c_f1": 0.9985432452826574,
+    "acc": 0.9984334219380016
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.5,
+    "dist_corr": 0.7314216616065743,
+    "t_c_f1": 0.9988229039474564,
+    "acc": 0.9984823615461126
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 42,
+    "n_neighbors": 400,
+    "min_dist": 0.99,
+    "dist_corr": 0.7381116850843832,
+    "t_c_f1": 0.9983384423639483,
+    "acc": 0.9982767429765403
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 0,
+    "n_neighbors": 400,
+    "min_dist": 0.99,
+    "dist_corr": 0.7404382477304481,
+    "t_c_f1": 0.9982059567770193,
+    "acc": 0.9981751106964584
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "umap",
+    "seed": 1,
+    "n_neighbors": 400,
+    "min_dist": 0.99,
+    "dist_corr": 0.736742096944565,
+    "t_c_f1": 0.9984099108855179,
+    "acc": 0.9984237114350989
+  }
+]

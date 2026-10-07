@@ -1,0 +1,8 @@
+{
+  "dataset": "esol",
+  "kind": "tsne",
+  "label": "t-SNE\n(reference)",
+  "seed": 0,
+  "ok": true,
+  "elapsed_s": 1.2566280364990234
+}

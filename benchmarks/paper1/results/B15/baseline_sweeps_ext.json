@@ -1,0 +1,650 @@
+[
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 300,
+    "dist_corr": 0.6713155091841996,
+    "t_c_f1": 0.9746573747438171,
+    "acc": 0.8266666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 300,
+    "dist_corr": 0.6754106355616069,
+    "t_c_f1": 0.9739359659254083,
+    "acc": 0.8266666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 300,
+    "dist_corr": 0.6657289275415472,
+    "t_c_f1": 0.974707155350764,
+    "acc": 0.8366666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 400,
+    "dist_corr": 0.7370590002736509,
+    "t_c_f1": 0.9556022493721757,
+    "acc": 0.8016666666666666
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 400,
+    "dist_corr": 0.7351125527929993,
+    "t_c_f1": 0.9620498404916955,
+    "acc": 0.8166666666666667
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 400,
+    "dist_corr": 0.7350713109175376,
+    "t_c_f1": 0.9645823143783112,
+    "acc": 0.8183333333333334
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 500,
+    "dist_corr": 0.8103517935585871,
+    "t_c_f1": 0.9160258612464447,
+    "acc": 0.7983333333333333
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 500,
+    "dist_corr": 0.8104874894148093,
+    "t_c_f1": 0.9258338695437849,
+    "acc": 0.7833333333333333
+  },
+  {
+    "dataset": "bace",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 500,
+    "dist_corr": 0.8110238813523638,
+    "t_c_f1": 0.9259364883211673,
+    "acc": 0.7916666666666666
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 300,
+    "dist_corr": 0.6782376884079997,
+    "t_c_f1": 0.887819495357372,
+    "acc": 0.8916666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 300,
+    "dist_corr": 0.6737633289882944,
+    "t_c_f1": 0.8908060494686116,
+    "acc": 0.8916666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 300,
+    "dist_corr": 0.6726587673646126,
+    "t_c_f1": 0.8874446685544828,
+    "acc": 0.9
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 400,
+    "dist_corr": 0.772978953965514,
+    "t_c_f1": 0.8721906020644619,
+    "acc": 0.8866666666666667
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 400,
+    "dist_corr": 0.7731018786978234,
+    "t_c_f1": 0.8730294338973995,
+    "acc": 0.885
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 400,
+    "dist_corr": 0.7737733701086988,
+    "t_c_f1": 0.8620722088139423,
+    "acc": 0.8883333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 500,
+    "dist_corr": 0.862793807462052,
+    "t_c_f1": 0.8395929301615038,
+    "acc": 0.8833333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 500,
+    "dist_corr": 0.8632337442055806,
+    "t_c_f1": 0.8362121911322004,
+    "acc": 0.8683333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 500,
+    "dist_corr": 0.863148445898522,
+    "t_c_f1": 0.8364730379582058,
+    "acc": 0.8783333333333333
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 300,
+    "dist_corr": 0.5590316033104186,
+    "t_c_f1": 0.8834966483358718,
+    "acc": 0.6816666666666666
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 300,
+    "dist_corr": 0.5672534599675833,
+    "t_c_f1": 0.8904544227966255,
+    "acc": 0.7
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 300,
+    "dist_corr": 0.5713419121896731,
+    "t_c_f1": 0.8895461407659746,
+    "acc": 0.67
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 400,
+    "dist_corr": 0.6644902813556259,
+    "t_c_f1": 0.8681907322588523,
+    "acc": 0.695
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 400,
+    "dist_corr": 0.6629801688825807,
+    "t_c_f1": 0.8722925707634305,
+    "acc": 0.685
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 400,
+    "dist_corr": 0.6641812598030804,
+    "t_c_f1": 0.8798015938312878,
+    "acc": 0.6783333333333333
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 500,
+    "dist_corr": 0.811558902088975,
+    "t_c_f1": 0.8483471191771174,
+    "acc": 0.6816666666666666
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 500,
+    "dist_corr": 0.8109937738464539,
+    "t_c_f1": 0.8503186837173788,
+    "acc": 0.6783333333333333
+  },
+  {
+    "dataset": "esol",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 500,
+    "dist_corr": 0.8117522348365769,
+    "t_c_f1": 0.8500810348395751,
+    "acc": 0.6683333333333333
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 300,
+    "dist_corr": 0.5967411410568083,
+    "t_c_f1": 0.9625879495082063,
+    "acc": 0.8466666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 300,
+    "dist_corr": 0.5900491272950108,
+    "t_c_f1": 0.9614952314807397,
+    "acc": 0.825
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 300,
+    "dist_corr": 0.5866744349174098,
+    "t_c_f1": 0.9605950809089154,
+    "acc": 0.8416666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 400,
+    "dist_corr": 0.677458792441908,
+    "t_c_f1": 0.9425046638839928,
+    "acc": 0.8216666666666667
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 400,
+    "dist_corr": 0.6771712156517465,
+    "t_c_f1": 0.9422832459582154,
+    "acc": 0.835
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 400,
+    "dist_corr": 0.6763784560978436,
+    "t_c_f1": 0.9439556467637878,
+    "acc": 0.8116666666666666
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 500,
+    "dist_corr": 0.779734964865934,
+    "t_c_f1": 0.9078888152371993,
+    "acc": 0.8033333333333333
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 500,
+    "dist_corr": 0.778839405098337,
+    "t_c_f1": 0.9050843496670068,
+    "acc": 0.8333333333333334
+  },
+  {
+    "dataset": "drd2",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 500,
+    "dist_corr": 0.7797244416836481,
+    "t_c_f1": 0.9051538373713273,
+    "acc": 0.8333333333333334
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 300,
+    "dist_corr": 0.674977292596387,
+    "t_c_f1": 0.923880420635092,
+    "acc": 0.7716666666666666
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 300,
+    "dist_corr": 0.6763928039264245,
+    "t_c_f1": 0.920492988202246,
+    "acc": 0.755
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 300,
+    "dist_corr": 0.6724933392862911,
+    "t_c_f1": 0.9270462082774219,
+    "acc": 0.79
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 400,
+    "dist_corr": 0.7482856720563826,
+    "t_c_f1": 0.8959876847368755,
+    "acc": 0.7616666666666667
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 400,
+    "dist_corr": 0.7498022793818327,
+    "t_c_f1": 0.9018560210219043,
+    "acc": 0.76
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 400,
+    "dist_corr": 0.750159330292862,
+    "t_c_f1": 0.9007179386048392,
+    "acc": 0.7466666666666667
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 500,
+    "dist_corr": 0.8424964798514202,
+    "t_c_f1": 0.8556838472001603,
+    "acc": 0.7483333333333333
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 500,
+    "dist_corr": 0.8421885827614906,
+    "t_c_f1": 0.8659731379371707,
+    "acc": 0.755
+  },
+  {
+    "dataset": "egfr",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 500,
+    "dist_corr": 0.8427374410835279,
+    "t_c_f1": 0.8688581211537273,
+    "acc": 0.7516666666666667
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 300,
+    "dist_corr": 0.7699029387444795,
+    "t_c_f1": 0.9843932432171573,
+    "acc": 0.4746110063458273
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 300,
+    "dist_corr": 0.7699782829247843,
+    "t_c_f1": 0.9844164474656046,
+    "acc": 0.47215992578713184
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 300,
+    "dist_corr": 0.7699410551601467,
+    "t_c_f1": 0.9844257259457994,
+    "acc": 0.4758931642170101
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 400,
+    "dist_corr": 0.8165841159476612,
+    "t_c_f1": 0.9807665530621216,
+    "acc": 0.555324756754801
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 400,
+    "dist_corr": 0.8166036137292177,
+    "t_c_f1": 0.9807473435730343,
+    "acc": 0.555046289903794
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 400,
+    "dist_corr": 0.8166026827595891,
+    "t_c_f1": 0.9807662511082013,
+    "acc": 0.5568899008677028
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 500,
+    "dist_corr": 0.8572438883372071,
+    "t_c_f1": 0.9423100403765192,
+    "acc": 0.7044326729522468
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 500,
+    "dist_corr": 0.8572771204118448,
+    "t_c_f1": 0.9420367974065054,
+    "acc": 0.706092681807057
+  },
+  {
+    "dataset": "swiss_roll",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 500,
+    "dist_corr": 0.8572594675389458,
+    "t_c_f1": 0.9421876850469891,
+    "acc": 0.7043265081380778
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 300,
+    "dist_corr": 0.845566076356883,
+    "t_c_f1": 0.9942252732608531,
+    "acc": 0.9993114363157914
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 300,
+    "dist_corr": 0.8455069217899567,
+    "t_c_f1": 0.9941597525699173,
+    "acc": 0.9993211441566089
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 300,
+    "dist_corr": 0.8248447024595521,
+    "t_c_f1": 0.9960930102776863,
+    "acc": 0.9995974583362612
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 400,
+    "dist_corr": 0.868483826970637,
+    "t_c_f1": 0.9896807656218308,
+    "acc": 0.9992771955513344
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 400,
+    "dist_corr": 0.8685150182397292,
+    "t_c_f1": 0.9896603591104987,
+    "acc": 0.9992649748165126
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 400,
+    "dist_corr": 0.8684695524632533,
+    "t_c_f1": 0.989657558855005,
+    "acc": 0.9992720923070986
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 500,
+    "dist_corr": 0.8885989151563234,
+    "t_c_f1": 0.9662225849434105,
+    "acc": 0.9992583024037937
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 500,
+    "dist_corr": 0.8886085770574941,
+    "t_c_f1": 0.9663668775474442,
+    "acc": 0.9992618568585866
+  },
+  {
+    "dataset": "s_curve",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 500,
+    "dist_corr": 0.8886111579578913,
+    "t_c_f1": 0.9662849794658575,
+    "acc": 0.9992585723607016
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 300,
+    "dist_corr": 0.829001351694694,
+    "t_c_f1": 0.9981539904926057,
+    "acc": 0.9977248591738043
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 300,
+    "dist_corr": 0.8290011707494755,
+    "t_c_f1": 0.9981562502019513,
+    "acc": 0.9977243907872243
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 300,
+    "dist_corr": 0.829003872769887,
+    "t_c_f1": 0.9981556854843817,
+    "acc": 0.9977268830176721
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 400,
+    "dist_corr": 0.8440152277701953,
+    "t_c_f1": 0.9968788120630223,
+    "acc": 0.997089205571444
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 400,
+    "dist_corr": 0.844011742914968,
+    "t_c_f1": 0.9968689212356479,
+    "acc": 0.9970708372770526
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 400,
+    "dist_corr": 0.844014542788235,
+    "t_c_f1": 0.9968663777690134,
+    "acc": 0.9970833645459068
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 42,
+    "perplexity": 500,
+    "dist_corr": 0.8589880858868741,
+    "t_c_f1": 0.9910708389154421,
+    "acc": 0.9899073055538905
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 0,
+    "perplexity": 500,
+    "dist_corr": 0.8589896541875385,
+    "t_c_f1": 0.9910606186632099,
+    "acc": 0.9899454231789676
+  },
+  {
+    "dataset": "severed_sphere",
+    "method": "tsne",
+    "seed": 1,
+    "perplexity": 500,
+    "dist_corr": 0.8589830667007634,
+    "t_c_f1": 0.9910682554760587,
+    "acc": 0.9899008104862903
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "dataset": "swiss_roll",
+  "kind": "tsne",
+  "label": "t-SNE\n(reference)",
+  "seed": 0,
+  "ok": true,
+  "elapsed_s": 1.159501075744629
+}

@@ -1,0 +1,8 @@
+{
+  "dataset": "digits",
+  "kind": "tsne",
+  "label": "t-SNE\n(reference)",
+  "seed": 42,
+  "ok": true,
+  "elapsed_s": 1.1418919563293457
+}

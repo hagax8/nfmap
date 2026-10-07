@@ -1,0 +1,8 @@
+{
+  "dataset": "s_curve",
+  "kind": "umap",
+  "label": "UMAP\n(reference)",
+  "seed": 42,
+  "ok": true,
+  "elapsed_s": 4.071982145309448
+}

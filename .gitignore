@@ -10,4 +10,9 @@ experiments/
 *.html
 *.png
 *.npy
+*.npz
 *.csv
+
+# Internal planning, drafts and unpublished findings - kept private until the
+# preprint is posted.
+planning_docs/

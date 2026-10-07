@@ -1,0 +1,2144 @@
+[
+  {
+    "dataset": "digits",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.8773200044103053
+  },
+  {
+    "dataset": "digits",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.9837553750597229
+  },
+  {
+    "dataset": "digits",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.8676540850453894
+  },
+  {
+    "dataset": "digits",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9294135802469137
+  },
+  {
+    "dataset": "digits",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9920679012345679
+  },
+  {
+    "dataset": "digits",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.7815432098765431
+  },
+  {
+    "dataset": "digits",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9983333333333333
+  },
+  {
+    "dataset": "digits",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 1.0
+  },
+  {
+    "dataset": "digits",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.9999382716049383
+  },
+  {
+    "dataset": "digits",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.870043000477783
+  },
+  {
+    "dataset": "digits",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.9823587783454004
+  },
+  {
+    "dataset": "digits",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.8381785438641626
+  },
+  {
+    "dataset": "digits",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9718827160493827
+  },
+  {
+    "dataset": "digits",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9957098765432099
+  },
+  {
+    "dataset": "digits",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.8053086419753087
+  },
+  {
+    "dataset": "digits",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 1.0
+  },
+  {
+    "dataset": "digits",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 1.0
+  },
+  {
+    "dataset": "digits",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 1.0
+  },
+  {
+    "dataset": "digits",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.8658899628799295
+  },
+  {
+    "dataset": "digits",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.9735749200632143
+  },
+  {
+    "dataset": "digits",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.8285493770443604
+  },
+  {
+    "dataset": "digits",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9749382716049384
+  },
+  {
+    "dataset": "digits",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9968518518518519
+  },
+  {
+    "dataset": "digits",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.8067592592592593
+  },
+  {
+    "dataset": "digits",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 1.0
+  },
+  {
+    "dataset": "digits",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 1.0
+  },
+  {
+    "dataset": "digits",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 1.0
+  },
+  {
+    "dataset": "wine",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.9519230769230769
+  },
+  {
+    "dataset": "wine",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.9428418803418803
+  },
+  {
+    "dataset": "wine",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.953525641025641
+  },
+  {
+    "dataset": "wine",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9180384087791496
+  },
+  {
+    "dataset": "wine",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9307270233196159
+  },
+  {
+    "dataset": "wine",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.8689986282578875
+  },
+  {
+    "dataset": "wine",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.973593964334705
+  },
+  {
+    "dataset": "wine",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9814814814814815
+  },
+  {
+    "dataset": "wine",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.9591906721536351
+  },
+  {
+    "dataset": "wine",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.9294871794871794
+  },
+  {
+    "dataset": "wine",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.9257478632478632
+  },
+  {
+    "dataset": "wine",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.9423076923076923
+  },
+  {
+    "dataset": "wine",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9176954732510288
+  },
+  {
+    "dataset": "wine",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9125514403292181
+  },
+  {
+    "dataset": "wine",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.8518518518518519
+  },
+  {
+    "dataset": "wine",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9492455418381345
+  },
+  {
+    "dataset": "wine",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9626200274348423
+  },
+  {
+    "dataset": "wine",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.9050068587105624
+  },
+  {
+    "dataset": "wine",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.9636752136752136
+  },
+  {
+    "dataset": "wine",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.9375
+  },
+  {
+    "dataset": "wine",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.9070512820512822
+  },
+  {
+    "dataset": "wine",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.8672839506172839
+  },
+  {
+    "dataset": "wine",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8988340192043895
+  },
+  {
+    "dataset": "wine",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.8278463648834019
+  },
+  {
+    "dataset": "wine",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9166666666666666
+  },
+  {
+    "dataset": "wine",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.958161865569273
+  },
+  {
+    "dataset": "wine",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.8978052126200274
+  },
+  {
+    "dataset": "cancer",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9833795013850415
+  },
+  {
+    "dataset": "cancer",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9386819876201223
+  },
+  {
+    "dataset": "cancer",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.9305427310967477
+  },
+  {
+    "dataset": "cancer",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9937074655449539
+  },
+  {
+    "dataset": "cancer",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.989159057487774
+  },
+  {
+    "dataset": "cancer",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.9915871550220581
+  },
+  {
+    "dataset": "cancer",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9704524469067405
+  },
+  {
+    "dataset": "cancer",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9363906843131219
+  },
+  {
+    "dataset": "cancer",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.9277384494374337
+  },
+  {
+    "dataset": "cancer",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9886118805786395
+  },
+  {
+    "dataset": "cancer",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9814985807598919
+  },
+  {
+    "dataset": "cancer",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.9863547758284601
+  },
+  {
+    "dataset": "cancer",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9792072774528915
+  },
+  {
+    "dataset": "cancer",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9285934133579562
+  },
+  {
+    "dataset": "cancer",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.9221982832324476
+  },
+  {
+    "dataset": "cancer",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9951780034882528
+  },
+  {
+    "dataset": "cancer",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9841660681919223
+  },
+  {
+    "dataset": "cancer",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.9952464006018946
+  },
+  {
+    "dataset": "iris",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.9546666666666666
+  },
+  {
+    "dataset": "iris",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.986
+  },
+  {
+    "dataset": "iris",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.8580000000000001
+  },
+  {
+    "dataset": "iris",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9733333333333334
+  },
+  {
+    "dataset": "iris",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9738271604938271
+  },
+  {
+    "dataset": "iris",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.9758024691358025
+  },
+  {
+    "dataset": "iris",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9629629629629629
+  },
+  {
+    "dataset": "iris",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9609876543209876
+  },
+  {
+    "dataset": "iris",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.9758024691358025
+  },
+  {
+    "dataset": "iris",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.9773333333333332
+  },
+  {
+    "dataset": "iris",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.9933333333333334
+  },
+  {
+    "dataset": "iris",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.8413333333333333
+  },
+  {
+    "dataset": "iris",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9190123456790125
+  },
+  {
+    "dataset": "iris",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9259259259259259
+  },
+  {
+    "dataset": "iris",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.9293827160493826
+  },
+  {
+    "dataset": "iris",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9135802469135803
+  },
+  {
+    "dataset": "iris",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9703703703703704
+  },
+  {
+    "dataset": "iris",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.9343209876543209
+  },
+  {
+    "dataset": "iris",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.9433333333333331
+  },
+  {
+    "dataset": "iris",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.982
+  },
+  {
+    "dataset": "iris",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.8606666666666667
+  },
+  {
+    "dataset": "iris",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9041975308641975
+  },
+  {
+    "dataset": "iris",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.871604938271605
+  },
+  {
+    "dataset": "iris",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.931358024691358
+  },
+  {
+    "dataset": "iris",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9165432098765433
+  },
+  {
+    "dataset": "iris",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9624691358024692
+  },
+  {
+    "dataset": "iris",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.9501234567901233
+  },
+  {
+    "dataset": "moons",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.6264660493827161
+  },
+  {
+    "dataset": "moons",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7109104938271606
+  },
+  {
+    "dataset": "moons",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5162808641975308
+  },
+  {
+    "dataset": "moons",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.5936728395061728
+  },
+  {
+    "dataset": "moons",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.8230864197530864
+  },
+  {
+    "dataset": "moons",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.46986111111111106
+  },
+  {
+    "dataset": "moons",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.6784567901234568
+  },
+  {
+    "dataset": "moons",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7791358024691358
+  },
+  {
+    "dataset": "moons",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5081944444444444
+  },
+  {
+    "dataset": "moons",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.6743827160493827
+  },
+  {
+    "dataset": "moons",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.8098148148148148
+  },
+  {
+    "dataset": "moons",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.48052469135802467
+  },
+  {
+    "dataset": "moons",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.6797222222222222
+  },
+  {
+    "dataset": "moons",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7565432098765432
+  },
+  {
+    "dataset": "moons",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.4898611111111111
+  },
+  {
+    "dataset": "moons",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.6449074074074074
+  },
+  {
+    "dataset": "moons",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.787962962962963
+  },
+  {
+    "dataset": "moons",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.4282870370370371
+  },
+  {
+    "dataset": "circles",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.461712962962963
+  },
+  {
+    "dataset": "circles",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7279475308641974
+  },
+  {
+    "dataset": "circles",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5158333333333334
+  },
+  {
+    "dataset": "circles",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.45154320987654323
+  },
+  {
+    "dataset": "circles",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.7324382716049382
+  },
+  {
+    "dataset": "circles",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.47464506172839505
+  },
+  {
+    "dataset": "circles",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.4575
+  },
+  {
+    "dataset": "circles",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7442901234567901
+  },
+  {
+    "dataset": "circles",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.4806944444444444
+  },
+  {
+    "dataset": "circles",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.4450308641975308
+  },
+  {
+    "dataset": "circles",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.7720679012345679
+  },
+  {
+    "dataset": "circles",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.48285493827160497
+  },
+  {
+    "dataset": "circles",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.45867283950617277
+  },
+  {
+    "dataset": "circles",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7392592592592594
+  },
+  {
+    "dataset": "circles",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5065586419753086
+  },
+  {
+    "dataset": "circles",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.40777777777777774
+  },
+  {
+    "dataset": "circles",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.804537037037037
+  },
+  {
+    "dataset": "circles",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.5248148148148148
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.6797067901234568
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7824228395061729
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5107253086419753
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.7855864197530863
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.8325925925925926
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.4830864197530864
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.7887037037037037
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7232098765432098
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.4734876543209876
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.8403703703703704
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.855462962962963
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.5008333333333335
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.7335185185185185
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7185802469135802
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.44746913580246916
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.7403086419753087
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.855679012345679
+  },
+  {
+    "dataset": "swiss_roll",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.45648148148148143
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9393364197530865
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8204783950617285
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.4955401234567901
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9782716049382717
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9078395061728395
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.47206790123456793
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9240123456790124
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7841666666666666
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5011728395061729
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9575925925925927
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9065432098765432
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.5033333333333333
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.7993827160493827
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7774074074074074
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5055246913580247
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.8684259259259259
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9341666666666667
+  },
+  {
+    "dataset": "s_curve",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.4572222222222222
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9010030864197531
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8554783950617284
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.4915895061728395
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.931820987654321
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9001234567901234
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.5045061728395062
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9137345679012345
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8455864197530863
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.4125308641975308
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9347530864197532
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9176543209876543
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.4705864197530865
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.97570987654321
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8680864197530863
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.517962962962963
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9829629629629629
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9374382716049384
+  },
+  {
+    "dataset": "severed_sphere",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.4750617283950618
+  },
+  {
+    "dataset": "bace",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9549691358024692
+  },
+  {
+    "dataset": "bace",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9342283950617284
+  },
+  {
+    "dataset": "bace",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5551543209876543
+  },
+  {
+    "dataset": "bace",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9758950617283951
+  },
+  {
+    "dataset": "bace",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9494753086419753
+  },
+  {
+    "dataset": "bace",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.5975925925925926
+  },
+  {
+    "dataset": "bace",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9780555555555557
+  },
+  {
+    "dataset": "bace",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9574074074074074
+  },
+  {
+    "dataset": "bace",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5429938271604938
+  },
+  {
+    "dataset": "bace",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9873456790123456
+  },
+  {
+    "dataset": "bace",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9745061728395062
+  },
+  {
+    "dataset": "bace",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.5695061728395061
+  },
+  {
+    "dataset": "bace",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9644753086419753
+  },
+  {
+    "dataset": "bace",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9558333333333334
+  },
+  {
+    "dataset": "bace",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5435802469135802
+  },
+  {
+    "dataset": "bace",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9717901234567901
+  },
+  {
+    "dataset": "bace",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9677777777777778
+  },
+  {
+    "dataset": "bace",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.5758333333333333
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9025
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8451234567901235
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.6323148148148148
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9400000000000001
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.8850925925925925
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6498148148148148
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.8958333333333334
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8412037037037037
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.6600925925925927
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9198148148148148
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.8791358024691358
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6730864197530864
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9186728395061728
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.839320987654321
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.630679012345679
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9449691358024692
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.8804320987654322
+  },
+  {
+    "dataset": "bbbp",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.643858024691358
+  },
+  {
+    "dataset": "dude",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9110185185185184
+  },
+  {
+    "dataset": "dude",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8385185185185186
+  },
+  {
+    "dataset": "dude",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5591666666666667
+  },
+  {
+    "dataset": "dude",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9553703703703704
+  },
+  {
+    "dataset": "dude",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9126543209876544
+  },
+  {
+    "dataset": "dude",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6272530864197531
+  },
+  {
+    "dataset": "dude",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9139197530864198
+  },
+  {
+    "dataset": "dude",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.818395061728395
+  },
+  {
+    "dataset": "dude",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5790740740740741
+  },
+  {
+    "dataset": "dude",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9495061728395061
+  },
+  {
+    "dataset": "dude",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.859104938271605
+  },
+  {
+    "dataset": "dude",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6277469135802469
+  },
+  {
+    "dataset": "dude",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.8801234567901234
+  },
+  {
+    "dataset": "dude",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.7971296296296296
+  },
+  {
+    "dataset": "dude",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5795987654320988
+  },
+  {
+    "dataset": "dude",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9119444444444444
+  },
+  {
+    "dataset": "dude",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.8686111111111112
+  },
+  {
+    "dataset": "dude",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6323456790123456
+  },
+  {
+    "dataset": "drd2",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9630246913580247
+  },
+  {
+    "dataset": "drd2",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9353395061728396
+  },
+  {
+    "dataset": "drd2",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5552777777777778
+  },
+  {
+    "dataset": "drd2",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9791358024691358
+  },
+  {
+    "dataset": "drd2",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9520679012345679
+  },
+  {
+    "dataset": "drd2",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6425000000000001
+  },
+  {
+    "dataset": "drd2",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9490432098765433
+  },
+  {
+    "dataset": "drd2",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9182407407407407
+  },
+  {
+    "dataset": "drd2",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5889197530864198
+  },
+  {
+    "dataset": "drd2",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.969104938271605
+  },
+  {
+    "dataset": "drd2",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9370679012345678
+  },
+  {
+    "dataset": "drd2",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6634876543209878
+  },
+  {
+    "dataset": "drd2",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9532407407407407
+  },
+  {
+    "dataset": "drd2",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.9167901234567901
+  },
+  {
+    "dataset": "drd2",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.5749691358024691
+  },
+  {
+    "dataset": "drd2",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9776234567901235
+  },
+  {
+    "dataset": "drd2",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9408641975308643
+  },
+  {
+    "dataset": "drd2",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6940123456790124
+  },
+  {
+    "dataset": "egfr",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9185185185185185
+  },
+  {
+    "dataset": "egfr",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8694135802469136
+  },
+  {
+    "dataset": "egfr",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.6002777777777779
+  },
+  {
+    "dataset": "egfr",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9451543209876543
+  },
+  {
+    "dataset": "egfr",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9041666666666666
+  },
+  {
+    "dataset": "egfr",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6496604938271605
+  },
+  {
+    "dataset": "egfr",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9473765432098766
+  },
+  {
+    "dataset": "egfr",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8822530864197531
+  },
+  {
+    "dataset": "egfr",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.6172839506172839
+  },
+  {
+    "dataset": "egfr",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9785802469135803
+  },
+  {
+    "dataset": "egfr",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9046604938271604
+  },
+  {
+    "dataset": "egfr",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6631172839506173
+  },
+  {
+    "dataset": "egfr",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.9415123456790124
+  },
+  {
+    "dataset": "egfr",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8762345679012346
+  },
+  {
+    "dataset": "egfr",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.6222530864197531
+  },
+  {
+    "dataset": "egfr",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9542592592592593
+  },
+  {
+    "dataset": "egfr",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.9053395061728394
+  },
+  {
+    "dataset": "egfr",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.6558641975308642
+  },
+  {
+    "dataset": "esol",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.39682006963963584
+  },
+  {
+    "dataset": "esol",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.3537357888996098
+  },
+  {
+    "dataset": "esol",
+    "seed": 42,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.2892561983471074
+  },
+  {
+    "dataset": "esol",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.8657407407407407
+  },
+  {
+    "dataset": "esol",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8205864197530864
+  },
+  {
+    "dataset": "esol",
+    "seed": 42,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.7442283950617283
+  },
+  {
+    "dataset": "esol",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9010802469135802
+  },
+  {
+    "dataset": "esol",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.870462962962963
+  },
+  {
+    "dataset": "esol",
+    "seed": 42,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.807962962962963
+  },
+  {
+    "dataset": "esol",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.3484079372404245
+  },
+  {
+    "dataset": "esol",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.3442966816293997
+  },
+  {
+    "dataset": "esol",
+    "seed": 0,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.28304736334270253
+  },
+  {
+    "dataset": "esol",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.866604938271605
+  },
+  {
+    "dataset": "esol",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8084876543209878
+  },
+  {
+    "dataset": "esol",
+    "seed": 0,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.7228395061728394
+  },
+  {
+    "dataset": "esol",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9104629629629629
+  },
+  {
+    "dataset": "esol",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.858858024691358
+  },
+  {
+    "dataset": "esol",
+    "seed": 0,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.7723456790123457
+  },
+  {
+    "dataset": "esol",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "nfmap_loglik",
+    "auc": 0.34996014599152575
+  },
+  {
+    "dataset": "esol",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "knn_distance",
+    "auc": 0.3344800100683811
+  },
+  {
+    "dataset": "esol",
+    "seed": 1,
+    "ood": "novel_classes",
+    "signal": "pca_recon_error",
+    "auc": 0.28283760540336456
+  },
+  {
+    "dataset": "esol",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "nfmap_loglik",
+    "auc": 0.8649382716049382
+  },
+  {
+    "dataset": "esol",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "knn_distance",
+    "auc": 0.8221913580246913
+  },
+  {
+    "dataset": "esol",
+    "seed": 1,
+    "ood": "permuted",
+    "signal": "pca_recon_error",
+    "auc": 0.7497530864197531
+  },
+  {
+    "dataset": "esol",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "nfmap_loglik",
+    "auc": 0.9025308641975309
+  },
+  {
+    "dataset": "esol",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "knn_distance",
+    "auc": 0.8608950617283951
+  },
+  {
+    "dataset": "esol",
+    "seed": 1,
+    "ood": "noise",
+    "signal": "pca_recon_error",
+    "auc": 0.8029320987654321
+  }
+]

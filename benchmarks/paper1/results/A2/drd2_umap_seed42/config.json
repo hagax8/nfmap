@@ -1,0 +1,8 @@
+{
+  "dataset": "drd2",
+  "kind": "umap",
+  "label": "UMAP\n(reference)",
+  "seed": 42,
+  "ok": true,
+  "elapsed_s": 4.204617977142334
+}

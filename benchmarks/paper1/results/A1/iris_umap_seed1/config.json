@@ -1,0 +1,8 @@
+{
+  "dataset": "iris",
+  "kind": "umap",
+  "label": "UMAP\n(reference)",
+  "seed": 1,
+  "ok": true,
+  "elapsed_s": 3.4514620304107666
+}

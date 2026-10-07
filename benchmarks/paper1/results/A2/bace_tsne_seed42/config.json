@@ -1,0 +1,8 @@
+{
+  "dataset": "bace",
+  "kind": "tsne",
+  "label": "t-SNE\n(reference)",
+  "seed": 42,
+  "ok": true,
+  "elapsed_s": 1.22334885597229
+}
