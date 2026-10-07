@@ -6,8 +6,10 @@ prior**.
 
 NFMap maps data to a latent space of the same dimension, split into a
 2-dimensional navigable map (`z_parallel`) and an off-manifold residual
-(`z_perp`). Because the flow is bijective, the map is **fully invertible**: any
-location on the 2D canvas can be carried back to data space. Because the prior
+(`z_perp`). The flow is **exactly bijective**: carrying both parts back through
+it reconstructs the input to floating-point precision. Mapping back from a 2D
+location *alone* is instead a generative operation — the residual is imputed, so
+one map position corresponds to a family of data points. Because the prior
 over the map coordinates is a *fixed* grid rather than a learned mixture, map
 positions are defined by construction and comparable across models — the
 property NFMap inherits from Generative Topographic Mapping (GTM).
@@ -24,7 +26,7 @@ property NFMap inherits from Generative Topographic Mapping (GTM).
   is expressed in the two visible dimensions.
 - **Exact likelihood**, usable as an applicability-domain / out-of-distribution
   signal.
-- **Out-of-sample projection and exact inversion**, neither of which t-SNE or
+- **Out-of-sample projection and an exact inverse**, neither of which t-SNE or
   UMAP provides.
 
 A caveat worth stating up front: the *direction* of the `sigma_perp` trade-off
@@ -60,10 +62,18 @@ Requires Python >= 3.8, PyTorch, NumPy, scikit-learn.
 from nfmap import NFMap
 
 model = NFMap(n_components=2, sigma_perp=10.0, grid_bounds=12.0)
-Z = model.fit_transform(X)          # (n_samples, 2) map coordinates
-Z_new = model.transform(X_new)      # project unseen points
-X_back = model.inverse_transform(Z) # carry map locations back to data space
-logp = model.score_samples(X_new)   # exact log-likelihood
+
+Z = model.fit_transform(X)            # (n_samples, 2) map coordinates
+Z_new = model.transform(X_new)        # project unseen points
+logp = model.score_samples(X_new)     # exact log-likelihood
+
+# Generate: a 2D map location back to data space. The residual is imputed,
+# so this samples from the family of points sitting at that position.
+X_gen = model.inverse_transform(Z)
+
+# Exact round trip: keep the residual and the reconstruction is lossless.
+Z_full = model.transform(X, return_full=True)   # (n_samples, d)
+X_rec = model.inverse_transform(Z_full)         # == X, to float precision
 ```
 
 `sigma_perp` is the main dial. Small values push geometry into the 2D map
