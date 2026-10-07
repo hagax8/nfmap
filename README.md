@@ -10,15 +10,19 @@ NFMap maps data to a latent space of the same dimension, split into a
 it reconstructs the input to floating-point precision. Mapping back from a 2D
 location *alone* is instead a generative operation — the residual is imputed, so
 one map position corresponds to a family of data points. Because the prior
-over the map coordinates is a *fixed* grid rather than a learned mixture, map
-positions are defined by construction and comparable across models — the
-property NFMap inherits from Generative Topographic Mapping (GTM).
+over the map coordinates is a *fixed* grid rather than a learned mixture, the
+map has a bounded domain of known extent with reference nodes at known
+positions — the property NFMap inherits from Generative Topographic Mapping
+(GTM). Note this does *not* mean coordinates are comparable between separately
+trained models: the grid pins the prior, but the flow is learned, so two models
+place the same molecules differently.
 
 ## What is distinctive
 
 - **Fixed GMM grid prior.** Component means sit on a hexagonal or square grid of
-  radius `grid_bounds` and are not learned. This is GTM's construction, carried
-  into a flow.
+  radius `grid_bounds` and are not learned, so the embedding has a bounded
+  domain on a defined scale rather than an arbitrary run-dependent one. This is
+  GTM's construction, carried into a flow.
 - **A single scalar for the local/global trade-off.** The prior factorises as
   `p(z) = p_GMM(z_par) · N(z_perp; 0, sigma_perp² I)`. Because the flow is
   bijective and volume-penalised, variance squeezed out of `z_perp` must
@@ -101,8 +105,13 @@ results is in preparation.
 
 ## Status
 
-Research code, under active development. A single fit has non-trivial
-run-to-run variation, so results should be averaged over seeds.
+Research code, under active development. Two caveats worth knowing:
+
+- A single fit has non-trivial run-to-run variation (DistCor spread of ~0.15
+  across seeds at a fixed setting), so results should be averaged over seeds.
+- Map coordinates are **not** comparable between separately trained models, or
+  even between seeds on the same data. Within one fitted model the mapping is
+  deterministic and unseen points project onto the same frame.
 
 ## Licence
 
