@@ -948,11 +948,14 @@ class NFMap(BaseEstimator, TransformerMixin):
         land close together in the 2D map are also close in the original input space.
         Particularly useful when `generate()` will be used (Paper 2 / Imolgen workflow).
 
-        **Method**: Gaussian kernel with automatic median-heuristic bandwidth. For each
-        batch, the kernel width τ is set to the median pairwise 2D distance, so no manual
-        bandwidth tuning is required. The loss is:
+        **Method**: Gaussian kernel with a fixed bandwidth τ = 1.0 in map units, averaged
+        over all pairs (i, j) in the mini-batch:
 
-            L_inject = Σ_{(i,j)} exp(−‖z_i − z_j‖² / τ²) · ‖x_i − x_j‖
+            L_inject = mean_{(i,j)} exp(−‖z_i − z_j‖² / τ²) · ‖x_i − x_j‖
+
+        x is the flow's input (after any internal scaling/PCA). τ is not scaled with
+        `grid_bounds`, so on wide grids the penalty only acts on pairs that land within
+        a couple of map units of each other.
 
         - Disabled by default (`inject_weight=0.0`) — has zero effect on existing results.
         - Typical values if enabled: 0.1 – 1.0. Start at 0.1 and increase if needed.
@@ -1819,14 +1822,14 @@ class NFMap(BaseEstimator, TransformerMixin):
                 # the graph attraction loss:
                 #   graph_weight:  similar in X  → close in z_par  (attraction)
                 #   inject_weight: close in z_par → similar in X   (injectivity)
-                # Uses a Gaussian kernel with median-heuristic bandwidth (no manual tau needed).
-                # Only active when inject_weight > 0; completely inactive by default.
+                # Gaussian kernel with a fixed bandwidth tau = 1.0 (see the inject_weight
+                # docstring). Only active when inject_weight > 0; inactive by default.
                 if getattr(self, 'inject_weight', 0.0) > 0:
                     # Pairwise 2D distances within the batch
                     dists_z = torch.cdist(z_batch_par, z_batch_par)          # (B, B)
-                    # Fixed bandwidth: prevents the runaway expansion loop because the 
-                    # penalty naturally dies out once points are further than ~2.0 apart.
-                    # Since our GMM grid is always anchored in [-3, 3], a fixed tau works perfectly.
+                    # Fixed bandwidth: prevents the runaway expansion loop because the
+                    # penalty dies out once points are further than ~2.0 apart. Chosen
+                    # when grids were anchored in [-3, 3]; not rescaled for wider grids.
                     tau = 1.0
                     w_inject = torch.exp(-dists_z ** 2 / (tau ** 2))         # (B, B)
                     # Pairwise input-space distances within the batch

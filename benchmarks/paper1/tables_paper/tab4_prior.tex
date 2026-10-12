@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Prior ablation across datasets (mean $\pm$ sd). Pinning the mixture means to a fixed grid matches learning them on both measures, while keeping the map on the grid. Against a single Gaussian the fixed grid gives equal or better T/C F1 and trades some DistCor on Digits and the 3-D manifolds. The fixed grid is adopted for the landscape grid it provides (Table~\ref{tab:capabilities}). Off grid: share of points outside grid\_bounds; for the learned mixture the means start on the grid and are free to move, so this measures drift from it. A single Gaussian has no grid, so it is not reported.}
+\label{tab:prior}
+\begin{tabular}{lccc}
+\toprule
+Prior & DistCor & T/C F1 & Off grid \\
+\midrule
+\multicolumn{4}{l}{\textit{Digits}} \\
+\quad Single Gaussian & $0.648 \pm 0.002$ & $0.963 \pm 0.004$ & -- \\
+\quad Learned mixture & $0.624 \pm 0.005$ & $0.973 \pm 0.002$ & 0.0\% \\
+\quad Fixed grid (\nfmap{}) & $0.608 \pm 0.010$ & $0.973 \pm 0.003$ & 0.9\% \\
+\addlinespace
+\multicolumn{4}{l}{\textit{Chemistry (5 datasets)}} \\
+\quad Single Gaussian & $0.657 \pm 0.090$ & $0.848 \pm 0.049$ & -- \\
+\quad Learned mixture & $0.679 \pm 0.086$ & $0.856 \pm 0.050$ & 12.0\% \\
+\quad Fixed grid (\nfmap{}) & $0.677 \pm 0.095$ & $0.858 \pm 0.050$ & 3.0\% \\
+\addlinespace
+\multicolumn{4}{l}{\textit{3-D manifolds (3 datasets)}} \\
+\quad Single Gaussian & $0.756 \pm 0.041$ & $0.940 \pm 0.024$ & -- \\
+\quad Learned mixture & $0.682 \pm 0.048$ & $0.992 \pm 0.010$ & 3.1\% \\
+\quad Fixed grid (\nfmap{}) & $0.719 \pm 0.028$ & $0.989 \pm 0.012$ & 1.7\% \\
+\addlinespace
+\bottomrule
+\end{tabular}
+\end{table}

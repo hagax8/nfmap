@@ -1,8 +1,0 @@
-{
-  "dataset": "cancer",
-  "kind": "gtm",
-  "label": "GTM\n(reference)",
-  "seed": 0,
-  "ok": true,
-  "elapsed_s": 0.08943319320678711
-}

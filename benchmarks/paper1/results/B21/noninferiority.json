@@ -1,0 +1,206 @@
+[
+  {
+    "alternative": "learnable_gmm",
+    "metric": "dist_corr",
+    "group": "chemistry",
+    "margin": 0.02,
+    "n_pairs": 25,
+    "n_datasets": 5,
+    "mean_diff": -0.002255902740496909,
+    "ci95": [
+      -0.018192313747613445,
+      0.013680508266619628
+    ],
+    "p_two_sided": 0.772676303832846,
+    "p_noninf_t": 0.01529009729426405,
+    "p_noninf_wilcoxon": 0.012752532958984375,
+    "p_noninf_dataset": 0.09338969027230906
+  },
+  {
+    "alternative": "learnable_gmm",
+    "metric": "dist_corr",
+    "group": "manifolds",
+    "margin": 0.02,
+    "n_pairs": 15,
+    "n_datasets": 3,
+    "mean_diff": 0.0371487255745683,
+    "ci95": [
+      0.01708936141812435,
+      0.057208089731012254
+    ],
+    "p_two_sided": 0.0013903309880504613,
+    "p_noninf_t": 1.34704979396795e-05,
+    "p_noninf_wilcoxon": 3.0517578125e-05,
+    "p_noninf_dataset": 0.04349310758042687
+  },
+  {
+    "alternative": "learnable_gmm",
+    "metric": "dist_corr",
+    "group": "all",
+    "margin": 0.02,
+    "n_pairs": 43,
+    "n_datasets": 9,
+    "mean_diff": 0.010508670316553809,
+    "ci95": [
+      -0.0021546676228679663,
+      0.023172008255975582
+    ],
+    "p_two_sided": 0.10142370894091396,
+    "p_noninf_t": 8.321637618362547e-06,
+    "p_noninf_wilcoxon": 4.0405960817224695e-06,
+    "p_noninf_dataset": 0.01224194977573574
+  },
+  {
+    "alternative": "learnable_gmm",
+    "metric": "t_c_f1",
+    "group": "chemistry",
+    "margin": 0.01,
+    "n_pairs": 25,
+    "n_datasets": 5,
+    "mean_diff": 0.0015969807104358714,
+    "ci95": [
+      -0.002359023902553826,
+      0.005552985323425568
+    ],
+    "p_two_sided": 0.412966547134503,
+    "p_noninf_t": 1.5056595155823214e-06,
+    "p_noninf_wilcoxon": 4.082918167114258e-06,
+    "p_noninf_dataset": 0.00011954628276854305
+  },
+  {
+    "alternative": "learnable_gmm",
+    "metric": "t_c_f1",
+    "group": "manifolds",
+    "margin": 0.01,
+    "n_pairs": 15,
+    "n_datasets": 3,
+    "mean_diff": -0.002377117039620469,
+    "ci95": [
+      -0.004615482225012912,
+      -0.00013875185422802588
+    ],
+    "p_two_sided": 0.038958658960646715,
+    "p_noninf_t": 1.9421770080628226e-06,
+    "p_noninf_wilcoxon": 6.103515625e-05,
+    "p_noninf_dataset": 0.00855333870556601
+  },
+  {
+    "alternative": "learnable_gmm",
+    "metric": "t_c_f1",
+    "group": "all",
+    "margin": 0.01,
+    "n_pairs": 43,
+    "n_datasets": 9,
+    "mean_diff": 0.00015223861568360966,
+    "ci95": [
+      -0.002295049015210465,
+      0.0025995262465776845
+    ],
+    "p_two_sided": 0.9006958834624215,
+    "p_noninf_t": 8.522844464220749e-11,
+    "p_noninf_wilcoxon": 1.4335910236695781e-10,
+    "p_noninf_dataset": 1.2076701589022403e-06
+  },
+  {
+    "alternative": "single_gaussian",
+    "metric": "dist_corr",
+    "group": "chemistry",
+    "margin": 0.02,
+    "n_pairs": 25,
+    "n_datasets": 5,
+    "mean_diff": 0.019885252277951584,
+    "ci95": [
+      -0.00047952803169789074,
+      0.040250032587601056
+    ],
+    "p_two_sided": 0.05520466189317908,
+    "p_noninf_t": 0.00023677594590105182,
+    "p_noninf_wilcoxon": 0.0003574788570404053,
+    "p_noninf_dataset": 0.02087141399758838
+  },
+  {
+    "alternative": "single_gaussian",
+    "metric": "dist_corr",
+    "group": "manifolds",
+    "margin": 0.02,
+    "n_pairs": 15,
+    "n_datasets": 3,
+    "mean_diff": -0.03649367848940421,
+    "ci95": [
+      -0.06502525196646856,
+      -0.007962105012339866
+    ],
+    "p_two_sided": 0.015851591082075147,
+    "p_noninf_t": 0.88229785433862,
+    "p_noninf_wilcoxon": 0.93231201171875,
+    "p_noninf_dataset": 0.6916553444533485
+  },
+  {
+    "alternative": "single_gaussian",
+    "metric": "dist_corr",
+    "group": "all",
+    "margin": 0.02,
+    "n_pairs": 43,
+    "n_datasets": 9,
+    "mean_diff": -0.004019243003692476,
+    "ci95": [
+      -0.021152969855724128,
+      0.013114483848339176
+    ],
+    "p_two_sided": 0.6383769996468476,
+    "p_noninf_t": 0.03336921488663257,
+    "p_noninf_wilcoxon": 0.051103820055573124,
+    "p_noninf_dataset": 0.18015822800277248
+  },
+  {
+    "alternative": "single_gaussian",
+    "metric": "t_c_f1",
+    "group": "chemistry",
+    "margin": 0.01,
+    "n_pairs": 25,
+    "n_datasets": 5,
+    "mean_diff": 0.010089088770224798,
+    "ci95": [
+      0.004891333629611648,
+      0.015286843910837948
+    ],
+    "p_two_sided": 0.0005188156356822772,
+    "p_noninf_t": 1.6608994303224323e-08,
+    "p_noninf_wilcoxon": 5.960464477539063e-08,
+    "p_noninf_dataset": 0.001718661532352166
+  },
+  {
+    "alternative": "single_gaussian",
+    "metric": "t_c_f1",
+    "group": "manifolds",
+    "margin": 0.01,
+    "n_pairs": 15,
+    "n_datasets": 3,
+    "mean_diff": 0.04923452772937083,
+    "ci95": [
+      0.036171238898455055,
+      0.0622978165602866
+    ],
+    "p_two_sided": 1.2132262987731613e-06,
+    "p_noninf_t": 6.587120924109486e-08,
+    "p_noninf_wilcoxon": 3.0517578125e-05,
+    "p_noninf_dataset": 0.006853057207248417
+  },
+  {
+    "alternative": "single_gaussian",
+    "metric": "t_c_f1",
+    "group": "all",
+    "margin": 0.01,
+    "n_pairs": 43,
+    "n_datasets": 9,
+    "mean_diff": 0.023737040370327846,
+    "ci95": [
+      0.015990339078490918,
+      0.03148374166216477
+    ],
+    "p_two_sided": 2.1609508466614161e-07,
+    "p_noninf_t": 2.285240432424156e-11,
+    "p_noninf_wilcoxon": 2.2737367544323206e-13,
+    "p_noninf_dataset": 0.0007676967508860277
+  }
+]

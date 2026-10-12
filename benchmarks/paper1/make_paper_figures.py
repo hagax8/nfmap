@@ -21,6 +21,15 @@ import argparse
 import json
 import os
 
+# Fits in this module run on the CPU backend deliberately. Measured: an NFMap
+# fit on MPS is not reproducible across processes (max|dZ| ~ 4.7 on a +/-12
+# canvas at 300 epochs), because a float32-epsilon perturbation introduced
+# somewhere in the MPS path amplifies through training; on CPU the same seed is
+# bit-identical, and at these problem sizes CPU is also faster (9.2s vs 11.2s
+# on 600x32, 100 epochs). Patched before nfmap is imported anywhere.
+import torch as _torch
+_torch.backends.mps.is_available = lambda: False
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -36,10 +45,6 @@ FIG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures_pape
 # statement about how the benchmark was built rather than about chemistry.
 CHEM = ["bace", "bbbp", "esol", "drd2", "egfr"]
 MANIFOLD = ["swiss_roll", "s_curve", "severed_sphere"]
-
-GTM_REF = {"bace": 0.428, "bbbp": 0.628, "esol": 0.689, "drd2": 0.394,
-           "egfr": 0.446, "swiss_roll": 0.615, "s_curve": 0.627,
-           "severed_sphere": 0.781}
 
 PRETTY = {"bace": "BACE", "bbbp": "BBBP", "esol": "ESOL", "drd2": "DRD2",
           "egfr": "EGFR", "swiss_roll": "Swiss roll", "s_curve": "S-curve",
@@ -134,7 +139,16 @@ def fig_regimes():
 
 # ── F4: sigma_perp x grid_bounds, two across ─────────────────────────────────
 
+def _gtm_ref(datasets):
+    """GTM's DistCor as reported in Table 1 (make_paper_tables), for the panel
+    titles. Was a hard-coded dict from the retired A1 runs (256-node GTM),
+    which no longer matched Table 1."""
+    from make_paper_tables import table1_selection
+    return {ds: k["GTM"][0] for ds, k in table1_selection(datasets).items() if "GTM" in k}
+
+
 def _grid_panels(rows, datasets, name, title, note):
+    gtm_ref = _gtm_ref(datasets)
     c = cells(rows)
     datasets = [d for d in datasets if any(k[0] == d for k in c)]
     if not datasets:
@@ -175,7 +189,7 @@ def _grid_panels(rows, datasets, name, title, note):
         ax.set_xticklabels([f"{g:g}" for g in grids])
         ax.set_yticks(range(len(sigmas)))
         ax.set_yticklabels([f"{s:g}" for s in sigmas])
-        ref = GTM_REF.get(ds)
+        ref = gtm_ref.get(ds)
         ax.set_title(f"{PRETTY.get(ds, ds)}" + (f"   (GTM {ref:.2f})" if ref else ""),
                      fontsize=9)
     for ax in axes[len(datasets):]:
@@ -205,57 +219,12 @@ def fig_grid_chem():
         _grid_panels([r for r in rows if r["dataset"] in CHEM], CHEM,
                      "f4_sigma_grid_chemistry",
                      r"$\sigma_\perp$ and grid_bounds cannot be chosen independently",
-                     "Hatched = >5% of points outside grid_bounds. DistCor rises "
-                     "monotonically as $\\sigma_\\perp$ falls, so the operating point is "
+                     "Hatched = >5% of points outside grid_bounds. DistCor broadly "
+                     "rises as $\\sigma_\\perp$ falls, so the operating point is "
                      "set by the containment constraint, not by an interior optimum.")
 
 
-def fig_grid_manifold():
-    print("F5 (sigma_perp x grid_bounds, manifolds)...")
-    rows = load_json("B2E", "sigma_grid_manifold.json")
-    if rows:
-        _grid_panels(rows, MANIFOLD, "f5_sigma_grid_manifold",
-                     r"The same sweep at $d_\perp = 1$ inverts the response",
-                     "Hatched = >5% of points outside grid_bounds. Low "
-                     "$\\sigma_\\perp$ now HURTS: with one off-manifold dimension there "
-                     "is no variance reservoir to redistribute into the map.")
-
-
 # ── F6: repulsion ────────────────────────────────────────────────────────────
-
-def fig_repulsion():
-    print("F6 (repulsion_weight at the chemistry operating point)...")
-    rows = load_json("B4D", "repulsion_at_global.json")
-    if not rows:
-        return
-    rows = [r for r in rows if r["dataset"] in CHEM]
-    acc = {}
-    for r in rows:
-        acc.setdefault(r["repulsion_weight"], []).append(r)
-    ws = sorted(acc)
-
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.1))
-    for ax, key, lbl in [(axes[0], "dist_corr", "DistCor"),
-                         (axes[1], "frac_outside_grid_bounds",
-                          "points outside grid_bounds (%)")]:
-        mus = np.array([np.mean([x[key] for x in acc[w]]) for w in ws])
-        sds = np.array([np.std([x[key] for x in acc[w]]) for w in ws])
-        if key.startswith("frac"):
-            mus, sds = 100 * mus, 100 * sds
-        ax.errorbar(ws, mus, yerr=sds, fmt="-o", color="#7570b3", capsize=2.5,
-                    markersize=4.5, elinewidth=1)
-        ax.set_xlabel("repulsion_weight")
-        ax.set_ylabel(lbl)
-    axes[1].axhline(5.0, ls="--", color="#c3312f", lw=1.1)
-    axes[1].text(0.97, 5.6, "containment constraint", transform=axes[1].get_yaxis_transform(),
-                 ha="right", va="bottom", fontsize=7, color="#c3312f")
-    fig.suptitle("Repulsion does not buy global structure at the chemistry\n"
-                 r"operating point ($\sigma_\perp$=0.003, grid_bounds=12)", fontsize=10.5)
-    fig.text(0.01, -0.02, "5 chemistry datasets, 3 seeds. At the shipped defaults "
-             r"($\sigma_\perp$=10, grid_bounds=6) DistCor RISES with repulsion; here it falls.",
-             fontsize=7, color="#555", ha="left")
-    save(fig, "f6_repulsion")
-
 
 # ── F7: density as an applicability-domain signal ────────────────────────────
 
@@ -264,6 +233,8 @@ def fig_ood():
     rows = load_json("B14", "density_ood.json")
     if not rows:
         return
+    # DUD-E excluded by choice: EGFR and DRD2 already cover target-based
+    # activity sets. (NFMap leads there too, 0.908 vs 0.849.)
     # ESOL's novel_classes cell is excluded: ESOL is a regression target binned
     # into 3 classes, so holding out the top bin is an extrapolation split, not
     # an OOD one - all three signals score below chance there, which is the tell.
@@ -300,9 +271,10 @@ def fig_ood():
     axes[0].legend(frameon=False, ncol=3, loc="lower center", fontsize=7.5)
     fig.suptitle("NFMap's exact log-likelihood as an applicability-domain signal",
                  fontsize=10.5)
-    fig.text(0.01, -0.015, "Mean over OOD constructions and 3 seeds; dashed line is "
-             "chance. Ahead of the kNN baseline on every chemistry set; behind on the "
-             r"2D toys, where $z_\perp$ is nearly empty.", fontsize=7, color="#555")
+    fig.text(0.01, -0.035, "Mean over the applicable OOD constructions (permuted, noise; "
+             "plus novel classes where there are $\\geq$3 classes) and 3 seeds;\n"
+             "dashed line is chance. Ahead of the kNN baseline on every chemistry set; "
+             r"behind on the 2D toys, where $z_\perp$ is empty.", fontsize=7, color="#555")
     save(fig, "f7_applicability_domain")
 
 
@@ -321,25 +293,6 @@ CLASS_NAMES = {
     "egfr": {0: "inactive (pIC50<7)", 1: r"active (pIC50$\geq$7)"},
     "esol": {0: "low sol.", 1: "mid sol.", 2: "high sol."},
 }
-
-
-def _load_run(exp_id, ds, kind, seed=42):
-    d = os.path.join(RESULTS_ROOT, exp_id, f"{ds}_{kind}_seed{seed}")
-    if not os.path.isdir(d):
-        return None
-    with open(os.path.join(d, "metrics.json")) as f:
-        m = json.load(f)
-    npz = np.load(os.path.join(d, "embeddings.npz"), allow_pickle=True)
-    return {"Z": npz["Z"], "y": npz["y"], "metrics": m}
-
-
-def _seed_mean(exp_id, ds, kind, key, seeds=(42, 0, 1)):
-    vals = []
-    for s in seeds:
-        r = _load_run(exp_id, ds, kind, s)
-        if r and r["metrics"].get(key) is not None and not np.isnan(r["metrics"][key]):
-            vals.append(r["metrics"][key])
-    return (float(np.mean(vals)), len(vals)) if vals else (float("nan"), 0)
 
 
 def _map_panel(ax, run, title, ds, is_cont):
@@ -362,70 +315,393 @@ def _map_panel(ax, run, title, ds, is_cont):
     ax.grid(False)
 
 
-def _comparison(exp_id, ds, kinds, name, suptitle, is_cont=False, ncol=2):
-    runs = [(k, _load_run(exp_id, ds, k)) for k in kinds]
-    runs = [(k, r) for k, r in runs if r is not None]
-    if not runs:
-        print(f"  (no saved runs for {ds} in {exp_id} - re-run `make a1`/`make a2`)")
-        return
-    nrow = int(np.ceil(len(runs) / ncol))
-    fig, axes = plt.subplots(nrow, ncol, figsize=(6.6, 3.3 * nrow))
+CHEM_SIGMA = {"global": 0.003, "local": 10.0}
+
+
+def _fit_chemistry(ds, sigma, seed=42):
+    """Load a pre-fitted chemistry map from b22_fit_manifold_maps.py.
+
+    Previously fitted inline here, which crashes unpredictably (exit 139) in
+    this module's full process - see _fit_manifold's docstring. b22 fits and
+    saves drd2_global/drd2_local separately; this just loads the result.
+    """
+    name = {0.003: "drd2_global", 10.0: "drd2_local"}.get(sigma)
+    if name is None:
+        raise ValueError(f"no saved fit for sigma_perp={sigma}; add it to "
+                         f"b22_fit_manifold_maps.py's CHEM_SIGMA")
+    npz_path = os.path.join(RESULTS_ROOT, "B22", f"{name}.npz")
+    met_path = os.path.join(RESULTS_ROOT, "B22", f"{name}_metrics.json")
+    if not os.path.exists(npz_path):
+        raise FileNotFoundError(
+            f"{npz_path} missing - run `python b22_fit_manifold_maps.py` first")
+    data = np.load(npz_path)
+    with open(met_path) as f:
+        met = json.load(f)
+    return {"Z": data["Z"], "y": data["y"], "metrics": met}
+
+
+def fig_maps_chemistry():
+    """DRD2 at both ends of the dial, against the baselines.
+
+    NFMap panels are fitted by b22 at both ends of the dial (CPU; A2's were
+    MPS and not reproducible). The baselines are b22's fits at exactly the
+    settings Table 1 reports for DRD2 (make_paper_tables.table1_selection), so
+    each panel matches its table row; they used to be A2's untuned defaults.
+    """
+    print("F3 (chemistry maps: the dial vs the baselines)...")
+    ds = "drd2"
+    runs = [(rf"NFMap ($\sigma_\perp$={CHEM_SIGMA['global']:g}, global)",
+             _fit_chemistry(ds, CHEM_SIGMA["global"])),
+            (rf"NFMap ($\sigma_\perp$={CHEM_SIGMA['local']:g}, local)",
+             _fit_chemistry(ds, CHEM_SIGMA["local"]))]
+    for kind, lbl in (("gtm", "GTM"), ("tsne", "t-SNE"), ("umap", "UMAP")):
+        try:
+            r = _fit_baseline(ds, kind, None)
+        except FileNotFoundError:
+            continue
+        runs.append((lbl + _setting_tag(kind, r["metrics"].get("setting", {})), r))
+    nrow = int(np.ceil(len(runs) / 2))
+    fig, axes = plt.subplots(nrow, 2, figsize=(6.6, 3.3 * nrow))
     axes = np.atleast_1d(axes).ravel()
-    for ax, (kind, r) in zip(axes, runs):
-        dc, n = _seed_mean(exp_id, ds, kind, "dist_corr")
-        tc, _ = _seed_mean(exp_id, ds, kind, "t_c_f1")
-        _map_panel(ax, r, METHOD_LABEL.get(kind, kind), ds, is_cont)
-        ax.set_xlabel(f"DistCor {dc:.2f}   T/C F1 {tc:.2f}", fontsize=7.5, color="#444")
+    for ax, (label, r) in zip(axes, runs):
+        _map_panel(ax, r, label, ds, False)
+        m = r["metrics"]
+        ax.set_xlabel(f"DistCor {m['dist_corr']:.2f}   T/C F1 {m['t_c_f1']:.2f}",
+                      fontsize=7.5, color="#444")
     for ax in axes[len(runs):]:
         ax.set_visible(False)
     h, l = axes[0].get_legend_handles_labels()
     if h:
         fig.legend(h, l, loc="lower center", ncol=min(3, len(l)), frameon=False,
                    fontsize=7.5, bbox_to_anchor=(0.5, -0.03))
+    fig.suptitle("DRD2: both ends of the dial, against the baselines",
+                 fontsize=10.5)
+    save(fig, "f3_maps_drd2")
+
+
+# ── Manifold maps at the Table 1 settings ───────────────────────────────────
+
+# Every panel is fitted by b22_fit_manifold_maps.py at exactly the setting
+# Table 1 reports for that method (make_paper_tables.manifold_selection: seed-
+# mean geodesic DistCor, NFMap restricted to contained cells). Geodesic, not
+# ambient: ambient DistCor peaks where the swiss roll is still rolled, and
+# these panels exist to show unrolling. Earlier versions hard-coded NFMap's
+# sigma_perp from an MPS-fitted B2F and took baselines from B19 and GTM from
+# A1, so a panel could show a different setting than the table row.
+
+
+def _fit_manifold(ds, seed=42):
+    """Load the pre-fitted manifold map from b22_fit_manifold_maps.py.
+
+    Fitting NFMap inline inside this module used to segfault (exit 139):
+    matplotlib + torch + sklearn + nfmap loaded together in one process crash
+    during the actual fit, even though the identical fit succeeds in a script
+    that never imports matplotlib. b22 fits and saves these separately; this
+    just loads the result. Run `python b22_fit_manifold_maps.py` first if the
+    .npz is missing or the B23 sweep has changed.
+    """
+    npz_path = os.path.join(RESULTS_ROOT, "B22", f"{ds}.npz")
+    met_path = os.path.join(RESULTS_ROOT, "B22", f"{ds}_metrics.json")
+    if not os.path.exists(npz_path):
+        raise FileNotFoundError(
+            f"{npz_path} missing - run `python b22_fit_manifold_maps.py` first")
+    data = np.load(npz_path)
+    with open(met_path) as f:
+        met = json.load(f)
+    return {"Z": data["Z"], "y": data["y"], "metrics": met}
+
+
+def _fit_baseline(ds, method, params, seed=42):
+    """Load a pre-fitted t-SNE/UMAP baseline from b22_fit_manifold_maps.py.
+
+    Previously fitted inline here, which crashes (exit 139) in this module's
+    full process - torch + sklearn + UMAP loaded together. See _fit_manifold's
+    docstring; same fix, same reason.
+    """
+    name = f"{ds}_{method}"
+    npz_path = os.path.join(RESULTS_ROOT, "B22", f"{name}.npz")
+    met_path = os.path.join(RESULTS_ROOT, "B22", f"{name}_metrics.json")
+    if not os.path.exists(npz_path):
+        raise FileNotFoundError(
+            f"{npz_path} missing - run `python b22_fit_manifold_maps.py` first")
+    data = np.load(npz_path)
+    with open(met_path) as f:
+        met = json.load(f)
+    return {"Z": data["Z"], "y": data["y"], "metrics": met}
+
+
+def _setting_tag(method, p):
+    """Panel-title suffix naming a baseline's Table 1 setting."""
+    if method == "tsne":
+        return rf" ($p$={p['perplexity']:g})"
+    if method == "umap":
+        return rf" ($k$={p['n_neighbors']:g}, $d$={p['min_dist']:g})"
+    return ""
+
+
+def _manifold_comparison(ds, name, suptitle):
+    """Every method at the setting Table 1 reports for it (see b22)."""
+    nf = _fit_manifold(ds)
+    st = nf["metrics"]["setting"]
+    runs = [(rf"NFMap ($\sigma_\perp$={st['sigma_perp']:g})", nf, None)]
+    for m, lbl in (("gtm", "GTM"), ("tsne", "t-SNE"), ("umap", "UMAP")):
+        try:
+            r = _fit_baseline(ds, m, None)
+        except FileNotFoundError:
+            continue
+        runs.append((lbl + _setting_tag(m, r["metrics"].get("setting", {})), r, None))
+
+    # Geodesic DistCor is computed here for every panel from its own
+    # embedding. Distance matrix is precomputed by b22_fit_manifold_maps.py: computing it
+    # inline here (sklearn's kNN graph, in a process with torch already
+    # loaded) is part of the same crash _fit_manifold's docstring describes.
+    from scipy.spatial.distance import pdist as _pdist
+    from scipy.stats import pearsonr as _pear
+    _geo_path = os.path.join(RESULTS_ROOT, "B22", f"{ds}_geodesic.npy")
+    _dgeo = np.load(_geo_path) if os.path.exists(_geo_path) else None
+
+    nrow = int(np.ceil(len(runs) / 2))
+    fig, axes = plt.subplots(nrow, 2, figsize=(6.6, 3.3 * nrow))
+    axes = np.atleast_1d(axes).ravel()
+    for ax, (label, r, _unused) in zip(axes, runs):
+        _map_panel(ax, r, label, ds, True)
+        m = r["metrics"]
+        Z = np.asarray(r["Z"])
+        gtxt = ""
+        if _dgeo is not None and not np.any(np.isnan(Z)):
+            gtxt = f"   geodesic {_pear(_pdist(Z), _dgeo)[0]:.2f}"
+        ax.set_xlabel(f"DistCor {m['dist_corr']:.2f}   T/C F1 {m['t_c_f1']:.2f}{gtxt}",
+                      fontsize=7.5, color="#444")
+    for ax in axes[len(runs):]:
+        ax.set_visible(False)
     fig.suptitle(suptitle, fontsize=10.5)
-    fig.text(0.01, -0.055 if h else -0.02,
-             f"Maps are seed 42; metrics are means over 3 seeds.", fontsize=7, color="#666")
     save(fig, name)
 
 
-def fig_maps_chemistry():
-    print("F3 (chemistry maps: the dial vs the baselines)...")
-    _comparison("A2", "drd2",
-                ["nfmap_global", "nfmap_local", "gtm", "tsne", "umap"],
-                "f3_maps_drd2",
-                "DRD2: both ends of the dial, against the baselines")
-
-
-def fig_maps_manifold():
-    print("F8 (manifold maps)...")
-    # S-curve rather than the swiss roll: less of a stock benchmark, and the
-    # unrolling is legible at a glance (one continuous sheet or two broken
-    # strips). No dial panel here - at d_perp=1 the two ends of sigma_perp are
-    # visually near-identical (DistCor 0.69 vs 0.68), which is itself the point.
-    #
-    # NOTE for the caption: this figure carries the UNROLLING, not the margin.
-    # S-curve's lead over GTM is +0.059, inside the ~0.15 per-fit spread, so the
-    # numbers belong in Table 1 with their seeds, not in a claim under a map.
-    _comparison("A1", "s_curve", ["nfmap", "gtm", "tsne", "umap"],
-                "f8_maps_s_curve",
-                r"S-curve ($d_\perp$=1): one setting, since the dial does little here",
-                is_cont=True)
-
-
 def fig_maps_supplementary():
-    print("S1/S2 (complete map grids)...")
-    for ds in CHEM:
-        _comparison("A2", ds, ["nfmap_global", "nfmap_local", "gtm", "tsne", "umap"],
-                    f"s1_maps_{ds}", f"{PRETTY.get(ds, ds)}: all methods")
+    print("S2 (manifold map grids, Table 1 settings)...")
     for ds in MANIFOLD:
-        _comparison("A1", ds, ["nfmap", "gtm", "tsne", "umap"],
-                    f"s2_maps_{ds}", f"{PRETTY.get(ds, ds)}: all methods", is_cont=True)
+        _manifold_comparison(ds, f"s2_maps_{ds}",
+                             f"{PRETTY.get(ds, ds)}: all methods")
 
 
-DISPATCH = {"f2": fig_regimes,
-            "f3": fig_maps_chemistry, "f8": fig_maps_manifold,
-            "supp": fig_maps_supplementary, "f4": fig_grid_chem, "f5": fig_grid_manifold,
-            "f6": fig_repulsion, "f7": fig_ood}
+# ── F9: components that matter only at full dataset scale ────────────────────
+
+def fig_scale_dependence():
+    """Hierarchical kernel and Student-t prior at full dataset scale.
+
+    Built from B20, which is reproducible from this repository.
+
+    Left panel is grouped bars per dataset rather than silhouette against n.
+    The gains happen to be monotone in n here (+0.18, +0.21, +0.27), but with
+    three datasets and single fits that is consistent with a scale relationship
+    rather than evidence of one, and a trend line would assert the stronger
+    reading.
+    """
+    print("F9 (scale-dependent components)...")
+    rows = load_json("B20", "scale_study.json")
+    if not rows:
+        print("  (no B20 results - run b20_scale_study.py)")
+        return
+    get = lambda ds, k, fam, dof=None: next(
+        (r for r in rows if r["dataset"] == ds and r["kernel"] == k
+         and r["prior_family"] == fam and r.get("prior_dof") == dof), None)
+
+    order = [("DRD2\n$n$=869", "drd2"), ("hERG\n$n$=9,400", "herg"),
+             ("EGFR\n$n$=10,573", "egfr")]
+    pairs = [(lbl, get(ds, "euclidean", "gaussian"), get(ds, "hybrid", "gaussian"))
+             for lbl, ds in order]
+    pairs = [(l, a, b) for l, a, b in pairs if a and b]
+
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.3))
+
+    ax = axes[0]
+    labels = [p[0] for p in pairs]
+    base = [p[1]["scaffold_silhouette"] for p in pairs]
+    hyb = [p[2]["scaffold_silhouette"] for p in pairs]
+    x = np.arange(len(pairs)); w = 0.36
+    ax.bar(x - w/2, base, w, label="Euclidean graph", color="#9aaaa7",
+           edgecolor="white", linewidth=0.5)
+    ax.bar(x + w/2, hyb, w, label="hierarchical kernel", color="#1b6b61",
+           edgecolor="white", linewidth=0.5)
+    for xi, b, h in zip(x, base, hyb):
+        ax.annotate("", xy=(xi + w/2, h), xytext=(xi - w/2, b),
+                    arrowprops=dict(arrowstyle="->", color="#444", lw=0.8))
+        ax.text(xi, max(b, h, 0.0) + 0.03, f"{h-b:+.2f}", ha="center",
+                fontsize=7.5, color="#444")
+    ax.axhline(0, color="#555", lw=0.8)
+    ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=8)
+    ax.set_ylim(min(base + hyb) - 0.03, max(base + hyb + [0.0]) + 0.075)
+    ax.set_ylabel("scaffold silhouette")
+    ax.set_title("Hierarchical chemical kernel", fontsize=9.5, pad=14)
+    ax.legend(frameon=False, fontsize=7.5, loc="lower left")
+    ax.grid(axis="x", visible=False)
+
+    ax = axes[1]
+    g = get("egfr", "hybrid", "gaussian")
+    dof_rows = sorted((r for r in rows if r["dataset"] == "egfr"
+                       and r["prior_family"] == "student_t"),
+                      key=lambda r: r["prior_dof"])
+    dofs = [r["prior_dof"] for r in dof_rows]
+    sils = [r["scaffold_silhouette"] for r in dof_rows]
+    if g:
+        ax.axhline(g["scaffold_silhouette"], ls="--", color="#9aaaa7", lw=1.2)
+        ax.text(2, g["scaffold_silhouette"] + 0.004, "Gaussian prior",
+                ha="left", va="bottom", fontsize=7.5, color="#777")
+    ax.plot(dofs, sils, "-o", color="#1b6b61", markersize=5, lw=1.6)
+    best = int(np.argmax(sils))
+    # Label sits above-left of the optimum: the curve is flat enough that
+    # anything placed to the right lands on the line.
+    ax.annotate(rf"$\nu$={dofs[best]:g}", xy=(dofs[best], sils[best]),
+                xytext=(dofs[best] + 0.6, sils[best] + 0.004), fontsize=8,
+                color="#1b6b61", va="bottom", ha="left")
+    ax.set_xlabel(r"Student-t degrees of freedom $\nu$")
+    ax.set_ylabel("scaffold silhouette")
+    ax.set_title("Prior tail weight (EGFR)", fontsize=9.5, pad=14)
+    lo = min(sils + ([g["scaffold_silhouette"]] if g else []))
+    ax.set_ylim(lo - 0.015, max(sils) + 0.022)
+
+    fig.suptitle("Components that take effect only at full dataset scale",
+                 fontsize=10.5)
+    save(fig, "f9_scale_dependence")
+
+
+# ── F10: graph_weight and repulsion_weight, both regimes ─────────────────────
+
+def fig_loss_weights():
+    """graph_weight and repulsion_weight swept on chemistry vs manifolds.
+
+    Uses B3B (graph_weight) and B4C (repulsion_weight), filtered to the paper's
+    own datasets. Coverage is partial on the chemistry side: B3B/B4C only
+    include 3 of the paper's 5 chemistry datasets (bace, bbbp, drd2 - esol and
+    egfr were not part of that breadth sweep), though all 3 manifolds are
+    present. Stated in the caption rather than implied as full coverage.
+
+    repulsion_weight shows the same regime reversal as sigma_perp (fig 2):
+    DistCor falls with repulsion on chemistry and rises on manifolds.
+    graph_weight does not reverse - both regimes peak near w=1 and decline
+    thereafter in DistCor while T/C F1 rises monotonically in both - but the
+    shipped default (w=5) sits past the empirical DistCor optimum in both
+    regimes, which is itself worth reporting.
+    """
+    print("F10 (graph_weight and repulsion_weight, both regimes)...")
+    PAPER_CHEM_SUBSET = {"bace", "bbbp", "drd2"}
+    PAPER_MAN = set(MANIFOLD)
+
+    def load_breadth(exp_id, wkey):
+        d = os.path.join(RESULTS_ROOT, exp_id)
+        if not os.path.isdir(d):
+            return None
+        acc = defaultdict(lambda: defaultdict(list))
+        for run in os.listdir(d):
+            cp, mp = os.path.join(d, run, "config.json"), os.path.join(d, run, "metrics.json")
+            if not (os.path.exists(cp) and os.path.exists(mp)):
+                continue
+            c, m = json.load(open(cp)), json.load(open(mp))
+            ds = c.get("dataset")
+            if ds not in PAPER_CHEM_SUBSET | PAPER_MAN:
+                continue
+            group = "chemistry" if ds in PAPER_CHEM_SUBSET else "manifolds"
+            acc[group][c[wkey]].append(m)
+        return acc
+
+    from collections import defaultdict
+    panels = [("B3B", "graph_weight", "graph_weight"),
+              ("B4C", "repulsion_weight", "repulsion_weight")]
+
+    fig, axes = plt.subplots(2, 2, figsize=(7.2, 6.0))
+    for row, (exp_id, wkey, wlabel) in enumerate(panels):
+        acc = load_breadth(exp_id, wkey)
+        if not acc:
+            continue
+        for col, (metric, mlabel) in enumerate([("dist_corr", "DistCor"),
+                                                 ("t_c_f1", "T/C F1")]):
+            ax = axes[row, col]
+            for group, color in [("chemistry", "#1f77b4"), ("manifolds", "#d95f02")]:
+                ws = sorted(acc[group])
+                mus = [np.mean([x[metric] for x in acc[group][w]]) for w in ws]
+                sds = [np.std([x[metric] for x in acc[group][w]]) for w in ws]
+                ax.errorbar(ws, mus, yerr=sds, fmt="-o", color=color, capsize=2,
+                           markersize=4, elinewidth=1,
+                           label=group if (row == 0 and col == 0) else None)
+            ax.set_xlabel(wlabel)
+            ax.set_ylabel(mlabel)
+            if col == 0:
+                ax.set_title(f"{wlabel}", fontsize=9.5, loc="left")
+    axes[0, 0].legend(frameon=False, fontsize=8, loc="best")
+    fig.suptitle("Loss-term weights act differently in the two regimes",
+                 fontsize=10.5)
+    save(fig, "f10_loss_weights")
+
+
+def fig_prior_digits():
+    """Single Gaussian vs learned mixture vs fixed grid on digits (B5).
+
+    One map per prior (seed 42; maps cannot be averaged),
+    prior means drawn as crosses, metrics as means over B5's 3 seeds.
+    """
+    print("F11 (prior: single Gaussian / learned mixture / fixed grid)...")
+    d = os.path.join(RESULTS_ROOT, "B5")
+    if not os.path.isdir(d):
+        return
+    runs = {}
+    for run in sorted(os.listdir(d)):
+        cp = os.path.join(d, run, "config.json")
+        if not os.path.exists(cp):
+            continue
+        with open(cp) as f:
+            c = json.load(f)
+        with open(os.path.join(d, run, "metrics.json")) as f:
+            m = json.load(f)
+        npz = np.load(os.path.join(d, run, "embeddings.npz"), allow_pickle=True)
+        runs.setdefault((c["dataset"], c["condition"]), []).append(
+            {"seed": c["seed"], "cfg": c, "m": m, "Z": npz["Z"], "y": npz["y"],
+             "means": npz["prior_means"] if "prior_means" in npz.files else None})
+    dsets = [ds for ds in ("digits",) if any(k[0] == ds for k in runs)]
+    conds = [("single_gaussian", "Single Gaussian"),
+             ("learnable_gmm", "Learned mixture"),
+             ("fixed_grid", r"Fixed grid (NFMap)")]
+    stat = lambda g, k: (np.mean([r["m"][k] for r in g]), np.std([r["m"][k] for r in g]))
+
+    fig, axes = plt.subplots(len(dsets), len(conds), figsize=(10.5, 3.9 * len(dsets)),
+                             squeeze=False)
+    for i, ds in enumerate(dsets):
+        names = CLASS_NAMES.get(ds, {})
+        colors = plt.get_cmap("tab10").colors
+        for j, (k, title) in enumerate(conds):
+            ax = axes[i, j]
+            g = runs.get((ds, k))
+            if not g:
+                ax.set_visible(False)
+                continue
+            r = next((x for x in g if x["seed"] == 42), g[0])
+            Z, y = r["Z"], r["y"]
+            for cls in np.unique(y):
+                sel = y == cls
+                ax.scatter(Z[sel, 0], Z[sel, 1], s=7, alpha=.8, linewidths=0,
+                           color=colors[int(cls) % len(colors)],
+                           label=names.get(int(cls), str(int(cls))))
+            if r["means"] is not None:
+                ax.scatter(r["means"][:, 0], r["means"][:, 1], marker="X", s=34,
+                           c="black", edgecolors="white", linewidths=.6, zorder=10)
+            ax.set_title(title if i == 0 else "", fontsize=10)
+            ax.set_xticks([]); ax.set_yticks([]); ax.grid(False)
+            ax.set_aspect("equal", adjustable="datalim")
+            (dc, _), (tc, _), (sil, _) = stat(g, "dist_corr"), stat(g, "t_c_f1"), stat(g, "sil")
+            ax.set_xlabel(f"DistCor {dc:.2f}   T/C F1 {tc:.2f}   Sil {sil:.2f}",
+                          fontsize=8, color="#444")
+        h, l = axes[i, 0].get_legend_handles_labels()
+        axes[i, -1].legend(h, l, loc="center left", bbox_to_anchor=(1.01, .5),
+                           frameon=False, fontsize=7.5, markerscale=2,
+                           ncol=2 if len(l) > 5 else 1, handletextpad=.1)
+    fig.tight_layout()
+    save(fig, "f11_prior_digits")
+
+
+# One entry per figure in the paper.
+DISPATCH = {"f2": fig_regimes, "f3": fig_maps_chemistry, "f4": fig_grid_chem,
+            "f7": fig_ood, "f9": fig_scale_dependence, "f10": fig_loss_weights,
+            "f11": fig_prior_digits, "s2": fig_maps_supplementary}
 
 
 def main():
@@ -443,3 +719,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

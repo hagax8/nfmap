@@ -1,8 +1,0 @@
-{
-  "dataset": "swiss_roll",
-  "kind": "gtm",
-  "label": "GTM\n(reference)",
-  "seed": 42,
-  "ok": true,
-  "elapsed_s": 0.09750986099243164
-}

@@ -68,6 +68,8 @@ from nfmap import NFMap
 
 EXPERIMENT_ID = "B14"
 KNN_K = 5
+# The 3 manifold datasets are fit on a square grid everywhere else in this paper.
+SQUARE_LAYOUT = {"swiss_roll", "s_curve", "severed_sphere"}
 
 
 def make_ood(kind, X_id, rng):
@@ -130,6 +132,7 @@ def main():
           cutoff = classes[len(classes) // 2]
       else:
           cutoff = classes[-1]
+      layout = "square" if ds in SQUARE_LAYOUT else DEFAULTS["prior_layout"]
       print(f"\n[{EXPERIMENT_ID}] {ds}: {X_all.shape}, {len(classes)} classes"
             f"{'' if cutoff is not None else '  (novel-class split skipped)'}")
       for seed in seeds:
@@ -144,7 +147,7 @@ def main():
          X_tr, X_te = train_test_split(X_seen, test_size=0.3, random_state=seed)
          X_novel = X_all[~seen]
 
-         model = NFMap(**{**DEFAULTS, "random_state": seed})
+         model = NFMap(**{**DEFAULTS, "prior_layout": layout, "random_state": seed})
          model.fit(X_tr)
          pca = PCA(n_components=2, random_state=seed).fit(X_tr)
          nn = NearestNeighbors(n_neighbors=KNN_K).fit(X_tr)
@@ -158,7 +161,7 @@ def main():
 
         # --- 2 & 3. corruption OOD, model trained on everything -------------
         X_tr2, X_te2 = train_test_split(X_all, test_size=0.3, random_state=seed)
-        model2 = NFMap(**{**DEFAULTS, "random_state": seed})
+        model2 = NFMap(**{**DEFAULTS, "prior_layout": layout, "random_state": seed})
         model2.fit(X_tr2)
         pca2 = PCA(n_components=2, random_state=seed).fit(X_tr2)
         nn2 = NearestNeighbors(n_neighbors=KNN_K).fit(X_tr2)

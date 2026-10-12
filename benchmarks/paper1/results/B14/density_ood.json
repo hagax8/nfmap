@@ -4,7 +4,7 @@
     "seed": 42,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.8773200044103053
+    "auc": 0.8857730897864677
   },
   {
     "dataset": "digits",
@@ -25,7 +25,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9294135802469137
+    "auc": 0.9325617283950618
   },
   {
     "dataset": "digits",
@@ -46,7 +46,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9983333333333333
+    "auc": 0.9983024691358026
   },
   {
     "dataset": "digits",
@@ -67,7 +67,7 @@
     "seed": 0,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.870043000477783
+    "auc": 0.8631335219963983
   },
   {
     "dataset": "digits",
@@ -88,7 +88,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9718827160493827
+    "auc": 0.9684567901234568
   },
   {
     "dataset": "digits",
@@ -130,7 +130,7 @@
     "seed": 1,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.8658899628799295
+    "auc": 0.8579146605902459
   },
   {
     "dataset": "digits",
@@ -151,7 +151,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9749382716049384
+    "auc": 0.9763888888888889
   },
   {
     "dataset": "digits",
@@ -172,7 +172,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 1.0
+    "auc": 0.9999074074074075
   },
   {
     "dataset": "digits",
@@ -193,7 +193,7 @@
     "seed": 42,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.9519230769230769
+    "auc": 0.9193376068376069
   },
   {
     "dataset": "wine",
@@ -214,7 +214,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9180384087791496
+    "auc": 0.918724279835391
   },
   {
     "dataset": "wine",
@@ -235,7 +235,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.973593964334705
+    "auc": 0.9595336076817559
   },
   {
     "dataset": "wine",
@@ -256,7 +256,7 @@
     "seed": 0,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.9294871794871794
+    "auc": 0.9738247863247864
   },
   {
     "dataset": "wine",
@@ -277,7 +277,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9176954732510288
+    "auc": 0.918724279835391
   },
   {
     "dataset": "wine",
@@ -298,7 +298,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9492455418381345
+    "auc": 0.947530864197531
   },
   {
     "dataset": "wine",
@@ -319,7 +319,7 @@
     "seed": 1,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.9636752136752136
+    "auc": 0.9610042735042734
   },
   {
     "dataset": "wine",
@@ -340,7 +340,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.8672839506172839
+    "auc": 0.9307270233196159
   },
   {
     "dataset": "wine",
@@ -361,7 +361,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9166666666666666
+    "auc": 0.9451303155006859
   },
   {
     "dataset": "wine",
@@ -382,7 +382,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9833795013850415
+    "auc": 0.9867309599534899
   },
   {
     "dataset": "cancer",
@@ -403,7 +403,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9937074655449539
+    "auc": 0.999658014431791
   },
   {
     "dataset": "cancer",
@@ -424,7 +424,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9704524469067405
+    "auc": 0.9706234396908451
   },
   {
     "dataset": "cancer",
@@ -445,7 +445,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9886118805786395
+    "auc": 0.9873807325330871
   },
   {
     "dataset": "cancer",
@@ -466,7 +466,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9792072774528915
+    "auc": 0.983926678294176
   },
   {
     "dataset": "cancer",
@@ -487,7 +487,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9951780034882528
+    "auc": 0.9983584692725966
   },
   {
     "dataset": "cancer",
@@ -508,7 +508,7 @@
     "seed": 42,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.9546666666666666
+    "auc": 0.9520000000000001
   },
   {
     "dataset": "iris",
@@ -529,7 +529,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9733333333333334
+    "auc": 0.9545679012345679
   },
   {
     "dataset": "iris",
@@ -550,7 +550,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9629629629629629
+    "auc": 0.92
   },
   {
     "dataset": "iris",
@@ -571,7 +571,7 @@
     "seed": 0,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.9773333333333332
+    "auc": 0.9293333333333333
   },
   {
     "dataset": "iris",
@@ -592,7 +592,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9190123456790125
+    "auc": 0.9165432098765433
   },
   {
     "dataset": "iris",
@@ -613,7 +613,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9135802469135803
+    "auc": 0.8987654320987655
   },
   {
     "dataset": "iris",
@@ -634,7 +634,7 @@
     "seed": 1,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.9433333333333331
+    "auc": 0.9806666666666667
   },
   {
     "dataset": "iris",
@@ -655,7 +655,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9041975308641975
+    "auc": 0.8982716049382716
   },
   {
     "dataset": "iris",
@@ -676,7 +676,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9165432098765433
+    "auc": 0.9106172839506173
   },
   {
     "dataset": "iris",
@@ -697,7 +697,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.6264660493827161
+    "auc": 0.6468364197530864
   },
   {
     "dataset": "moons",
@@ -718,7 +718,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.5936728395061728
+    "auc": 0.6351543209876543
   },
   {
     "dataset": "moons",
@@ -739,7 +739,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.6784567901234568
+    "auc": 0.665895061728395
   },
   {
     "dataset": "moons",
@@ -760,7 +760,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.6743827160493827
+    "auc": 0.6629320987654321
   },
   {
     "dataset": "moons",
@@ -781,7 +781,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.6797222222222222
+    "auc": 0.6950308641975309
   },
   {
     "dataset": "moons",
@@ -802,7 +802,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.6449074074074074
+    "auc": 0.6591975308641974
   },
   {
     "dataset": "moons",
@@ -823,7 +823,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.461712962962963
+    "auc": 0.4836882716049382
   },
   {
     "dataset": "circles",
@@ -844,7 +844,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.45154320987654323
+    "auc": 0.4774382716049383
   },
   {
     "dataset": "circles",
@@ -865,7 +865,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.4575
+    "auc": 0.4645370370370371
   },
   {
     "dataset": "circles",
@@ -886,7 +886,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.4450308641975308
+    "auc": 0.4578395061728395
   },
   {
     "dataset": "circles",
@@ -907,7 +907,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.45867283950617277
+    "auc": 0.4832716049382716
   },
   {
     "dataset": "circles",
@@ -928,7 +928,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.40777777777777774
+    "auc": 0.4292901234567901
   },
   {
     "dataset": "circles",
@@ -949,7 +949,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.6797067901234568
+    "auc": 0.6749537037037037
   },
   {
     "dataset": "swiss_roll",
@@ -970,7 +970,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.7855864197530863
+    "auc": 0.7858024691358025
   },
   {
     "dataset": "swiss_roll",
@@ -991,7 +991,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.7887037037037037
+    "auc": 0.773179012345679
   },
   {
     "dataset": "swiss_roll",
@@ -1012,7 +1012,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.8403703703703704
+    "auc": 0.8192592592592592
   },
   {
     "dataset": "swiss_roll",
@@ -1033,7 +1033,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.7335185185185185
+    "auc": 0.7662037037037037
   },
   {
     "dataset": "swiss_roll",
@@ -1054,7 +1054,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.7403086419753087
+    "auc": 0.7642592592592592
   },
   {
     "dataset": "swiss_roll",
@@ -1075,7 +1075,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9393364197530865
+    "auc": 0.9646759259259258
   },
   {
     "dataset": "s_curve",
@@ -1096,7 +1096,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9782716049382717
+    "auc": 0.9887037037037036
   },
   {
     "dataset": "s_curve",
@@ -1117,7 +1117,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9240123456790124
+    "auc": 0.8264197530864197
   },
   {
     "dataset": "s_curve",
@@ -1138,7 +1138,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9575925925925927
+    "auc": 0.8958641975308642
   },
   {
     "dataset": "s_curve",
@@ -1159,7 +1159,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.7993827160493827
+    "auc": 0.7867901234567902
   },
   {
     "dataset": "s_curve",
@@ -1180,7 +1180,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.8684259259259259
+    "auc": 0.8740123456790123
   },
   {
     "dataset": "s_curve",
@@ -1201,7 +1201,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9010030864197531
+    "auc": 0.8608796296296297
   },
   {
     "dataset": "severed_sphere",
@@ -1222,7 +1222,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.931820987654321
+    "auc": 0.8926543209876543
   },
   {
     "dataset": "severed_sphere",
@@ -1243,7 +1243,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9137345679012345
+    "auc": 0.9204320987654321
   },
   {
     "dataset": "severed_sphere",
@@ -1264,7 +1264,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9347530864197532
+    "auc": 0.9489506172839507
   },
   {
     "dataset": "severed_sphere",
@@ -1285,7 +1285,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.97570987654321
+    "auc": 0.9532716049382716
   },
   {
     "dataset": "severed_sphere",
@@ -1306,7 +1306,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9829629629629629
+    "auc": 0.9820987654320987
   },
   {
     "dataset": "severed_sphere",
@@ -1327,7 +1327,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9549691358024692
+    "auc": 0.9568827160493827
   },
   {
     "dataset": "bace",
@@ -1348,7 +1348,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9758950617283951
+    "auc": 0.9772839506172839
   },
   {
     "dataset": "bace",
@@ -1369,7 +1369,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9780555555555557
+    "auc": 0.9721296296296296
   },
   {
     "dataset": "bace",
@@ -1390,7 +1390,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9873456790123456
+    "auc": 0.9829629629629629
   },
   {
     "dataset": "bace",
@@ -1411,7 +1411,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9644753086419753
+    "auc": 0.9687962962962963
   },
   {
     "dataset": "bace",
@@ -1432,7 +1432,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9717901234567901
+    "auc": 0.9788580246913581
   },
   {
     "dataset": "bace",
@@ -1453,7 +1453,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9025
+    "auc": 0.9049382716049383
   },
   {
     "dataset": "bbbp",
@@ -1474,7 +1474,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9400000000000001
+    "auc": 0.9287654320987655
   },
   {
     "dataset": "bbbp",
@@ -1495,7 +1495,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.8958333333333334
+    "auc": 0.8885493827160493
   },
   {
     "dataset": "bbbp",
@@ -1516,7 +1516,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9198148148148148
+    "auc": 0.912746913580247
   },
   {
     "dataset": "bbbp",
@@ -1537,7 +1537,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9186728395061728
+    "auc": 0.908395061728395
   },
   {
     "dataset": "bbbp",
@@ -1558,7 +1558,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9449691358024692
+    "auc": 0.936574074074074
   },
   {
     "dataset": "bbbp",
@@ -1579,7 +1579,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9110185185185184
+    "auc": 0.8872839506172839
   },
   {
     "dataset": "dude",
@@ -1600,7 +1600,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9553703703703704
+    "auc": 0.9442283950617284
   },
   {
     "dataset": "dude",
@@ -1621,7 +1621,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9139197530864198
+    "auc": 0.9125308641975307
   },
   {
     "dataset": "dude",
@@ -1642,7 +1642,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9495061728395061
+    "auc": 0.9367283950617283
   },
   {
     "dataset": "dude",
@@ -1663,7 +1663,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.8801234567901234
+    "auc": 0.8587037037037037
   },
   {
     "dataset": "dude",
@@ -1684,7 +1684,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9119444444444444
+    "auc": 0.906820987654321
   },
   {
     "dataset": "dude",
@@ -1705,7 +1705,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9630246913580247
+    "auc": 0.9728703703703704
   },
   {
     "dataset": "drd2",
@@ -1726,7 +1726,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9791358024691358
+    "auc": 0.9885185185185186
   },
   {
     "dataset": "drd2",
@@ -1747,7 +1747,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9490432098765433
+    "auc": 0.9525617283950618
   },
   {
     "dataset": "drd2",
@@ -1768,7 +1768,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.969104938271605
+    "auc": 0.9616975308641975
   },
   {
     "dataset": "drd2",
@@ -1789,7 +1789,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9532407407407407
+    "auc": 0.9517592592592594
   },
   {
     "dataset": "drd2",
@@ -1810,7 +1810,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9776234567901235
+    "auc": 0.9781172839506173
   },
   {
     "dataset": "drd2",
@@ -1831,7 +1831,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9185185185185185
+    "auc": 0.9101851851851852
   },
   {
     "dataset": "egfr",
@@ -1852,7 +1852,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9451543209876543
+    "auc": 0.9319135802469136
   },
   {
     "dataset": "egfr",
@@ -1873,7 +1873,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9473765432098766
+    "auc": 0.9578086419753087
   },
   {
     "dataset": "egfr",
@@ -1894,7 +1894,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9785802469135803
+    "auc": 0.9708333333333333
   },
   {
     "dataset": "egfr",
@@ -1915,7 +1915,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.9415123456790124
+    "auc": 0.9471913580246913
   },
   {
     "dataset": "egfr",
@@ -1936,7 +1936,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9542592592592593
+    "auc": 0.9597839506172839
   },
   {
     "dataset": "egfr",
@@ -1957,7 +1957,7 @@
     "seed": 42,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.39682006963963584
+    "auc": 0.38012333766833073
   },
   {
     "dataset": "esol",
@@ -1978,7 +1978,7 @@
     "seed": 42,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.8657407407407407
+    "auc": 0.8601851851851852
   },
   {
     "dataset": "esol",
@@ -1999,7 +1999,7 @@
     "seed": 42,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9010802469135802
+    "auc": 0.894074074074074
   },
   {
     "dataset": "esol",
@@ -2020,7 +2020,7 @@
     "seed": 0,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.3484079372404245
+    "auc": 0.3559172714687251
   },
   {
     "dataset": "esol",
@@ -2041,7 +2041,7 @@
     "seed": 0,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.866604938271605
+    "auc": 0.8725925925925926
   },
   {
     "dataset": "esol",
@@ -2062,7 +2062,7 @@
     "seed": 0,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9104629629629629
+    "auc": 0.9145061728395062
   },
   {
     "dataset": "esol",
@@ -2083,7 +2083,7 @@
     "seed": 1,
     "ood": "novel_classes",
     "signal": "nfmap_loglik",
-    "auc": 0.34996014599152575
+    "auc": 0.35545580400218146
   },
   {
     "dataset": "esol",
@@ -2104,7 +2104,7 @@
     "seed": 1,
     "ood": "permuted",
     "signal": "nfmap_loglik",
-    "auc": 0.8649382716049382
+    "auc": 0.8675617283950618
   },
   {
     "dataset": "esol",
@@ -2125,7 +2125,7 @@
     "seed": 1,
     "ood": "noise",
     "signal": "nfmap_loglik",
-    "auc": 0.9025308641975309
+    "auc": 0.9046913580246914
   },
   {
     "dataset": "esol",

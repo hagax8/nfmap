@@ -5,6 +5,7 @@
   "inject_weight": 0.5,
   "prior_weight": 0.1,
   "grid_bounds": 6.0,
+  "sigma_perp": 10.0,
   "graph_weight": 5.0,
   "repulsion_weight": 1.0,
   "prior_layout": "hexagonal",
@@ -15,5 +16,5 @@
   "condition": "fixed_grid",
   "seed": 0,
   "ok": true,
-  "elapsed_s": 48.652578830718994
+  "elapsed_s": 25.616291999816895
 }

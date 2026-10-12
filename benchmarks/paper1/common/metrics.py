@@ -133,3 +133,112 @@ def fit_reference_baseline(kind, X, seed=42):
         return eGTM(m=6).fit_transform(X)
 
     raise ValueError(f"Unknown reference baseline kind: {kind!r}")
+
+
+K_PURITY = 5          # neighbourhood size for scaffold purity
+
+
+# ── Scaffold locality ────────────────────────────────────────────────────────
+# Generic neighbourhood measures saturate on chemical datasets (T/C F1 sits at
+# 0.82-0.93 for every method), so they cannot discriminate. These ask the
+# chemistry question instead: do molecules sharing a Bemis-Murcko scaffold stay
+# together on the map?
+
+def murcko_ids(smiles):
+    """Integer id per molecule; equal iff identical Bemis-Murcko scaffold."""
+    from rdkit import Chem, RDLogger
+    from rdkit.Chem.Scaffolds import MurckoScaffold
+    RDLogger.DisableLog("rdApp.*")
+    out, lookup = [], {}
+    for smi in smiles:
+        mol = Chem.MolFromSmiles(smi)
+        if mol is None:
+            out.append(-1)
+            continue
+        try:
+            scaf = MurckoScaffold.MurckoScaffoldSmiles(mol=mol)
+        except Exception:
+            out.append(-1)
+            continue
+        out.append(lookup.setdefault(scaf, len(lookup)))
+    return np.asarray(out), len(lookup)
+
+
+def score(Z, ids, k=K_PURITY):
+    from sklearn.neighbors import NearestNeighbors
+    from sklearn.metrics import silhouette_score
+    valid = ids >= 0
+    Z, ids = Z[valid], ids[valid]
+    counts = {s: int((ids == s).sum()) for s in np.unique(ids)}
+    eligible = np.array([counts[s] >= 2 for s in ids])
+    if eligible.sum() < 2:
+        return float("nan"), float("nan"), float("nan"), 0
+    kk = min(k, len(Z) - 1)
+    _, idx = NearestNeighbors(n_neighbors=kk + 1).fit(Z).kneighbors(Z)
+    share = ids[idx[:, 1:]] == ids[:, None]
+    purity = float(share[eligible].mean())
+    n = len(ids)
+    chance = float(np.mean([(counts[s] - 1) / (n - 1) for s in ids[eligible]]))
+    # Silhouette needs >=2 distinct labels among the points it scores.
+    Zs, ls = Z[eligible], ids[eligible]
+    sil = (float(silhouette_score(Zs, ls)) if len(np.unique(ls)) >= 2
+           else float("nan"))
+    return purity, sil, chance, int(eligible.sum())
+
+
+# ── Tears ────────────────────────────────────────────────────────────────────
+# Mirror image of B2F's fold_rate. A fold puts far-apart points close on the
+# map; a tear puts input-space neighbours far apart. Geodesic DistCor scores an
+# intact-but-curled sheet (swiss roll at sigma_perp=1000, geo 0.45) about the
+# same as one torn into reordered strips (sigma_perp=3, geo 0.47), because the
+# all-pairs Pearson is dominated by long distances.
+
+def tear_rate(X, Z, k=10, frac=0.10):
+    """Fraction of each point's k input-space neighbours that are NOT among its
+    frac*N nearest map neighbours, averaged over points. Rank-based, so local
+    stretching does not count, only neighbours sent to another part of the map.
+    A single global distance cutoff did not work: it could not separate the
+    swiss roll's torn strips from its intact spiral (seed 42, grid 12). This
+    does: torn 0.030-0.036, intact 0.010, unrolled s_curve 0.000. Folds also
+    raise it (~0.02), so read it next to fold_rate."""
+    from sklearn.neighbors import NearestNeighbors
+    R = max(k + 1, int(round(frac * len(X))))
+    _, ix = NearestNeighbors(n_neighbors=k + 1).fit(X).kneighbors(X)
+    _, iz = NearestNeighbors(n_neighbors=R + 1).fit(Z).kneighbors(Z)
+    hit = (ix[:, 1:, None] == iz[:, None, 1:]).any(axis=2)
+    return float(1.0 - hit.mean())
+
+
+# ── Geodesic structure (3-D manifolds) ───────────────────────────────────────
+# Moved here from b2f_geodesic_unrolling.py (not part of the paper) so B22/B23
+# do not import an experiment script.
+
+KNN_GRAPH = 10          # neighbours for the geodesic graph
+
+
+def geodesic_distances(X, k=KNN_GRAPH):
+    """All-pairs shortest-path distances on a kNN graph (Isomap's construction).
+
+    Returns the condensed upper triangle, matching scipy's pdist layout, or None
+    if the graph is disconnected (shortest paths would be infinite and the
+    correlation undefined - better to report nothing than a silently dropped
+    subset of pairs).
+    """
+    from sklearn.neighbors import kneighbors_graph
+    from scipy.sparse.csgraph import shortest_path, connected_components
+
+    G = kneighbors_graph(X, n_neighbors=k, mode="distance")
+    G = G.maximum(G.T)                      # symmetrise
+    n_comp, _ = connected_components(G, directed=False)
+    if n_comp != 1:
+        return None, n_comp
+    D = shortest_path(G, method="D", directed=False)
+    iu = np.triu_indices(len(X), k=1)
+    return D[iu], 1
+
+
+def fold_rate(d_geo, d_map, q=0.10):
+    """Fraction of the most geodesically-distant pairs that land closest on the map."""
+    far = d_geo >= np.quantile(d_geo, 1 - q)
+    near_map = d_map <= np.quantile(d_map, q)
+    return float(np.mean(near_map[far])) if far.any() else float("nan")

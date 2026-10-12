@@ -1,8 +1,0 @@
-{
-  "dataset": "egfr",
-  "kind": "tsne",
-  "label": "t-SNE\n(reference)",
-  "seed": 1,
-  "ok": true,
-  "elapsed_s": 1.2458488941192627
-}

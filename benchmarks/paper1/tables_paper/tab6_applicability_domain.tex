@@ -1,0 +1,30 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Out-of-distribution detection AUC, averaged over the applicable OOD constructions (feature-permuted inputs and matched-moment Gaussian noise for every dataset; held-out novel classes in addition where there are at least three classes) and 3 seeds. \nfmap{}'s exact likelihood leads on every chemical dataset. On the other sets it trails on average, most clearly on the two-dimensional toys (circles, moons), where $d_\perp = 0$ and the residual is empty.}
+\label{tab:ad}
+\begin{tabular}{lccc}
+\toprule
+Dataset & \nfmap{} $\log p(x)$ & $k$-NN distance & PCA recon.\ error \\
+\midrule
+\multicolumn{4}{l}{\textit{Chemistry}} \\
+\quad BACE & \textbf{0.973} & 0.957 & 0.564 \\
+\quad BBBP & \textbf{0.913} & 0.862 & 0.648 \\
+\quad DRD2 & \textbf{0.968} & 0.933 & 0.620 \\
+\quad EGFR & \textbf{0.946} & 0.890 & 0.635 \\
+\quad ESOL & \textbf{0.886} & 0.840 & 0.767 \\
+\quad \textit{mean} & \textit{0.937} & \textit{0.896} & \textit{0.647} \\
+\multicolumn{4}{l}{\textit{Other}} \\
+\quad Cancer & \textbf{0.988} & 0.960 & 0.959 \\
+\quad Circles & 0.466 & \textbf{0.753} & 0.498 \\
+\quad Digits & 0.942 & \textbf{0.992} & 0.881 \\
+\quad Iris & 0.929 & \textbf{0.959} & 0.917 \\
+\quad Moons & 0.661 & \textbf{0.778} & 0.482 \\
+\quad S-curve & \textbf{0.889} & 0.855 & 0.489 \\
+\quad Severed sphere & \textbf{0.926} & 0.887 & 0.479 \\
+\quad Swiss roll & 0.764 & \textbf{0.795} & 0.479 \\
+\quad Wine & \textbf{0.942} & 0.939 & 0.902 \\
+\quad \textit{mean} & \textit{0.834} & \textit{0.880} & \textit{0.676} \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,164 @@
+[
+  {
+    "group": "Chemistry, local end (sigma_perp=10)",
+    "condition": "single_gaussian",
+    "metric": "dist_corr",
+    "n_pairs": 25,
+    "mean_diff": 0.06960008021082588,
+    "ci_low": 0.04778567941593048,
+    "ci_high": 0.09141448100572128
+  },
+  {
+    "group": "Chemistry, local end (sigma_perp=10)",
+    "condition": "single_gaussian",
+    "metric": "t_c_f1",
+    "n_pairs": 25,
+    "mean_diff": -0.017841600073789095,
+    "ci_low": -0.021020414975199634,
+    "ci_high": -0.014662785172378555
+  },
+  {
+    "group": "Chemistry, local end (sigma_perp=10)",
+    "condition": "single_gaussian",
+    "metric": "acc",
+    "n_pairs": 25,
+    "mean_diff": -0.01026666666666666,
+    "ci_low": -0.01780473784963106,
+    "ci_high": -0.00272859548370226
+  },
+  {
+    "group": "Chemistry, local end (sigma_perp=10)",
+    "condition": "learnable_gmm",
+    "metric": "dist_corr",
+    "n_pairs": 25,
+    "mean_diff": -0.03778417066420886,
+    "ci_low": -0.04945831274554927,
+    "ci_high": -0.02611002858286845
+  },
+  {
+    "group": "Chemistry, local end (sigma_perp=10)",
+    "condition": "learnable_gmm",
+    "metric": "t_c_f1",
+    "n_pairs": 25,
+    "mean_diff": 0.0026019840636235525,
+    "ci_low": 0.00028853294758546906,
+    "ci_high": 0.0049154351796616355
+  },
+  {
+    "group": "Chemistry, local end (sigma_perp=10)",
+    "condition": "learnable_gmm",
+    "metric": "acc",
+    "n_pairs": 25,
+    "mean_diff": 0.0020000000000000104,
+    "ci_low": -0.0046463848049933506,
+    "ci_high": 0.00864638480499337
+  },
+  {
+    "group": "Chemistry, global end (sigma_perp=0.003)",
+    "condition": "single_gaussian",
+    "metric": "dist_corr",
+    "n_pairs": 25,
+    "mean_diff": -0.019885252277951584,
+    "ci_low": -0.040250032587601056,
+    "ci_high": 0.00047952803169789074
+  },
+  {
+    "group": "Chemistry, global end (sigma_perp=0.003)",
+    "condition": "single_gaussian",
+    "metric": "t_c_f1",
+    "n_pairs": 25,
+    "mean_diff": -0.010089088770224798,
+    "ci_low": -0.015286843910837948,
+    "ci_high": -0.004891333629611648
+  },
+  {
+    "group": "Chemistry, global end (sigma_perp=0.003)",
+    "condition": "single_gaussian",
+    "metric": "acc",
+    "n_pairs": 25,
+    "mean_diff": -0.005133333333333332,
+    "ci_low": -0.012708566893833886,
+    "ci_high": 0.002441900227167222
+  },
+  {
+    "group": "Chemistry, global end (sigma_perp=0.003)",
+    "condition": "learnable_gmm",
+    "metric": "dist_corr",
+    "n_pairs": 25,
+    "mean_diff": 0.002255902740496909,
+    "ci_low": -0.013680508266619628,
+    "ci_high": 0.018192313747613445
+  },
+  {
+    "group": "Chemistry, global end (sigma_perp=0.003)",
+    "condition": "learnable_gmm",
+    "metric": "t_c_f1",
+    "n_pairs": 25,
+    "mean_diff": -0.0015969807104358714,
+    "ci_low": -0.0055529853234255674,
+    "ci_high": 0.002359023902553825
+  },
+  {
+    "group": "Chemistry, global end (sigma_perp=0.003)",
+    "condition": "learnable_gmm",
+    "metric": "acc",
+    "n_pairs": 25,
+    "mean_diff": -0.007000000000000006,
+    "ci_low": -0.013459803455978582,
+    "ci_high": -0.0005401965440214301
+  },
+  {
+    "group": "Manifolds (geodesic-selected sigma_perp)",
+    "condition": "single_gaussian",
+    "metric": "dist_corr",
+    "n_pairs": 15,
+    "mean_diff": 0.03649367848940421,
+    "ci_low": 0.007962105012339866,
+    "ci_high": 0.06502525196646856
+  },
+  {
+    "group": "Manifolds (geodesic-selected sigma_perp)",
+    "condition": "single_gaussian",
+    "metric": "t_c_f1",
+    "n_pairs": 15,
+    "mean_diff": -0.04923452772937083,
+    "ci_low": -0.0622978165602866,
+    "ci_high": -0.036171238898455055
+  },
+  {
+    "group": "Manifolds (geodesic-selected sigma_perp)",
+    "condition": "single_gaussian",
+    "metric": "acc",
+    "n_pairs": 15,
+    "mean_diff": -0.1904264197794943,
+    "ci_low": -0.2714145640844333,
+    "ci_high": -0.10943827547455527
+  },
+  {
+    "group": "Manifolds (geodesic-selected sigma_perp)",
+    "condition": "learnable_gmm",
+    "metric": "dist_corr",
+    "n_pairs": 15,
+    "mean_diff": -0.0371487255745683,
+    "ci_low": -0.057208089731012254,
+    "ci_high": -0.01708936141812435
+  },
+  {
+    "group": "Manifolds (geodesic-selected sigma_perp)",
+    "condition": "learnable_gmm",
+    "metric": "t_c_f1",
+    "n_pairs": 15,
+    "mean_diff": 0.002377117039620469,
+    "ci_low": 0.00013875185422802675,
+    "ci_high": 0.004615482225012912
+  },
+  {
+    "group": "Manifolds (geodesic-selected sigma_perp)",
+    "condition": "learnable_gmm",
+    "metric": "acc",
+    "n_pairs": 15,
+    "mean_diff": 0.00879375823059041,
+    "ci_low": -0.001536786588770928,
+    "ci_high": 0.019124303049951746
+  }
+]

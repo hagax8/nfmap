@@ -1,8 +1,0 @@
-{
-  "dataset": "iris",
-  "kind": "tsne",
-  "label": "t-SNE\n(reference)",
-  "seed": 0,
-  "ok": true,
-  "elapsed_s": 0.6955249309539795
-}

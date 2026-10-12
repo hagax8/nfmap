@@ -38,18 +38,6 @@ depends on the data. On high-dimensional descriptor data, shrinking it improves
 global distance fidelity; on low-dimensional manifolds that fold back on
 themselves in the ambient space, it degrades them. See `benchmarks/paper1/`.
 
-## Related work
-
-NFMap was developed independently from, and concurrently with,
-[FloDR](https://arxiv.org/abs/2607.26278) (Baraka & Probst, arXiv:2607.26278,
-July 2026), which also trains a bijection from affine coupling layers, reads the
-leading coordinates as a 2D embedding and retains the remainder as a residual.
-The approaches differ in two respects: NFMap places a **fixed grid prior** on
-the map coordinates where FloDR learns a Gaussian mixture, and NFMap models the
-residual **isotropically with a single scale** `sigma_perp` where FloDR
-conditions the residual on the embedding and trades local against global
-structure through an ordinal loss weight.
-
 ## Installation
 
 ```bash
@@ -88,30 +76,46 @@ two are coupled, and sweeping either alone gives misleading conclusions.
 ## Repository structure
 
 ```text
-├── nfmap/                # Core package (RealNVP blocks, pullback geometry)
-├── benchmarks/
-│   ├── nfmap_diagnostics.py   # NFMap vs GTM / t-SNE / UMAP
-│   └── paper1/                # Full benchmark suite and results
-│       ├── common/            # Shared data, metrics and IO layer
-│       ├── b*.py              # Individual experiments
-│       └── results/           # Per-run configs and metrics
-└── docs/                 # Mathematical write-ups
+├── nfmap/                 # Core package
+├── chem_kernel/           # Hierarchical chemical kernel (used by the scale study)
+├── benchmarks/paper1/     # Everything needed to reproduce the paper
+│   ├── common/            # Shared data loading, metrics and IO
+│   ├── data/              # ChEMBL activity sets (DRD2, EGFR, hERG)
+│   ├── b*.py              # One script per experiment
+│   ├── results/           # Results reported in the paper
+│   ├── make_paper_tables.py
+│   ├── make_paper_figures.py
+│   └── Makefile
+└── docs/                  # Mathematical write-ups
 ```
 
-The benchmark suite in `benchmarks/paper1/` reports every method on an
-identical input matrix, with three seeds per cell, and includes hyperparameter
-sweeps of the baselines as well as of NFMap. A manuscript describing these
-results is in preparation.
+## Reproducing the paper
+
+```bash
+cd benchmarks/paper1
+make paper        # every table and figure, from the committed results
+make experiments  # re-run every fit behind them (hours; use make -j)
+```
+
+All fits run on CPU with a fixed thread count, so they are reproducible run to
+run. Every method sees an identical input matrix, with three seeds per setting,
+and the baselines (t-SNE, UMAP) are swept over their own hyperparameters as
+NFMap is.
 
 ## Status
 
 Research code, under active development. Two caveats worth knowing:
 
-- A single fit has non-trivial run-to-run variation (DistCor spread of ~0.15
-  across seeds at a fixed setting), so results should be averaged over seeds.
+- Results can vary across seeds at a fixed setting, substantially so on some
+  datasets, so average over several seeds.
 - Map coordinates are **not** comparable between separately trained models, or
   even between seeds on the same data. Within one fitted model the mapping is
   deterministic and unseen points project onto the same frame.
+
+## Data
+
+`benchmarks/paper1/data/` contains activity sets derived from ChEMBL,
+redistributed under CC BY-SA 3.0 (see the README in that folder).
 
 ## Licence
 

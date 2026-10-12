@@ -71,13 +71,15 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--datasets", default=",".join(DATASETS))
     ap.add_argument("--seeds", default="42,0,1")
+    # Lets dataset chunks run in parallel without overwriting each other.
+    ap.add_argument("--out", default="sigma_grid_joint.json")
     args = ap.parse_args()
     seeds = [int(s) for s in args.seeds.split(",")]
     datasets = [d.strip() for d in args.datasets.split(",")]
 
     out_dir = os.path.join(RESULTS_ROOT, EXPERIMENT_ID)
     os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, "sigma_grid_joint.json")
+    out_path = os.path.join(out_dir, args.out)
     rows = []
     print(f"[{EXPERIMENT_ID}] {len(datasets)} datasets x {len(SIGMAS)} sigma x "
           f"{len(GRIDS)} grid x {len(seeds)} seeds = "

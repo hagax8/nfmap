@@ -1,9 +1,0 @@
-{
-  "dataset": "drd2",
-  "seed": 42,
-  "k": 10,
-  "n_train": 695,
-  "n_test": 174,
-  "use_lmdt_head": true,
-  "lmdt_p95": 3.2241597175598145
-}

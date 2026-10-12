@@ -1,0 +1,16 @@
+{
+  "trust": 0.9889420045045045,
+  "cont": 0.9930799549549549,
+  "t_c_f1": 0.991006660243296,
+  "dist_corr": 0.7025445724657362,
+  "dens_corr": 0.421761202085587,
+  "sil": NaN,
+  "acc": 0.9936333663480911,
+  "auc": NaN,
+  "frac_outside_grid_bounds": 0.0,
+  "max_abs_coord": 9.842411994934082,
+  "setting": {
+    "sigma_perp": 3.0,
+    "grid_bounds": 24.0
+  }
+}

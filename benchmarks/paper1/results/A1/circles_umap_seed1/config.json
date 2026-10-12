@@ -1,8 +1,0 @@
-{
-  "dataset": "circles",
-  "kind": "umap",
-  "label": "UMAP\n(reference)",
-  "seed": 1,
-  "ok": true,
-  "elapsed_s": 3.940368890762329
-}

@@ -13,5 +13,5 @@
   "dataset": "cancer",
   "seed": 42,
   "ok": true,
-  "elapsed_s": 47.94564509391785
+  "elapsed_s": 27.494525909423828
 }

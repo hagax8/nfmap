@@ -13,5 +13,5 @@
   "dataset": "wine",
   "seed": 42,
   "ok": true,
-  "elapsed_s": 8.671960830688477
+  "elapsed_s": 4.708070755004883
 }

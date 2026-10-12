@@ -1,8 +1,0 @@
-{
-  "dataset": "moons",
-  "kind": "umap",
-  "label": "UMAP\n(reference)",
-  "seed": 42,
-  "ok": true,
-  "elapsed_s": 4.034221172332764
-}

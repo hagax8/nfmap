@@ -1,8 +1,0 @@
-{
-  "dataset": "egfr",
-  "kind": "umap",
-  "label": "UMAP\n(reference)",
-  "seed": 42,
-  "ok": true,
-  "elapsed_s": 4.10059118270874
-}

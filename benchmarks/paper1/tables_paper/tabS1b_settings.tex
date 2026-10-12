@@ -1,0 +1,28 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Hyperparameters selected by the sweep for each entry of Table~\ref{tab:comparison} (the reported Pareto point; not fixed in advance). \nfmap{}: $\sigma_\perp$ / grid\_bounds, swept over 14 $\sigma_\perp$ values from $10^{-3}$ to $10^{3}$ and grid\_bounds 12 and 24. t-SNE: perplexity. UMAP: n\_neighbors / min\_dist. GTM: not swept, one configuration ($10\times10 = 100$ nodes, matching \nfmap{}'s 100 prior components; $6\times6$ RBF centres).}
+\label{tab:settings}
+\begin{tabular}{lccc}
+\toprule
+ & \nfmap{} & t-SNE & UMAP \\
+\midrule
+\multicolumn{4}{l}{\textit{Chemistry}} \\
+\quad BACE & 0.3 / 24 & 200 & 5 / 0.99 \\
+\quad BBBP & 3 / 24 & 200 & 5 / 0 \\
+\quad ESOL & 0.01 / 24 & 300 & 5 / 0.1 \\
+\quad DRD2 & 0.3 / 24 & 300 & 5 / 0.5 \\
+\quad EGFR & 0.3 / 24 & 300 & 5 / 0 \\
+\multicolumn{4}{l}{\textit{3-D manifolds}} \\
+\quad Swiss roll & 3 / 24 & 15 & 15 / 0.99 \\
+\quad S-curve & 100 / 12 & 50 & 100 / 0.5 \\
+\quad Severed sphere & 5 / 12 & 100 & 400 / 0.99 \\
+\multicolumn{4}{l}{\textit{Other}} \\
+\quad Digits & 10 / 12 & 400 & 400 / 0.5 \\
+\quad Iris & 1 / 12 & 100 & 15 / 0.1 \\
+\quad Cancer & 5 / 12 & 200 & 15 / 0.1 \\
+\quad Wine & 1 / 12 & 100 & 100 / 0.1 \\
+\bottomrule
+\end{tabular}
+\end{table}

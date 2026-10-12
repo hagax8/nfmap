@@ -1,8 +1,0 @@
-{
-  "dataset": "wine",
-  "kind": "gtm",
-  "label": "GTM\n(reference)",
-  "seed": 42,
-  "ok": true,
-  "elapsed_s": 0.04428601264953613
-}

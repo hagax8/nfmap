@@ -13,5 +13,5 @@
   "dataset": "digits",
   "seed": 42,
   "ok": true,
-  "elapsed_s": 52.11809802055359
+  "elapsed_s": 65.2248740196228
 }

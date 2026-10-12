@@ -1,8 +1,0 @@
-{
-  "dataset": "digits",
-  "kind": "gtm",
-  "label": "GTM\n(reference)",
-  "seed": 1,
-  "ok": true,
-  "elapsed_s": 0.21827411651611328
-}

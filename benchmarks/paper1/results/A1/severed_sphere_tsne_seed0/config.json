@@ -1,8 +1,0 @@
-{
-  "dataset": "severed_sphere",
-  "kind": "tsne",
-  "label": "t-SNE\n(reference)",
-  "seed": 0,
-  "ok": true,
-  "elapsed_s": 1.1650278568267822
-}

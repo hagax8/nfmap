@@ -16,3 +16,9 @@ experiments/
 # Internal planning, drafts and unpublished findings - kept private until the
 # preprint is posted.
 planning_docs/
+
+# Paper data that must be versioned despite the *.csv rule above.
+!benchmarks/paper1/data/*.csv
+!benchmarks/paper1/results/B22/*.npz
+!benchmarks/paper1/results/B22/*.npy
+!benchmarks/paper1/results/B5/*/embeddings.npz

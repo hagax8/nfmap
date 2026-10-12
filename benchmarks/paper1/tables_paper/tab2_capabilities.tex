@@ -1,0 +1,35 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Capabilities of each method, independent of embedding quality.
+\emph{Parametric} means unseen points can be projected onto an existing map.
+\emph{Landscape grid}: the prior places $K$ components at fixed, known
+positions, so any quantity---measured activity, predicted property, local
+density---can be aggregated per node and rendered as a continuous background
+field at a resolution set by $K$. Methods without a fixed latent grid can still
+render a field by inverting an arbitrary raster, but have no canonical cells at
+which to aggregate observed data. \emph{Heavy-tailed}: the low-dimensional
+model has heavier-than-Gaussian tails, the usual remedy for crowding---built
+into the similarity kernel of t-SNE (Student-t) and UMAP, and available in
+\nfmap{} as a Student-t mixture prior. None of these methods give coordinates
+that are comparable between separately trained models.}
+\label{tab:capabilities}
+\begin{tabular}{lccccc}
+\toprule
+ & Parametric & Invertible & Exact density & Landscape grid & Heavy-tailed \\
+\midrule
+t-SNE      & \ding{55} & \ding{55} & \ding{55} & \ding{55} & \ding{51} \\
+UMAP       & \ding{51}$^{*}$ & \ding{55} & \ding{55} & \ding{55} & \ding{51} \\
+GTM        & \ding{51} & \ding{55} & \ding{51} & \ding{51} & \ding{55} \\
+FloDR      & \ding{51} & \ding{51} & \ding{51} & \ding{55}$^{\dagger}$ & \ding{55} \\
+\nfmap{}   & \ding{51} & \ding{51} & \ding{51} & \ding{51} & \ding{51}$^{\ddagger}$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\footnotesize $^{*}$via the parametric variant; the standard implementation is
+non-parametric. $^{\dagger}$FloDR's mixture components are learned rather than
+fixed, so their positions and effective resolution vary with the data.
+$^{\ddagger}$optional (\texttt{prior\_family='student\_t'}); the default prior is
+a Gaussian mixture.
+\end{table}

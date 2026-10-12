@@ -42,11 +42,17 @@ BASE_DEFAULTS = dict(
     complexity="medium",
     inject_weight=0.5,
     prior_weight=0.1,
-    grid_bounds=6.0,  # matches run_ablation.py's DEFAULTS — see its comment
+    # sigma_perp 10 (local end of the dial) for every dataset; grid_bounds is
+    # per dataset (GRID below). These are what the paper's prior figure (f11)
+    # and the prior table's Digits rows report.
+    sigma_perp=10.0,
     graph_weight=5.0,
     repulsion_weight=1.0,
     prior_layout="hexagonal",
 )
+
+# Digits at 6: at 12 its map filled only the middle of the canvas.
+GRID = {"digits": 6.0}
 
 CONDITIONS = {
     "single_gaussian": dict(n_prior_components=1, learnable_priors=False),
@@ -57,7 +63,7 @@ CONDITIONS = {
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--dataset", default="digits")
+    ap.add_argument("--dataset", default="digits", choices=sorted(GRID))
     ap.add_argument("--seeds", default="42,0,1")
     args = ap.parse_args()
     seeds = [int(x) for x in args.seeds.split(",")]
@@ -72,7 +78,7 @@ def main():
     for seed in seeds:
         for cond, overrides in CONDITIONS.items():
             label = f"{cond}_seed{seed}"
-            config = dict(BASE_DEFAULTS)
+            config = dict(BASE_DEFAULTS, grid_bounds=GRID[args.dataset])
             config.update(overrides)
             config["random_state"] = seed
 

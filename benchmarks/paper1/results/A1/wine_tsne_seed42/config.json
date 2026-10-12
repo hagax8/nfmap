@@ -1,8 +1,0 @@
-{
-  "dataset": "wine",
-  "kind": "tsne",
-  "label": "t-SNE\n(reference)",
-  "seed": 42,
-  "ok": true,
-  "elapsed_s": 0.7293329238891602
-}

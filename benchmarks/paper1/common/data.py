@@ -270,8 +270,7 @@ def _load_chembl_target(target, seed=42):
     from sklearn.decomposition import PCA
 
     here = os.path.dirname(os.path.abspath(__file__))
-    df = pd.read_csv(os.path.join(here, "..", "..", "..", "experiments",
-                                  "chembed_generation", f"{target}_clean.csv"))
+    df = pd.read_csv(os.path.join(here, "..", "data", f"{target}_clean.csv"))
     X_list, y_list, mol_list = [], [], []
     for _, row in df.iterrows():
         mol = dm.to_mol(row["smiles"])

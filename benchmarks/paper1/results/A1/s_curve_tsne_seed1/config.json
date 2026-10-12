@@ -1,8 +1,0 @@
-{
-  "dataset": "s_curve",
-  "kind": "tsne",
-  "label": "t-SNE\n(reference)",
-  "seed": 1,
-  "ok": true,
-  "elapsed_s": 1.190148115158081
-}
