@@ -7,9 +7,7 @@ prior**.
 NFMap maps data to a latent space of the same dimension, split into a
 2-dimensional navigable map (`z_parallel`) and an off-manifold residual
 (`z_perp`). The flow is **exactly bijective**: carrying both parts back through
-it reconstructs the input to floating-point precision. Mapping back from a 2D
-location *alone* is instead a generative operation — the residual is imputed, so
-one map position corresponds to a family of data points. Because the prior
+it reconstructs the input to floating-point precision. Because the prior
 over the map coordinates is a *fixed* grid rather than a learned mixture, the
 map has a bounded domain of known extent with reference nodes at known
 positions — the property NFMap inherits from Generative Topographic Mapping
@@ -59,10 +57,6 @@ Z = model.fit_transform(X)            # (n_samples, 2) map coordinates
 Z_new = model.transform(X_new)        # project unseen points
 logp = model.score_samples(X_new)     # exact log-likelihood
 
-# Generate: a 2D map location back to data space. The residual is imputed,
-# so this samples from the family of points sitting at that position.
-X_gen = model.inverse_transform(Z)
-
 # Exact round trip: keep the residual and the reconstruction is lossless.
 Z_full = model.transform(X, return_full=True)   # (n_samples, d)
 X_rec = model.inverse_transform(Z_full)         # == X, to float precision
@@ -107,13 +101,7 @@ is.
 
 ## Status
 
-Research code, under active development. Two caveats worth knowing:
-
-- Results can vary across seeds at a fixed setting, substantially so on some
-  datasets, so average over several seeds.
-- Map coordinates are **not** comparable between separately trained models, or
-  even between seeds on the same data. Within one fitted model the mapping is
-  deterministic and unseen points project onto the same frame.
+Research code, under active development.
 
 ## Data
 
