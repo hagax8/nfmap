@@ -31,6 +31,10 @@ place the same molecules differently.
   signal.
 - **Out-of-sample projection and an exact inverse**, neither of which t-SNE or
   UMAP provides.
+- **Options against crowding on large datasets:** a heavy-tailed Student-t
+  mixture prior over the map, and, for molecules, a hierarchical chemical
+  kernel that builds the neighbourhood graph from molecule, Bemis-Murcko
+  scaffold and generic-skeleton fingerprints.
 
 A caveat worth stating up front: the *direction* of the `sigma_perp` trade-off
 depends on the data. On high-dimensional descriptor data, shrinking it improves
@@ -67,6 +71,28 @@ X_rec = model.inverse_transform(Z_full)         # == X, to float precision
 (better global distance fidelity, worse neighbourhood fidelity); large values
 leave it in the residual. `grid_bounds` must be chosen together with it — the
 two are coupled, and sweeping either alone gives misleading conclusions.
+
+### Large datasets: Student-t prior and chemical kernel
+
+```python
+# Student-t mixture prior: heavier tails over the map coordinates. With
+# grid_bounds='auto', the canvas is widened to match the heavier tails.
+model = NFMap(prior_family="student_t", prior_dof=2.0, grid_bounds="auto")
+
+# Hierarchical chemical kernel (needs RDKit): the neighbourhood graph comes
+# from weighted Tanimoto similarity over molecule, scaffold and generic-skeleton
+# fingerprints, and is passed to NFMap in place of its own kNN graph.
+from chem_kernel.hybrid_kernel import (compute_hierarchical_fingerprints,
+                                       compute_hybrid_knn)
+
+X_mol, X_scaf, X_skel, _, valid = compute_hierarchical_fingerprints(smiles)
+knn_idx, knn_dist = compute_hybrid_knn(X_mol, X_scaf, X_skel, k=15)
+Z = model.fit(X_mol, knn_indices=knn_idx, knn_dists=knn_dist).transform(X_mol)
+```
+
+Both matter mainly at scale (thousands of molecules); on a few hundred points
+there is little crowding to relieve. `valid` indexes the SMILES that RDKit
+could parse.
 
 ## Repository structure
 
