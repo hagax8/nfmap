@@ -92,15 +92,18 @@ two are coupled, and sweeping either alone gives misleading conclusions.
 ## Reproducing the paper
 
 ```bash
+pip install -e .                                   # NFMap itself
+pip install -r benchmarks/paper1/requirements.txt  # baselines, chemistry, plotting
 cd benchmarks/paper1
 make paper        # every table and figure, from the committed results
 make experiments  # re-run every fit behind them (hours; use make -j)
 ```
 
 All fits run on CPU with a fixed thread count, so they are reproducible run to
-run. Every method sees an identical input matrix, with three seeds per setting,
-and the baselines (t-SNE, UMAP) are swept over their own hyperparameters as
-NFMap is.
+run; `requirements.txt` pins the versions that produced the committed results.
+Every method sees an identical input matrix, with three seeds per setting, and
+the baselines (t-SNE, UMAP) are swept over their own hyperparameters as NFMap
+is.
 
 ## Status
 
