@@ -21,11 +21,12 @@ place the same molecules differently.
   radius `grid_bounds` and are not learned, so the embedding has a bounded
   domain on a defined scale rather than an arbitrary run-dependent one. This is
   GTM's construction, carried into a flow.
-- **A single scalar for the local/global trade-off.** The prior factorises as
-  `p(z) = p_GMM(z_par) · N(z_perp; 0, sigma_perp² I)`. Because the flow is
-  bijective and volume-penalised, variance squeezed out of `z_perp` must
-  reappear in `z_par`, so `sigma_perp` controls how much of the data's geometry
-  is expressed in the two visible dimensions.
+- **A residual scale as the main local/global control.** The prior factorises
+  as `p(z) = p_GMM(z_par) · N(z_perp; 0, sigma_perp² I)`. Because the flow is
+  bijective and its log-determinant is part of the objective, variance squeezed
+  out of `z_perp` reappears in `z_par`, so `sigma_perp` controls how much of the
+  data's geometry is expressed in the two visible dimensions. Its effect is
+  coupled to `grid_bounds` and the graph weights (see below).
 - **Exact likelihood**, usable as an applicability-domain / out-of-distribution
   signal.
 - **Out-of-sample projection and an exact inverse**, neither of which t-SNE or
