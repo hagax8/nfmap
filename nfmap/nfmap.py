@@ -946,7 +946,7 @@ class NFMap(BaseEstimator, TransformerMixin):
         over z_par alone — two very different molecules can share the same 2D coordinates
         with different perpendicular dimensions. This loss enforces that molecules which
         land close together in the 2D map are also close in the original input space.
-        Particularly useful when `generate()` will be used (Paper 2 / Imolgen workflow).
+        Particularly useful when `generate()` will be used.
 
         **Method**: Gaussian kernel with a fixed bandwidth τ = 1.0 in map units, averaged
         over all pairs (i, j) in the mini-batch:
