@@ -1,7 +1,7 @@
 # NFMap: Bounded Normalizing Flow Maps
 
 A PyTorch and scikit-learn compatible library for 2D dimensionality reduction
-with a **bijective normalizing flow** over a **fixed Gaussian-mixture grid
+with a **bijective normalizing flow** over a **fixed Student- or Gaussian-mixture grid
 prior**.
 
 NFMap maps data to a latent space of the same dimension, split into a
