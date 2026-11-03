@@ -72,7 +72,7 @@ X_rec = model.inverse_transform(Z_full)         # == X, to float precision
 leave it in the residual. `grid_bounds` must be chosen together with it — the
 two are coupled, and sweeping either alone gives misleading conclusions.
 
-### Large datasets: Student-t prior and chemical kernel
+### Domain-specific application: large chemical datasets: Student-t prior and chemical kernel
 
 ```python
 # Student-t mixture prior: heavier tails over the map coordinates. With
