@@ -2,7 +2,7 @@
 
 A PyTorch and scikit-learn compatible library for 2D dimensionality reduction
 with a **bijective normalizing flow** over a **fixed Student- or Gaussian-mixture grid
-prior**.
+prior**. Read our full paper [on arXiv](https://arxiv.org/html/2610.16750).
 
 NFMap maps data to a latent space of the same dimension, split into a
 2-dimensional navigable map (`z_parallel`) and an off-manifold residual
